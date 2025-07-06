@@ -1,0 +1,30 @@
+# Qt6/CMake 项目常用忽略项
+
+# 编译输出目录
+cmake-build-*/
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Qt Creator/CLion/JetBrains 配置文件
+*.user
+*.pro.user
+*.qbs.user
+*.qmlproject.user
+*.autosave
+.idea/
+.vscode/
+*.iml
+
+# 生成文件和中间文件
+*.moc
+*.obj
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+*.app
