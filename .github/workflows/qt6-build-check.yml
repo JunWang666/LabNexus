@@ -37,13 +37,23 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Build with MSVC
+      # 3. 使用 CMake 和 MSVC 编译
+      - name: Build with MSVC (CMake)
         id: build
         shell: cmd
         run: |
+          rem 设置 MSVC 编译环境，这步仍然需要
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.msvc_arch }}
-          qmake
-          nmake
+
+          rem 1. CMake 配置步骤：生成 Visual Studio 项目文件
+          rem -S . 指定源码在当前目录
+          rem -B build 指定生成的文件放在一个新的 "build" 目录中
+          rem -D CMAKE_PREFIX_PATH=%QT_ROOT_DIR% 告诉 CMake 在哪里找到你安装的 Qt
+          cmake -S . -B build -D CMAKE_PREFIX_PATH=%QT_ROOT_DIR%
+
+          rem 2. CMake 编译步骤：使用生成的项目文件进行编译
+          rem --config Release 指定编译 Release 版本
+          cmake --build build --config Release
 
       # 4. 打包 (无需改动)
       - name: package
