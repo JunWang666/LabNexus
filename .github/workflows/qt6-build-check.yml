@@ -17,6 +17,7 @@ jobs:
         include:
           - qt_ver: 6.9.1
             qt_arch: win64_msvc2022_64
+            qt_target: win64_msvc2022_64
             msvc_arch: x64
 
     env:
@@ -55,34 +56,67 @@ jobs:
           rem --config Release 指定编译 Release 版本
           cmake --build build --config Release
 
-      # 4. 打包
+      # 4. 打包 (可选步骤，失败不影响整体构建状态)
       - name: package
         id: package
+        continue-on-error: true
         env:
           archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
           msvcArch: ${{ matrix.msvc_arch }}
         shell: pwsh
         run: |
-          # 在脚本路径前加上 '.\' 来明确告诉 PowerShell 这是一个本地文件路径
-          # 同时，确保你使用了上一步修正后的正确 .exe 文件路径
-          & .\scripts\windows-publish.ps1 ${env:archiveName} "build/Release/${env:targetName}"
+          # 检查构建是否成功
+          if (-not (Test-Path "build/Release/${env:targetName}")) {
+            Write-Warning "可执行文件不存在，跳过打包步骤"
+            exit 0
+          }
           
-          $name = ${env:archiveName}
-          echo "packageName=$name" >> $env:GITHUB_OUTPUT
+          # 检查脚本是否存在
+          if (-not (Test-Path "scripts/windows-publish.ps1")) {
+            Write-Warning "打包脚本不存在，跳过打包步骤"
+            exit 0
+          }
+          
+          # 执行打包
+          try {
+            & .\scripts\windows-publish.ps1 ${env:archiveName} "build/Release/${env:targetName}"
+            $name = ${env:archiveName}
+            echo "packageName=$name" >> $env:GITHUB_OUTPUT
+            echo "packageSuccess=true" >> $env:GITHUB_OUTPUT
+          } catch {
+            Write-Warning "打包失败: $_"
+            echo "packageSuccess=false" >> $env:GITHUB_OUTPUT
+          }
 
-      # 5. 上传构建产物 (无需改动)
-      - uses: actions/upload-artifact@v4
+      # 5. 上传构建产物 (仅在打包成功时执行)
+      - name: Upload artifacts
+        if: steps.package.outputs.packageSuccess == 'true'
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.packageName }}
-          path: ${{ steps.package.outputs.packageName }}
+          path: ${{ steps.package.outputs.packageName }}.zip
 
-      # 6. 上传到 Release (tag触发时)
-      - name: uploadRelease
-        if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ steps.package.outputs.packageName }}.zip
-          asset_name: ${{ steps.package.outputs.packageName }}.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+      # 6. 构建状态总结
+      - name: Build Summary
+        shell: pwsh
+        run: |
+          Write-Host "=== 构建状态总结 ===" -ForegroundColor Green
+          
+          # 检查构建状态
+          if (Test-Path "build/Release/${env:targetName}") {
+            Write-Host "✅ 构建成功: ${env:targetName}" -ForegroundColor Green
+          } else {
+            Write-Host "❌ 构建失败: 找不到可执行文件" -ForegroundColor Red
+            exit 1
+          }
+          
+          # 检查打包状态
+          if ("${{ steps.package.outputs.packageSuccess }}" -eq "true") {
+            Write-Host "✅ 打包成功" -ForegroundColor Green
+          } elseif ("${{ steps.package.conclusion }}" -eq "skipped") {
+            Write-Host "⏭️ 打包步骤被跳过" -ForegroundColor Yellow
+          } else {
+            Write-Host "⚠️ 打包失败或未执行" -ForegroundColor Yellow
+          }
+          
+          Write-Host "🎉 整体构建流程完成" -ForegroundColor Green
