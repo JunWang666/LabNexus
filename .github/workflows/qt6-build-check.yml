@@ -59,7 +59,7 @@ jobs:
       # 4. 打包 (可选步骤，失败不影响整体构建状态)
       - name: package
         id: package
-        continue-on-error: true
+        continue-on-error: false
         env:
           archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
           msvcArch: ${{ matrix.msvc_arch }}
