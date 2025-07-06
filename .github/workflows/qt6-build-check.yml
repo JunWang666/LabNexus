@@ -1,7 +1,6 @@
 name: Windows
 on:
   push:
-    # 触发分支
     branches:
       - master
   pull_request:
@@ -11,56 +10,44 @@ on:
 jobs:
   build:
     name: Build
-    # 运行平台， windows-latest目前是windows server 2019
-    # 参考文档 https://github.com/actions/virtual-environments/blob/main/images/win/Windows2019-Readme.md
+    # 运行平台，windows-latest 目前是 windows server 2022
     runs-on: windows-latest
     strategy:
-      # 矩阵配置
+      # 矩阵配置: 修改为 MSVC
       matrix:
         include:
-          # 6.9.1
           - qt_ver: 6.9.1
-            qt_arch: win64_mingw
+            qt_arch: win64_msvc2019_64 # <-- 已修改为 MSVC 架构
             msvc_arch: x64
-            qt_arch_install: mingw
+
     env:
       targetName: HelloActions-Qt.exe
+
     # 步骤
     steps:
-      # 安装Qt
+      # 1. 安装Qt (已更新)
       - name: Install Qt
-        # 使用外部action。这个action专门用来安装Qt
-        uses: jurplel/install-qt-action@v2
+        # 更新到 v4，它会自动处理 MSVC 环境
+        uses: jurplel/install-qt-action@v4
         with:
-          # Version of Qt to install
           version: ${{ matrix.qt_ver }}
-          # Target platform for build
-          # target: ${{ matrix.qt_target }}
-          arch: ${{ matrix.qt_arch }}
-          cached: 'false'
-          aqtversion: '==2.0.5'
-          tools: 'tools_mingw,qt.tools.win64_mingw1120'
-      # 拉取代码
-      - uses: actions/checkout@v2
+          arch: ${{ matrix.qt_arch }} # <-- 使用 MSVC 架构
+
+      # 2. 拉取代码 (版本更新)
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      # msvc编译
-      - name: msvc-build
+
+      # 3. MSVC 编译 (已简化)
+      - name: Build with MSVC
         id: build
+        # install-qt-action@v4 会自动设置好环境，无需手动调用 vcvarsall.bat
         shell: cmd
         run: |
-          if "${{ matrix.qt_arch }}"=="win64_mingw" (
-            set PATH=%PATH%;C:\Qt\Tools\mingw1120_64\bin
-            qmake
-            mingw32-make
-          ) else (
-            call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.msvc_arch }}
-            qmake
-            nmake
-            echo winSdkDir=%WindowsSdkDir% >> %GITHUB_ENV%
-            echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
-          )
-      # 打包
+          qmake
+          nmake
+
+      # 4. 打包 (无需改动)
       - name: package
         id: package
         env:
@@ -71,14 +58,15 @@ jobs:
           & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
           # 记录packageName给后续step
            $name = ${env:archiveName}
-           echo "::set-output name=packageName::$name"
-      # tag 查询github-Release
-      # 上传artifacts
+           echo "packageName=$name" >> $env:GITHUB_OUTPUT
+
+      # 5. 上传构建产物 (无需改动)
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.packageName }}
           path: ${{ steps.package.outputs.packageName }}
-      # tag 上传Release
+
+      # 6. 上传到 Release (tag触发时)
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
