@@ -11,14 +11,15 @@ find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
+        Sql
         REQUIRED)
 
 add_executable(LabNexus main.cpp
         service/logger/logger.cpp
         service/logger/logger.h
         pch.h
-        service/databasePathProvidor/databasePathProvidor.cpp
-        service/databasePathProvidor/databasePathProvidor.h
+        service/database/databasePathProvidor.cpp
+        service/database/databasePathProvidor.h
         view/bookingService/booking_home.cpp
         view/bookingService/booking_home.h
         view/bookingService/booking_home.ui
@@ -31,11 +32,16 @@ add_executable(LabNexus main.cpp
         view/maintenanceService/maintenance_home.cpp
         view/maintenanceService/maintenance_home.h
         view/maintenanceService/maintenance_home.ui
+        service/database/databaseManager.cpp
+        service/database/databaseManager.h
+        module/data/data_UserControl.cpp
+        module/data/data_UserControl.h
 )
 target_link_libraries(LabNexus
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        Qt::Sql
 )
 target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(LabNexus PRIVATE pch.h)
