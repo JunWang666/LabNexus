@@ -2,15 +2,18 @@
 
 // 测试各级别日志输出函数
 void testLogs() {
-    auto &lg = service::logger::instance();
-    lg.setLogFile("app.log");
-    lg.setDataLogFile("data.log");
     // 调用各日志级别
     log(LogLevel::DEBUG) << "Debug级别测试";
     log(LogLevel::INFO) << "Info级别测试";
     log(LogLevel::WARN) << "Warn级别测试";
     log(LogLevel::ERR) << "Err级别测试";
     log(LogLevel::DATA) << "Data级别测试";
+}
+
+void init_db() {
+    data::UserControl::Login::createUserTable();
+    data::UserControl::permission::createGroupTable();
+    data::UserControl::permission::createUserGroupTable();
 }
 
 
@@ -27,5 +30,9 @@ int main(int argc, char *argv[]) {
     service::log() << "程序启动";
     testLogs();
 
+    init_db();
+    log(LogLevel::DEBUG) << data::UserControl::Login::isUserPasswordValid("123", "123");
+
     return QApplication::exec();
 }
+
