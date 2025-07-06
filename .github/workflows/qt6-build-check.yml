@@ -55,7 +55,7 @@ jobs:
           rem --config Release 指定编译 Release 版本
           cmake --build build --config Release
 
-      # 4. 打包 (无需改动)
+      # 4. 打包
       - name: package
         id: package
         env:
@@ -63,10 +63,12 @@ jobs:
           msvcArch: ${{ matrix.msvc_arch }}
         shell: pwsh
         run: |
-          & scripts\windows-publish.ps1 ${env:archiveName} ${env:targetName}
-          # 记录packageName给后续step
-           $name = ${env:archiveName}
-           echo "packageName=$name" >> $env:GITHUB_OUTPUT
+          # 在脚本路径前加上 '.\' 来明确告诉 PowerShell 这是一个本地文件路径
+          # 同时，确保你使用了上一步修正后的正确 .exe 文件路径
+          & .\scripts\windows-publish.ps1 ${env:archiveName} "build/Release/${env:targetName}"
+          
+          $name = ${env:archiveName}
+          echo "packageName=$name" >> $env:GITHUB_OUTPUT
 
       # 5. 上传构建产物 (无需改动)
       - uses: actions/upload-artifact@v4
