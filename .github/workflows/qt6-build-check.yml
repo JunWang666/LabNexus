@@ -13,11 +13,10 @@ jobs:
     # 运行平台，windows-latest 目前是 windows server 2022
     runs-on: windows-latest
     strategy:
-      # 矩阵配置: 修改为 MSVC
       matrix:
         include:
           - qt_ver: 6.9.1
-            qt_arch: win64_msvc2019_64 # <-- 已修改为 MSVC 架构
+            qt_arch: win64_msvc2022_64
             msvc_arch: x64
 
     env:
