@@ -11,21 +11,21 @@ namespace view::maintenance {
     QT_BEGIN_NAMESPACE
 
     namespace Ui {
-        class homepage;
+        class maintenance_homepage;
     }
 
     QT_END_NAMESPACE
 
-    class homepage : public QWidget {
+    class maintenance_homepage : public QWidget {
         Q_OBJECT
 
     public:
-        explicit homepage(QWidget *parent = nullptr);
+        explicit maintenance_homepage(QWidget *parent = nullptr);
 
-        ~homepage() override;
+        ~maintenance_homepage() override;
 
     private:
-        Ui::homepage *ui;
+        Ui::maintenance_homepage *ui;
     };
 } // view::maintenance
 

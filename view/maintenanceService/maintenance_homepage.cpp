@@ -4,15 +4,15 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_homepage.h" resolved
 
-#include "homepage.h"
+#include "maintenance_homepage.h"
 #include "ui_homepage.h"
 
 namespace view::maintenance {
-    homepage::homepage(QWidget *parent) : QWidget(parent), ui(new Ui::homepage) {
+    maintenance_homepage::maintenance_homepage(QWidget *parent) : QWidget(parent), ui(new Ui::maintenance_homepage) {
         ui->setupUi(this);
     }
 
-    homepage::~homepage() {
+    maintenance_homepage::~maintenance_homepage() {
         delete ui;
     }
 } // view::maintenance
