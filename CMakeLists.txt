@@ -15,12 +15,18 @@ find_package(Qt6 COMPONENTS
 
 add_executable(LabNexus main.cpp
         service/logger/logger.cpp
-        service/logger/logger.h)
+        service/logger/logger.h
+        pch.h
+        view/bookingService/homepage.cpp
+        view/bookingService/homepage.h
+        view/bookingService/homepage.ui)
 target_link_libraries(LabNexus
         Qt::Core
         Qt::Gui
         Qt::Widgets
 )
+target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
+target_precompile_headers(LabNexus PRIVATE pch.h)
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
