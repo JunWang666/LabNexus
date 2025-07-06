@@ -19,7 +19,18 @@ add_executable(LabNexus main.cpp
         pch.h
         view/bookingService/homepage.cpp
         view/bookingService/homepage.h
-        view/bookingService/homepage.ui)
+        view/bookingService/homepage.ui
+        service/databasePathProvidor/databasePathProvidor.cpp
+        service/databasePathProvidor/databasePathProvidor.h
+        view/equipmentManage/homepage.cpp
+        view/equipmentManage/homepage.h
+        view/equipmentManage/homepage.ui
+        view/inventoryManage/homepage.cpp
+        view/inventoryManage/homepage.h
+        view/inventoryManage/homepage.ui
+        view/maintenanceService/homepage.cpp
+        view/maintenanceService/homepage.h
+        view/maintenanceService/homepage.ui)
 target_link_libraries(LabNexus
         Qt::Core
         Qt::Gui
