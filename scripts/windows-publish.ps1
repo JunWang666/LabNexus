@@ -54,7 +54,7 @@ if (-not $windeployqt)
 $targetExe = Join-Path $PackageDir $ExeFileName
 try
 {
-    & windeployqt.exe --release --no-translations --no-system-d3d-compiler --no-virtualkeyboard --no-webkit2 --no-quick-import --no-opengl-sw $targetExe
+    & windeployqt.exe --release $targetExe
     if ($LASTEXITCODE -ne 0)
     {
         Write-Error "windeployqt 执行失败，退出代码: $LASTEXITCODE"
