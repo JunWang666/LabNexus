@@ -5,42 +5,36 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
   build:
-    name: Build on Windows
     runs-on: windows-latest
+    strategy:
+      matrix:
+        qt_version: [ '6.6.0' ]
 
     steps:
-      - name: 检出代码
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 设置Python
-        uses: actions/setup-python@v5
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
         with:
-          python-version: '3.10'
-
-      - name: 安装 Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: 6.5.3  # 使用更稳定的版本
+          version: ${{ matrix.qt_version }}
           modules: 'core gui widgets sql network quickcontrols2 concurrent'
-          setup-python: 'false'  # 已在上一步设置Python
 
-      - name: 创建构建目录
-        shell: cmd
+      - name: Configure (CMake)
         run: |
           mkdir build
-
-      - name: 配置和构建
-        shell: cmd
-        run: |
           cd build
           cmake .. -DCMAKE_PREFIX_PATH=%Qt6_DIR%
+
+      - name: Build (CMake)
+        run: |
+          cd build
           cmake --build . --config Release
 
-      - name: 上传构建结果
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: LabNexus-Windows
