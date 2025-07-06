@@ -17,20 +17,20 @@ add_executable(LabNexus main.cpp
         service/logger/logger.cpp
         service/logger/logger.h
         pch.h
-        view/bookingService/homepage.cpp
-        view/bookingService/homepage.h
-        view/bookingService/homepage.ui
+        view/bookingService/booking_home.cpp
+        view/bookingService/booking_home.h
+        view/bookingService/booking_homepage.ui
         service/databasePathProvidor/databasePathProvidor.cpp
         service/databasePathProvidor/databasePathProvidor.h
-        view/equipmentManage/homepage.cpp
-        view/equipmentManage/homepage.h
-        view/equipmentManage/homepage.ui
-        view/inventoryManage/homepage.cpp
-        view/inventoryManage/homepage.h
-        view/inventoryManage/homepage.ui
-        view/maintenanceService/homepage.cpp
-        view/maintenanceService/homepage.h
-        view/maintenanceService/homepage.ui)
+        view/equipmentManage/equipment_homepage.cpp
+        view/equipmentManage/equipment_homepage.h
+        view/equipmentManage/equipment_homepage.ui
+        view/inventoryManage/inventory_homepage.cpp
+        view/inventoryManage/inventory_homepage.h
+        view/inventoryManage/inventory_homepage.ui
+        view/maintenanceService/maintenance_homepage.cpp
+        view/maintenanceService/maintenance_homepage.h
+        view/maintenanceService/maintenance_homepage.ui)
 target_link_libraries(LabNexus
         Qt::Core
         Qt::Gui

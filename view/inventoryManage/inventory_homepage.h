@@ -11,21 +11,21 @@ namespace view::inventory {
     QT_BEGIN_NAMESPACE
 
     namespace Ui {
-        class homepage;
+        class inventory_homepage;
     }
 
     QT_END_NAMESPACE
 
-    class homepage : public QWidget {
+    class inventory_homepage : public QWidget {
         Q_OBJECT
 
     public:
-        explicit homepage(QWidget *parent = nullptr);
+        explicit inventory_homepage(QWidget *parent = nullptr);
 
-        ~homepage() override;
+        ~inventory_homepage() override;
 
     private:
-        Ui::homepage *ui;
+        Ui::inventory_homepage *ui;
     };
 } // view::inventory
 

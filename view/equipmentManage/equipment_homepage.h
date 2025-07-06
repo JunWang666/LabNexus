@@ -11,21 +11,21 @@ namespace view::equipment {
     QT_BEGIN_NAMESPACE
 
     namespace Ui {
-        class homepage;
+        class equipment_homepage;
     }
 
     QT_END_NAMESPACE
 
-    class homepage : public QWidget {
+    class equipment_homepage : public QWidget {
         Q_OBJECT
 
     public:
-        explicit homepage(QWidget *parent = nullptr);
+        explicit equipment_homepage(QWidget *parent = nullptr);
 
-        ~homepage() override;
+        ~equipment_homepage() override;
 
     private:
-        Ui::homepage *ui;
+        Ui::equipment_homepage *ui;
     };
 } // view::equipment
 

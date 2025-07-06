@@ -9,18 +9,18 @@
 
 namespace view::booking {
 QT_BEGIN_NAMESPACE
-namespace Ui { class homepage; }
+namespace Ui { class booking_home; }
 QT_END_NAMESPACE
 
-class homepage : public QWidget {
+class booking_home : public QWidget {
 Q_OBJECT
 
 public:
-    explicit homepage(QWidget *parent = nullptr);
-    ~homepage() override;
+    explicit booking_home(QWidget *parent = nullptr);
+    ~booking_home() override;
 
 private:
-    Ui::homepage *ui;
+    Ui::booking_home *ui;
 };
 } // view::booking
 
