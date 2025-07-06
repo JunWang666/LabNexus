@@ -21,7 +21,7 @@ jobs:
             msvc_arch: x64
 
     env:
-      targetName: HelloActions-Qt.exe
+      targetName: LabNexus.exe
 
     # 步骤
     steps:
