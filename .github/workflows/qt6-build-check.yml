@@ -37,12 +37,11 @@ jobs:
         with:
           fetch-depth: 1
 
-      # 3. MSVC 编译 (已简化)
       - name: Build with MSVC
         id: build
-        # install-qt-action@v4 会自动设置好环境，无需手动调用 vcvarsall.bat
         shell: cmd
         run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.msvc_arch }}
           qmake
           nmake
 
