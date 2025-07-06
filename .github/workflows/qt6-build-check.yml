@@ -14,13 +14,19 @@ jobs:
 
     steps:
       - name: 检出代码
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: 设置Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
       - name: 安装 Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: 6.9.1
+          version: 6.5.3  # 使用更稳定的版本
           modules: 'core gui widgets sql network quickcontrols2 concurrent'
+          setup-python: 'false'  # 已在上一步设置Python
 
       - name: 创建构建目录
         shell: cmd
