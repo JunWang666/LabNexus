@@ -1,16 +1,13 @@
 name: Windows
 on:
-  # push代码时触发workflow
   push:
-    paths:
-      - '*.pro'
-      - 'src/**'
-      - '.github/workflows/windows.yml'
+    # 触发分支
+    branches:
+      - master
   pull_request:
-    paths:
-      - '*.pro'
-      - 'src/**'
-      - '.github/workflows/windows.yml'
+    branches:
+      - master
+
 jobs:
   build:
     name: Build
