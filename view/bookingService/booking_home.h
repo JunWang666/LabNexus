@@ -2,8 +2,8 @@
 // Created by gouzuang on 25-7-6.
 //
 
-#ifndef HOMEPAGE_H
-#define HOMEPAGE_H
+#ifndef BOOKING_HOME_H
+#define BOOKING_HOME_H
 
 #include <QWidget>
 
@@ -24,4 +24,4 @@ private:
 };
 } // view::booking
 
-#endif //HOMEPAGE_H
+#endif //BOOKING_HOME_H
