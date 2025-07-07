@@ -168,15 +168,7 @@ namespace data::UserControl {
             return std::unexpected(UserControlError::UserNotFound);
         }
 
-        /**
-         * @brief 删除指定ID的用户
-         *
-         * 该函数尝试根据提供的用户ID删除一个用户。如果用户存在，则将用户及其在user_groups表中的关联标记为已删除。
-         * 如果用户不存在或数据库操作失败，将返回相应的错误。
-         *
-         * @param userId 要删除用户的ID
-         * @return 成功时返回true；如果用户不存在或发生数据库错误，则返回UserControlError枚举值
-         */
+
         std::expected<bool, UserControlError> deleteUserById(int userId) {
             service::DatabaseManager db("./user.db");
             // 检查用户是否存在
@@ -206,13 +198,6 @@ namespace data::UserControl {
             return std::unexpected(UserControlError::DatabaseError);
         }
 
-        /**
-         * 更新指定用户的密码。
-         *
-         * @param userId 用户的唯一标识符。
-         * @param newPassword 新密码，将被设置为该用户的密码。
-         * @return 如果密码更新成功，则返回true；如果发生数据库错误，则返回一个包含UserControlError::DatabaseError的std::unexpected对象。
-         */
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword) {
             service::DatabaseManager db("./user.db");
             QString updateQuery = R"(
@@ -372,5 +357,24 @@ namespace data::UserControl {
             return inGroup;
         }
     }
+    namespace UserInfo {
+        std::expected<QString,UserInfoError> getUserNameById(int userId) {
+            service::DatabaseManager db("./user.db");
+            QString query = R"(
+                SELECT username FROM users WHERE id = ?
+            )";
+            QSqlQuery q = db.executePreparedQuery(query, {userId});
+            if (q.next()) {
+                QString userName = q.value(0).toString();
+                log(service::LogLevel::DATA) << "用户ID: " << userId << " 的用户名为: " << userName;
+                return userName;
+            } else {
+                log(service::LogLevel::INFO) << "未找到用户ID: " << userId;
+                return std::unexpected(UserInfoError::UserNotFound);
+            }
+        }
+
+    }
 }
+
 

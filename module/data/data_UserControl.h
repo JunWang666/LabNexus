@@ -70,8 +70,24 @@ namespace data::UserControl {
          */
         std::expected<int, UserControlError> foundUserIdByIdNumber(const QString &idNumber);
 
+        /**
+         * @brief 删除指定ID的用户
+         *
+         * 该函数尝试根据提供的用户ID删除一个用户。如果用户存在，则将用户及其在user_groups表中的关联标记为已删除。
+         * 如果用户不存在或数据库操作失败，将返回相应的错误。
+         *
+         * @param userId 要删除用户的ID
+         * @return 成功时返回true；如果用户不存在或发生数据库错误，则返回UserControlError枚举值
+         */
         std::expected<bool, UserControlError> deleteUserById(int userId);
 
+        /**
+         * 更新指定用户的密码。
+         *
+         * @param userId 用户的唯一标识符。
+         * @param newPassword 新密码，将被设置为该用户的密码。
+         * @return 如果密码更新成功，则返回true；如果发生数据库错误，则返回一个包含UserControlError::DatabaseError的std::unexpected对象。
+         */
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword);
     }
 
@@ -131,6 +147,15 @@ namespace data::UserControl {
          */
         bool isUserInGroup(int userId, const QString &groupName);
     }
-} // namespace data::UserControl
+
+    namespace UserInfo {
+        enum class UserInfoError {
+            UserNotFound
+        };
+        std::expected<QString,UserInfoError> getUserNameById(int userId);
+    }
+}
+
+
 
 #endif //USERCONTROL_H
