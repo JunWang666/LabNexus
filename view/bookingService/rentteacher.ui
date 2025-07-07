@@ -160,7 +160,7 @@
    <sender>btnCheck</sender>
    <signal>clicked()</signal>
    <receiver>view::Order::RentTeacher</receiver>
-   <slot>on_btncheck_clicked()</slot>
+   <slot>on_btnCheck_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>229</x>
@@ -176,7 +176,7 @@
    <sender>btnSend</sender>
    <signal>clicked()</signal>
    <receiver>view::Order::RentTeacher</receiver>
-   <slot>on_btnsend_clicked()</slot>
+   <slot>on_btnSend_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
@@ -190,7 +190,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>on_btnsend_clicked()</slot>
-  <slot>on_btncheck_clicked()</slot>
+  <slot>on_btnSend_clicked()</slot>
+  <slot>on_btnCheck_clicked()</slot>
  </slots>
 </ui>

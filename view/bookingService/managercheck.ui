@@ -106,7 +106,7 @@
    <sender>btnClose</sender>
    <signal>clicked()</signal>
    <receiver>view::Order::ManagerCheck</receiver>
-   <slot>on_btnclose_clicked()</slot>
+   <slot>on_btnClose_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>327</x>
@@ -120,6 +120,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>on_btnclose_clicked()</slot>
+  <slot>on_btnClose_clicked()</slot>
  </slots>
 </ui>
