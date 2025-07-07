@@ -56,14 +56,46 @@ jobs:
           rem --config Release 指定编译 Release 版本
           cmake --build build --config Release
 
-      # 4. 打包 (可选步骤，失败不影响整体构建状态)
+      # 4. 上传构建产物
+      - name: Upload build directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build
+
+  test:
+    name: Run unit tests
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: build
+      # 4. 运行单元测试
+      - name: Run unit tests
+        id: test
+        shell: cmd
+        run: |
+          rem 切换到构建目录并执行测试
+          cd build
+          ctest -C Release --output-on-failure
+
+  package:
+    name: Package artifacts
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: build
+      # 5. 打包 (可选步骤，失败不影响整体构建状态)
       - name: package
-        id: package
-        continue-on-error: false
+        shell: pwsh
         env:
           archiveName: ${{ matrix.qt_ver }}-${{ matrix.qt_target }}-${{ matrix.qt_arch }}
           msvcArch: ${{ matrix.msvc_arch }}
-        shell: pwsh
         run: |
           # 检查构建是否成功
           if (-not (Test-Path "build/Release/${env:targetName}")) {
@@ -88,7 +120,7 @@ jobs:
             echo "packageSuccess=false" >> $env:GITHUB_OUTPUT
           }
 
-      # 5. 上传构建产物 (仅在打包成功时执行)
+      # 6. 上传构建产物 (仅在打包成功时执行)
       - name: Upload artifacts
         if: steps.package.outputs.packageSuccess == 'true'
         uses: actions/upload-artifact@v4
@@ -96,7 +128,7 @@ jobs:
           name: ${{ steps.package.outputs.packageName }}
           path: ${{ steps.package.outputs.packageName }}.zip
 
-      # 6. 构建状态总结
+      # 7. 构建状态总结
       - name: Build Summary
         shell: pwsh
         run: |
