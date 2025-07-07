@@ -31,6 +31,21 @@ add_executable(LabNexus main.cpp
         view/maintenanceService/maintenance_home.cpp
         view/maintenanceService/maintenance_home.h
         view/maintenanceService/maintenance_home.ui
+        view/bookingService/rent.cpp
+        view/bookingService/rent.h
+        view/bookingService/rent.ui
+        view/bookingService/sendrent.cpp
+        view/bookingService/sendrent.h
+        view/bookingService/sendrent.ui
+        view/bookingService/apply.cpp
+        view/bookingService/apply.h
+        view/bookingService/apply.ui
+        view/bookingService/rentteacher.cpp
+        view/bookingService/rentteacher.h
+        view/bookingService/rentteacher.ui
+        view/bookingService/managercheck.cpp
+        view/bookingService/managercheck.h
+        view/bookingService/managercheck.ui
 )
 target_link_libraries(LabNexus
         Qt::Core
