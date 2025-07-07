@@ -17,8 +17,8 @@ Q_OBJECT
 
 public:
     explicit SendRent(QWidget *parent = nullptr);
+    explicit SendRent(const QString& name,QWidget* parent = nullptr);
     ~SendRent() override;
-
 private:
     Ui::SendRent *ui;
 };

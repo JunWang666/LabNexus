@@ -8,6 +8,8 @@
 #include <QWidget>
 #include "apply.h"
 #include "sendrent.h"
+#include <QStandardItemModel>
+#include <QStandardItem>
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class RentTeacher; }
@@ -19,13 +21,19 @@ Q_OBJECT
 public:
     explicit RentTeacher(QWidget *parent = nullptr);
     ~RentTeacher() override;
+    void loadData();
+    void setUpModel_device();
+    void setUpModel_request();
+    void setColEditable(QStandardItemModel *model,int col,bool editable);
 public slots:
-    void on_btnsend_clicked();
-    void on_btncheck_clicked();
+    void on_btnSend_clicked();
+    void on_btnCheck_clicked();
 private:
     Ui::RentTeacher *ui;
     SendRent* sendRent;
     Apply* apply;
+    QStandardItemModel* modelDevice;
+    QStandardItemModel* modelRequest;
 };
 } // view::Order
 

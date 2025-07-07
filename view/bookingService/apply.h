@@ -6,7 +6,8 @@
 #define APPLY_H
 
 #include <QWidget>
-
+#include <QStandardItemModel>
+#include <QStandardItem>
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class Apply; }
@@ -19,7 +20,7 @@ public:
     explicit Apply(QWidget *parent = nullptr);
     ~Apply() override;
 public slots:
-    void on_btnclose_clicked();
+    void on_btnClose_clicked();
 private:
     Ui::Apply *ui;
 };

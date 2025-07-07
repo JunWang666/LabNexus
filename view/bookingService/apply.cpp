@@ -17,7 +17,7 @@ Apply::~Apply() {
     delete ui;
 }
 
-void Apply::on_btnclose_clicked()
+void Apply::on_btnClose_clicked()
 {
     this->close();
 }
