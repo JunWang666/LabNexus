@@ -168,7 +168,7 @@ namespace service {
             success = true;
         } else {
             m_lastError = query.lastError().text();
-            qDebug() << "Query execution failed:" << m_lastError;
+            log(LogLevel::ERR) << "Query execution failed:" << m_lastError;
         }
 
         // 立即清理并取消注册

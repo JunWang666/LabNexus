@@ -19,6 +19,17 @@ namespace data::UserControl {
     }
 
     void buildDB() {
+        QFile dbFile("./user.db");
+        if (!dbFile.exists()) {
+            if (dbFile.open(QIODevice::WriteOnly)) {
+                dbFile.close();
+                log(service::LogLevel::INFO) << "数据库文件创建成功";
+            } else {
+                log(service::LogLevel::ERR) << "数据库文件创建失败";
+            }
+        } else {
+            log(service::LogLevel::INFO) << "数据库文件已存在";
+        }
         Login::createUserTable();
         permission::createGroupTable();
         permission::createUserGroupTable();
@@ -212,7 +223,7 @@ namespace data::UserControl {
             if (!db.executePreparedNonQuery(updateQuery, {newPassword, userId})) {
                 return std::unexpected(UserControlError::DatabaseError);
             }
-            log(service::LogLevel::DATA) << "用户"<<userId<<"密码更新成功: " << userId;
+            log(service::LogLevel::DATA) << "用户" << userId << "密码更新成功: " << userId;
             return true;
         }
     }
@@ -362,3 +373,4 @@ namespace data::UserControl {
         }
     }
 }
+
