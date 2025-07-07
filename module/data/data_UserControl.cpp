@@ -357,4 +357,24 @@ namespace data::UserControl {
             return inGroup;
         }
     }
+    namespace UserInfo {
+        std::expected<QString,UserInfoError> getUserNameById(int userId) {
+            service::DatabaseManager db("./user.db");
+            QString query = R"(
+                SELECT username FROM users WHERE id = ?
+            )";
+            QSqlQuery q = db.executePreparedQuery(query, {userId});
+            if (q.next()) {
+                QString userName = q.value(0).toString();
+                log(service::LogLevel::DATA) << "用户ID: " << userId << " 的用户名为: " << userName;
+                return userName;
+            } else {
+                log(service::LogLevel::INFO) << "未找到用户ID: " << userId;
+                return std::unexpected(UserInfoError::UserNotFound);
+            }
+        }
+
+    }
 }
+
+

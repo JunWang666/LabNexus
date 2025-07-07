@@ -147,6 +147,15 @@ namespace data::UserControl {
          */
         bool isUserInGroup(int userId, const QString &groupName);
     }
-} // namespace data::UserControl
+
+    namespace UserInfo {
+        enum class UserInfoError {
+            UserNotFound
+        };
+        std::expected<QString,UserInfoError> getUserNameById(int userId);
+    }
+}
+
+
 
 #endif //USERCONTROL_H
