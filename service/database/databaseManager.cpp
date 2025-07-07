@@ -152,9 +152,9 @@ namespace service {
             m_lastError.clear();
         }
 
-        // 注意：不在这里unregister，因为返回的query可能还要使用
-        // 将在析构时或clearAllQueries时处理
-        return query;
+        QSqlQuery result = query;
+        unregisterQuery(&query);
+        return result;
     }
 
     // 执行非查询语句
@@ -197,7 +197,10 @@ namespace service {
             m_lastError.clear();
         }
 
-        return query;
+        // 在返回之前取消注册本地预处理查询以防止悬空指针
+        QSqlQuery result = query;
+        unregisterQuery(&query);
+        return result;
     }
 
     // 执行预处理非查询语句
