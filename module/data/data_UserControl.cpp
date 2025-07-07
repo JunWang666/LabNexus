@@ -122,7 +122,11 @@ namespace data::UserControl {
 
         bool createNewUser(const QString &email, const QString &username, const QString &password,
                            const QString group) {
-            createNewUser(email, username, password);
+            bool userCreated = createNewUser(email, username, password);
+            if (!userCreated) {
+                log(service::LogLevel::ERR) << "用户创建失败: " << email;
+                return false; // 用户创建失败，提前返回
+            }
             if (!group.isEmpty()) {
                 log(service::LogLevel::DATA) << "尝试将用户添加到组: " << group;
                 return permission::addUserToGroup(foundUserIdByEmail(email), group);
