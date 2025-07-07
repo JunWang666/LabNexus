@@ -79,7 +79,7 @@ jobs:
         run: |
           rem 切换到构建目录并执行测试
           cd build
-          ctest --config Release --output-on-failure
+          ctest -C Release --output-on-failure
 
   package:
     name: Package artifacts
