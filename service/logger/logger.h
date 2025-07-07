@@ -11,6 +11,7 @@
 #include <mutex>
 #include <iostream>
 #include <memory>
+#include <QString>
 
 namespace service {
     enum class LogLevel {
@@ -40,6 +41,12 @@ namespace service {
         }
 
         logger &operator<<(std::ostream & (*manip)(std::ostream &));
+
+        // Specialized template for QString
+        logger &operator<<(const QString &msg) {
+            buffer_ << msg.toStdString();
+            return *this;
+        }
 
         void flush();
 
@@ -76,6 +83,12 @@ namespace service {
             return *this;
         }
 
+        // Specialized template for QString
+        LogStream &operator<<(const QString &msg) {
+            buffer_ << msg.toStdString();
+            return *this;
+        }
+
         LogStream &operator<<(std::ostream & (*manip)(std::ostream &));
 
     private:
@@ -90,4 +103,3 @@ using service::LogLevel;
 using service::log;
 
 #endif //LOG_H
-
