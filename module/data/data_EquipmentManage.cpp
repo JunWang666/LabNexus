@@ -19,7 +19,7 @@ namespace data::Equipment {
     }
 
     void buildDB() {
-        QFile dbFile("./user.db");
+        QFile dbFile("./equipment.db");
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();

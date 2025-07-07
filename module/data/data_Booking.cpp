@@ -5,7 +5,31 @@
 #include "data_Booking.h"
 
 namespace data::Booking {
+    void dropDB() {
+        QFile dbFile(path);
+        if (dbFile.exists()) {
+            if (dbFile.remove()) {
+                log(LogLevel::INFO) << "数据库文件删除成功";
+            } else {
+                log(LogLevel::ERR) << "数据库文件删除失败";
+            }
+        } else {
+            log(LogLevel::INFO) << "数据库文件不存在";
+        }
+    }
+
     void buildDB() {
+        QFile dbFile(path);
+        if (!dbFile.exists()) {
+            if (dbFile.open(QIODevice::WriteOnly)) {
+                dbFile.close();
+                log(service::LogLevel::INFO) << "数据库文件创建成功";
+            } else {
+                log(service::LogLevel::ERR) << "数据库文件创建失败";
+            }
+        } else {
+            log(service::LogLevel::INFO) << "数据库文件已存在";
+        }
         createBookingApprovalTable();
         createBookingEquipmentTable();
         createBookingInfoTable();
@@ -15,7 +39,7 @@ namespace data::Booking {
 
     // 表1：申请基本信息表
     void createBookingInfoTable() {
-        service::DatabaseManager db("./booking.db");
+        service::DatabaseManager db(path);
         if (!db.tableExists("booking_info")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_info (
@@ -34,7 +58,7 @@ namespace data::Booking {
 
     // 表2：目标设备表
     void createBookingEquipmentTable() {
-        service::DatabaseManager db("./booking.db");
+        service::DatabaseManager db(path);
         if (!db.tableExists("booking_equipment")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_equipment (
@@ -55,7 +79,7 @@ namespace data::Booking {
 
     // 表3：时间表
     void createBookingTimeTable() {
-        service::DatabaseManager db("./booking.db");
+        service::DatabaseManager db(path);
         if (!db.tableExists("booking_time")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_time (
@@ -76,7 +100,7 @@ namespace data::Booking {
 
     // 表4：审批状态表
     void createBookingApprovalTable() {
-        service::DatabaseManager db("./booking.db");
+        service::DatabaseManager db(path);
         if (!db.tableExists("booking_approval")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_approval (
@@ -96,7 +120,7 @@ namespace data::Booking {
     }
 
     QList<fullBookingRecord> loadBookingFullRecords() {
-        service::DatabaseManager db("./booking.db");
+        service::DatabaseManager db(path);
         QList<fullBookingRecord> records;
         QString queryStr = R"(
             SELECT bi.id,
@@ -119,31 +143,31 @@ namespace data::Booking {
         auto query = db.executeQuery(queryStr);
         while (query.next()) {
             fullBookingRecord rec;
-            rec.id          = query.value("id").toInt();
-            rec.userId             = query.value("user_id").toInt();
-            rec.createDate         = query.value("create_date").toDateTime();
-            rec.requestStartDate   = query.value("request_start_time").toDateTime();
-            rec.requestEndDate     = query.value("request_end_time").toDateTime();
-            rec.actualStartDate    = query.value("actual_start_time").toDateTime();
-            rec.actualEndDate      = query.value("actual_end_time").toDateTime();
-            rec.approvalStatus     = query.value("approval_status").toString();
-            rec.approvalDate       = query.value("approval_time").toDateTime();
-            rec.approverID         = query.value("approver_id").toInt();
+            rec.id = query.value("id").toInt();
+            rec.userId = query.value("user_id").toInt();
+            rec.createDate = query.value("create_date").toDateTime();
+            rec.requestStartDate = query.value("request_start_time").toDateTime();
+            rec.requestEndDate = query.value("request_end_time").toDateTime();
+            rec.actualStartDate = query.value("actual_start_time").toDateTime();
+            rec.actualEndDate = query.value("actual_end_time").toDateTime();
+            rec.approvalStatus = query.value("approval_status").toString();
+            rec.approvalDate = query.value("approval_time").toDateTime();
+            rec.approverID = query.value("approver_id").toInt();
 
             auto userNameResult = data::UserControl::UserInfo::getUserNameById(rec.userId);
             if (userNameResult) {
                 rec.userName = *userNameResult;
             } else {
                 rec.userName = "未知";
-                log(LogLevel::ERR)<< "无法获取申请人人名称: " << rec.approverID;
+                log(LogLevel::ERR) << "无法获取申请人人名称: " << rec.userId;
             }
 
             auto approverNameResult = data::UserControl::UserInfo::getUserNameById(rec.approverID);
-            if (userNameResult) {
-                rec.approverName = *userNameResult;
+            if (approverNameResult) {
+                rec.approverName = *approverNameResult;
             } else {
                 rec.approverName = "未知";
-                log(LogLevel::ERR)<< "无法获取审批人名称: " << rec.approverID;
+                log(LogLevel::ERR) << "无法获取审批人名称: " << rec.approverID;
             }
 
             records.append(rec);
