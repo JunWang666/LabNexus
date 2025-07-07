@@ -11,9 +11,12 @@ void testLogs() {
 }
 
 void init_db() {
-    data::UserControl::Login::createUserTable();
-    data::UserControl::permission::createGroupTable();
-    data::UserControl::permission::createUserGroupTable();
+    data::UserControl::dropDB();
+    data::UserControl::buildDB();
+    data::UserControl::permission::createGroup("Student","");
+    data::UserControl::permission::createGroup("Teacher","");
+    data::UserControl::Login::createNewUser("123", "123", "123","Teacher");
+    log(LogLevel::DEBUG)<<data::UserControl::permission::isUserInGroup(1, "Teacher");
 }
 
 
@@ -28,7 +31,7 @@ int main(int argc, char *argv[]) {
         QString("app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
     service::logger::instance().setDataLogFile("data.log");
     service::log() << "程序启动";
-    testLogs();
+    //testLogs();
 
     init_db();
     log(LogLevel::DEBUG) << data::UserControl::Login::isUserPasswordValid("123", "123");
