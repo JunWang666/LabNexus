@@ -10,7 +10,7 @@ void testLogs() {
     log(LogLevel::DATA) << "Data级别测试";
 }
 
-void init_db() {
+void test_db() {
     // 重置并初始化数据库
     data::UserControl::dropDB();
     data::UserControl::buildDB();
@@ -26,6 +26,16 @@ void init_db() {
     // 检查用户是否在组中
     bool inGroup = data::UserControl::permission::isUserInGroup(userId, "Teacher");
     log(LogLevel::DEBUG) << "用户 " << userId << (inGroup ? " 在 Teacher 组" : " 不在 Teacher 组");
+
+    auto res = data::UserControl::Login::isUserPasswordValid("123", "123");
+    if (res) {
+        log(LogLevel::DEBUG) << "用户密码验证成功, 用户ID:" << res.value();
+    } else {
+        log(LogLevel::DEBUG) << "用户密码验证失败, 错误码:" << static_cast<int>(res.error());
+    }
+
+    data::UserControl::Login::updateUserPassword(userId, "new_password");
+    data::UserControl::Login::deleteUserById(userId);
 }
 
 
@@ -41,15 +51,7 @@ int main(int argc, char *argv[]) {
     service::log() << "程序启动";
     //testLogs();
 
-    init_db();
-    {
-        auto res = data::UserControl::Login::isUserPasswordValid("123", "123");
-        if (res) {
-            log(LogLevel::DEBUG) << "用户密码验证成功, 用户ID:" << res.value();
-        } else {
-            log(LogLevel::DEBUG) << "用户密码验证失败, 错误码:" << static_cast<int>(res.error());
-        }
-    }
+    test_db();
 
     return QApplication::exec();
 }

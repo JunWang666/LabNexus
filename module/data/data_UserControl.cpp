@@ -42,7 +42,7 @@ namespace data::UserControl {
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            statue Text NOT NULL DEFAULT 'AllRight'
+            status Text NOT NULL DEFAULT 'AllRight'
         )
     )";
                 db.executeNonQuery(createTableQuery);
@@ -53,7 +53,7 @@ namespace data::UserControl {
             service::DatabaseManager db("./user.db");
             log(service::LogLevel::INFO) << "开始验证用户密码: " << idNumber;
             QString query = R"(
-                    SELECT id, password, statue FROM users WHERE id_number = ?
+                    SELECT id, password, status FROM users WHERE id_number = ?
                 )";
             QSqlQuery q = db.executePreparedQuery(query, {idNumber});
 
@@ -86,7 +86,8 @@ namespace data::UserControl {
             return userId;
         }
 
-        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username, const QString &password) {
+        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
+                                                           const QString &password) {
             service::DatabaseManager db("./user.db");
             if (!db.tableExists("users")) {
                 log(service::LogLevel::ERR) << "用户表不存在";
@@ -100,7 +101,7 @@ namespace data::UserControl {
             }
 
             QString insertQuery = R"(
-                INSERT INTO users(id_number, username, password, statue)
+                INSERT INTO users(id_number, username, password, status)
                 VALUES(?, ?, ?, 'AllRight')
             )";
             if (!db.executePreparedNonQuery(insertQuery, {idNumber, username, password})) {
@@ -116,7 +117,8 @@ namespace data::UserControl {
             return newUserId.value();
         }
 
-        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username, const QString &password,
+        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
+                                                           const QString &password,
                                                            const QString group) {
             auto newUserResult = createNewUser(idNumber, username, password);
             if (!newUserResult) {
@@ -153,6 +155,65 @@ namespace data::UserControl {
 
             log(service::LogLevel::INFO) << "未找到对应学工号的用户: " << idNumber;
             return std::unexpected(UserControlError::UserNotFound);
+        }
+
+        /**
+         * @brief 删除指定ID的用户
+         *
+         * 该函数尝试根据提供的用户ID删除一个用户。如果用户存在，则将用户及其在user_groups表中的关联标记为已删除。
+         * 如果用户不存在或数据库操作失败，将返回相应的错误。
+         *
+         * @param userId 要删除用户的ID
+         * @return 成功时返回true；如果用户不存在或发生数据库错误，则返回UserControlError枚举值
+         */
+        std::expected<bool, UserControlError> deleteUserById(int userId) {
+            service::DatabaseManager db("./user.db");
+            // 检查用户是否存在
+            QString checkQuery = R"(
+                    SELECT id FROM users WHERE id = ?
+                )";
+            QSqlQuery q = db.executePreparedQuery(checkQuery, {userId});
+            if (!q.next()) {
+                log(service::LogLevel::INFO) << "删除失败。用户不存在: " << userId;
+                return std::unexpected(UserControlError::UserNotFound);
+            }
+            q.clear();
+            // 标记用户在 user_groups 中的关联为 Deleted
+            QString updateGroupsStatus = R"(
+                    UPDATE user_groups SET status = 'Deleted' WHERE user_id = ?
+                )";
+            db.executePreparedNonQuery(updateGroupsStatus, {userId});
+            // 标记用户为 Deleted
+            QString updateUserStatus = R"(
+                    UPDATE users SET status = 'Deleted' WHERE id = ?
+                )";
+            if (db.executePreparedNonQuery(updateUserStatus, {userId})) {
+                log(service::LogLevel::DATA) << "用户标记为已删除: " << userId;
+                return true;
+            }
+            log(service::LogLevel::ERR) << "标记用户删除失败: " << userId;
+            return std::unexpected(UserControlError::DatabaseError);
+        }
+
+        /**
+         * 更新指定用户的密码。
+         *
+         * @param userId 用户的唯一标识符。
+         * @param newPassword 新密码，将被设置为该用户的密码。
+         * @return 如果密码更新成功，则返回true；如果发生数据库错误，则返回一个包含UserControlError::DatabaseError的std::unexpected对象。
+         */
+        std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword) {
+            service::DatabaseManager db("./user.db");
+            QString updateQuery = R"(
+                UPDATE users
+                SET password = ?
+                WHERE id = ?
+            )";
+            if (!db.executePreparedNonQuery(updateQuery, {newPassword, userId})) {
+                return std::unexpected(UserControlError::DatabaseError);
+            }
+            log(service::LogLevel::DATA) << "用户"<<userId<<"密码更新成功: " << userId;
+            return true;
         }
     }
 
@@ -194,7 +255,7 @@ namespace data::UserControl {
         std::expected<bool, UserControlError> createGroup(const QString &name, const QString &description) {
             service::DatabaseManager db("./user.db");
             if (!db.tableExists("groups")) {
-                 throw std::runtime_error("Group table does not exist.");
+                throw std::runtime_error("Group table does not exist.");
             }
             // 检查组是否已存在
             QString checkGroupQuery = R"(

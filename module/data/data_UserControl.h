@@ -69,10 +69,13 @@ namespace data::UserControl {
          * @return std::expected<int, UserControlError> 成功时包含用户ID，若用户不存在则返回UserNotFound错误。
          */
         std::expected<int, UserControlError> foundUserIdByIdNumber(const QString &idNumber);
+
+        std::expected<bool, UserControlError> deleteUserById(int userId);
+
+        std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword);
     }
 
     namespace permission {
-
         /**
          * @brief 创建用户组表。
          *
