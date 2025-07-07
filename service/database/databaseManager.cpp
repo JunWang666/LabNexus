@@ -197,7 +197,7 @@ namespace service {
             m_lastError.clear();
         }
 
-        // Unregister local prepared query before returning to prevent dangling pointer
+        // 在返回之前取消注册本地预处理查询以防止悬空指针
         QSqlQuery result = query;
         unregisterQuery(&query);
         return result;
