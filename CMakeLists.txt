@@ -42,6 +42,24 @@ add_executable(LabNexus main.cpp
         module/data/data_Booking.h
         module/model/BookingDataModel.cpp
         module/model/BookingDataModel.h
+        view/loginPage/loginpage.cpp
+        view/loginPage/loginpage.h
+        view/loginPage/loginpage.ui
+        view/loginPage/registerpage.cpp
+        view/loginPage/registerpage.h
+        view/loginPage/registerpage.ui
+        view/homepage/teacherhomepage.cpp
+        view/homepage/teacherhomepage.h
+        view/homepage/teacherhomepage.ui
+        view/homepage/studenthomepage.cpp
+        view/homepage/studenthomepage.h
+        view/homepage/studenthomepage.ui
+        view/homepage/administratorhomepage.cpp
+        view/homepage/administratorhomepage.h
+        view/homepage/administratorhomepage.ui
+        view/loginPage/changepassword.cpp
+        view/loginPage/changepassword.h
+        view/loginPage/changepassword.ui
 )
 target_link_libraries(LabNexus
         Qt::Core

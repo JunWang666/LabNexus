@@ -2,13 +2,12 @@
 #include "module/data/data_Booking.h"
 #include <QTableView>
 #include "module/model/BookingDataModel.h"
+#include "view/homepage/teacherhomepage.h"
+#include "view/loginPage/loginpage.h"
+#include "view/loginPage/registerpage.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    // 基础按钮测试
-    QPushButton button("Hello world!", nullptr);
-    button.resize(200, 100);
-    button.show();
 
     // 初始化并测试日志输出
     service::logger::instance().setLogFile(
@@ -20,12 +19,15 @@ int main(int argc, char *argv[]) {
     data::Booking::buildDB();
 
     // 测试Booking表格视图
-    auto *bookingModel = new dataModel::BookingDataModel(nullptr);
-    QTableView *tableView = new QTableView;
-    tableView->setModel(bookingModel);
-    tableView->setWindowTitle("Booking Records");
-    tableView->resize(800, 400);
-    tableView->show();
+    // auto *bookingModel = new dataModel::BookingDataModel(nullptr);
+    // QTableView *tableView = new QTableView;
+    // tableView->setModel(bookingModel);
+    // tableView->setWindowTitle("Booking Records");
+    // tableView->resize(800, 400);
+    // tableView->show();
+
+    view::login::loginPage b;
+    b.show();
 
     return QApplication::exec();
 }
