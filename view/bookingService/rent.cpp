@@ -14,6 +14,7 @@ Rent::Rent(QWidget *parent) :
     this->setWindowTitle("temp_rent");
     setUpModel();
     loadData();
+    // 设置0-2列不可更改
     setColEditable(model,0,false);
     setColEditable(model,1,false);
     setColEditable(model,2,false);
@@ -45,12 +46,14 @@ void Rent::setUpModel()
 {
     model = new QStandardItemModel(this);
     model->setColumnCount(4);
+    //增加表头
     model->setHorizontalHeaderLabels({
         QString("类别"),
         QString("教室"),
         QString("入库时间"),
         QString("状态")
     });
+    //给视图指定模型
     ui->stuRentTableView->setModel(model);
 }
 
@@ -58,7 +61,7 @@ void Rent::setColEditable(QStandardItemModel *model, int col, bool editable) {
     if (!model) {
         return;
     }
-
+    //按行遍历，每行的特定列设置状态
     for (int row = 0; row < model->rowCount(); row++) {
         QStandardItem *item = model->item(row, col);
         if (item) {
@@ -70,12 +73,13 @@ void Rent::setColEditable(QStandardItemModel *model, int col, bool editable) {
 //点击发送申请按钮显示对话框
 void Rent::on_btnSend_clicked()
 {
+    //初始化选择模型
     QItemSelectionModel *selectionModel = ui->stuRentTableView->selectionModel();
-    if (selectionModel->hasSelection()) {
+    if (selectionModel->hasSelection()) {//如果有被选择的单元格则获取它的index
         QModelIndexList  indexes = selectionModel->selectedRows();
-        int index = indexes.at(0).row();
-        if (model->item(index,3)->text() == "/*可用*/" ) {
-            QString name = model->item(index,1)->text();
+        int index = indexes.at(0).row();//转换为行号
+        if (model->item(index,3)->text() == "/*可用*/" ) {//判断状态
+            QString name = model->item(index,1)->text();//直接写入
             sendRent = new SendRent(name,this);
             sendRent->show();
         }

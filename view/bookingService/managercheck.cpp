@@ -36,12 +36,14 @@ void ManagerCheck::loadData() {
 void ManagerCheck::setUpModel() {
     model = new QStandardItemModel(this);
     model->setColumnCount(4);
+    //增加表头
     model->setHorizontalHeaderLabels({
         QString("借用人"),
         QString("借用时间"),
         QString("归还时间"),
         QString("批准")
     });
+    //设置模型
     ui->CheckTableView->setModel(model);
 }
 
@@ -49,6 +51,7 @@ void ManagerCheck::setColEditable(QStandardItemModel *model, int col, bool edita
     if (!model) {
         return;
     }
+    //按行遍历，将每行的特定列设置状态
     for (int row = 0; row < model->rowCount(); row++) {
         QStandardItem *item = model->item(row, col);
         if (item) {

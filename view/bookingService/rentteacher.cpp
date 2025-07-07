@@ -14,6 +14,7 @@ RentTeacher::RentTeacher(QWidget *parent) :
     setUpModel_device();
     setUpModel_request();
     loadData();
+    //设置两个表的0-2列为只读状态
     setColEditable(modelDevice,0,false);
     setColEditable(modelDevice,1,false);
     setColEditable(modelDevice,2,false);
@@ -58,24 +59,28 @@ void RentTeacher::loadData() {
 void RentTeacher::setUpModel_device() {
     modelDevice = new QStandardItemModel(this);
     modelDevice->setColumnCount(4);
+    //设置表头
     modelDevice->setHorizontalHeaderLabels({
         QString("类别"),
         QString("教室"),
         QString("入库时间"),
         QString("状态")
     });
+    //设置模型
     ui->sendTableView->setModel(modelDevice);
 }
 
 void RentTeacher::setUpModel_request() {
     modelRequest = new QStandardItemModel(this);
     modelRequest->setColumnCount(4);
+    //设置表头
     modelRequest->setHorizontalHeaderLabels({
         QString("借用人"),
         QString("借用时间"),
         QString("归还时间"),
         QString("批准")
     });
+    //设置模型
     ui->sendTableView->setModel(modelRequest);
 }
 
@@ -83,7 +88,7 @@ void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editab
     if (!model) {
         return;
     }
-
+    //按行遍历，将每行的特定列设置状态
     for (int row = 0; row < model->rowCount(); row++) {
         QStandardItem *item = model->item(row, col);
         if (item) {
@@ -94,12 +99,13 @@ void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editab
 
 void RentTeacher::on_btnSend_clicked()
 {
+    //设置选择模型
     QItemSelectionModel *selectionModel = ui->sendTableView->selectionModel();
-    if (selectionModel->hasSelection()) {
-        QModelIndexList  indexes = selectionModel->selectedRows();
-        int index = indexes.at(0).row();
-        if (modelDevice->item(index,3)->text() == "/*可用*/" ) {
-            QString name = modelDevice->item(index,1)->text();
+    if (selectionModel->hasSelection()) {//如果有单元格被选择
+        QModelIndexList  indexes = selectionModel->selectedRows();//获取index
+        int index = indexes.at(0).row();//转为行数
+        if (modelDevice->item(index,3)->text() == "/*可用*/" ) {//判断状态
+            QString name = modelDevice->item(index,1)->text();//直接写入
             sendRent = new SendRent(name,this);
             sendRent->show();
         }
