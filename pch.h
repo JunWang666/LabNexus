@@ -13,5 +13,8 @@
 #include "service/database/databaseManager.h"
 
 #include "module/data/data_UserControl.h"
+#include <QVariant>
+#include <expected>
 
 #endif //PCH_H
+

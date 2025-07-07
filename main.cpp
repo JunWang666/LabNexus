@@ -11,12 +11,21 @@ void testLogs() {
 }
 
 void init_db() {
+    // 重置并初始化数据库
     data::UserControl::dropDB();
     data::UserControl::buildDB();
-    data::UserControl::permission::createGroup("Student","");
-    data::UserControl::permission::createGroup("Teacher","");
-    data::UserControl::Login::createNewUser("123", "123", "123","Teacher");
-    log(LogLevel::DEBUG)<<data::UserControl::permission::isUserInGroup(1, "Teacher");
+    // 创建用户并添加到 Teacher 组
+    auto userRes = data::UserControl::Login::createNewUser("123", "123", "123", "Teacher");
+    int userId = -1;
+    if (!userRes) {
+        log(LogLevel::ERR) << "创建用户失败, 错误码:" << static_cast<int>(userRes.error());
+    } else {
+        userId = userRes.value();
+        log(LogLevel::INFO) << "用户创建成功, ID=" << userId;
+    }
+    // 检查用户是否在组中
+    bool inGroup = data::UserControl::permission::isUserInGroup(userId, "Teacher");
+    log(LogLevel::DEBUG) << "用户 " << userId << (inGroup ? " 在 Teacher 组" : " 不在 Teacher 组");
 }
 
 
@@ -25,7 +34,6 @@ int main(int argc, char *argv[]) {
     QPushButton button("Hello world!", nullptr);
     button.resize(200, 100);
     button.show();
-
     // 初始化并测试日志输出
     service::logger::instance().setLogFile(
         QString("app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
@@ -34,8 +42,14 @@ int main(int argc, char *argv[]) {
     //testLogs();
 
     init_db();
-    log(LogLevel::DEBUG) << data::UserControl::Login::isUserPasswordValid("123", "123");
+    {
+        auto res = data::UserControl::Login::isUserPasswordValid("123", "123");
+        if (res) {
+            log(LogLevel::DEBUG) << "用户密码验证成功, 用户ID:" << res.value();
+        } else {
+            log(LogLevel::DEBUG) << "用户密码验证失败, 错误码:" << static_cast<int>(res.error());
+        }
+    }
 
     return QApplication::exec();
 }
-
