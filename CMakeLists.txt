@@ -36,6 +36,12 @@ add_executable(LabNexus main.cpp
         service/database/databaseManager.h
         module/data/data_UserControl.cpp
         module/data/data_UserControl.h
+        module/data/data_EquipmentManage.cpp
+        module/data/data_EquipmentManage.h
+        module/data/data_Booking.cpp
+        module/data/data_Booking.h
+        module/model/BookingDataModel.cpp
+        module/model/BookingDataModel.h
 )
 target_link_libraries(LabNexus
         Qt::Core

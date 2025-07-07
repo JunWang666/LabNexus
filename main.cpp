@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "module/data/data_Booking.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -12,6 +13,7 @@ int main(int argc, char *argv[]) {
     service::log() << "程序启动";
 
     data::UserControl::buildDB();
+    data::Booking::buildDB();
 
     return QApplication::exec();
 }
