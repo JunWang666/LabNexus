@@ -7,7 +7,7 @@
 
 #include <QWidget>
 
-namespace view::booking {
+namespace view::booking{
 QT_BEGIN_NAMESPACE
 namespace Ui { class booking_home; }
 QT_END_NAMESPACE
