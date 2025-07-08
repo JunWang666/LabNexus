@@ -27,13 +27,14 @@ namespace data::Booking {
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
+
+            createBookingApprovalTable();
+            createBookingEquipmentTable();
+            createBookingInfoTable();
+            createBookingTimeTable();
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
-        createBookingApprovalTable();
-        createBookingEquipmentTable();
-        createBookingInfoTable();
-        createBookingTimeTable();
     }
 
 

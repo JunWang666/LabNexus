@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "module/data/data_Booking.h"
 #include <QTableView>
+
+#include "module/data/data_mail.h"
 #include "module/model/BookingDataModel.h"
 #include "view/homepage/teacherhomepage.h"
 #include "view/loginPage/loginpage.h"
@@ -17,14 +19,7 @@ int main(int argc, char *argv[]) {
 
     data::UserControl::buildDB();
     data::Booking::buildDB();
-
-    // 测试Booking表格视图
-    // auto *bookingModel = new dataModel::BookingDataModel(nullptr);
-    // QTableView *tableView = new QTableView;
-    // tableView->setModel(bookingModel);
-    // tableView->setWindowTitle("Booking Records");
-    // tableView->resize(800, 400);
-    // tableView->show();
+    data::mail::buildDB();
 
     view::login::loginPage b;
     b.show();
