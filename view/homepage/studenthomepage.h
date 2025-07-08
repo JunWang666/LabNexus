@@ -5,8 +5,7 @@
 #ifndef STUDENTHOMEPAGE_H
 #define STUDENTHOMEPAGE_H
 
-#include <QWidget>
-#include <QString>
+#include "pch.h"
 
 namespace view::homepage {
     QT_BEGIN_NAMESPACE

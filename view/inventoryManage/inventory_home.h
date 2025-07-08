@@ -5,7 +5,7 @@
 #ifndef INVENTORY_HOME_H
 #define INVENTORY_HOME_H
 
-#include <QWidget>
+#include "pch.h"
 
 namespace view::inventory {
 QT_BEGIN_NAMESPACE

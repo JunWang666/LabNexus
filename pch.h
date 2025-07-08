@@ -5,14 +5,30 @@
 #ifndef PCH_H
 #define PCH_H
 #include <string>
+#include <QString>
 #include <QDateTime>
 #include <QApplication>
 #include <QPushButton>
 #include <QFile>
+#include <QDebug>
+#include <QList>
+#include <QMessageBox>
+#include <QStandardItemModel>
+#include <QTableView>
+#include <QVBoxLayout>
+#include <QScrollArea>
+#include <QWidget>
+#include <QDialog>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlRecord>
 #include "service/logger/logger.h"
 #include "service/database/databaseManager.h"
 
 #include "module/data/data_UserControl.h"
+#include <QRegularExpression>
+#include <QLineEdit>
 #include <QVariant>
 #include <expected>
 

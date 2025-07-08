@@ -4,11 +4,10 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_administratorHomepage.h" resolved
 
+#include "pch.h"
 #include "administratorhomepage.h"
 #include "ui_administratorHomepage.h"
 #include "../loginPage/loginpage.h"
-#include "service/logger/logger.h"
-#include <QMessageBox>
 
 namespace view::homepage {
     administratorHomepage::administratorHomepage(const QString &name, const QString &ID,

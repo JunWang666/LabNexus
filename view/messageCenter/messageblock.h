@@ -1,12 +1,10 @@
+#include "pch.h"
 //
 // Created by gouzuang on 25-7-8.
 //
 
 #ifndef MESSAGEBLOCK_H
 #define MESSAGEBLOCK_H
-
-#include <QWidget>
-#include <QString>
 
 namespace view::messageCenter {
     QT_BEGIN_NAMESPACE
