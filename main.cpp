@@ -4,6 +4,8 @@
 
 #include "module/data/data_mail.h"
 #include "module/model/BookingDataModel.h"
+#include "view/bookingService/booking_home.h"
+#include "view/bookingService/rent.h"
 #include "view/homepage/teacherhomepage.h"
 #include "view/loginPage/loginpage.h"
 #include "view/loginPage/registerpage.h"
@@ -23,8 +25,9 @@ int main(int argc, char *argv[]) {
     data::UserControl::buildDB();
     data::Booking::buildDB();
     data::mail::buildDB();
+    data::Equipment::buildDB();
 
-    view::messageCenter::MessageWindow b;
+    view::Order::Rent b;
     b.show();
 
     return QApplication::exec();
