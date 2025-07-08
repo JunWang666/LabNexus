@@ -19,7 +19,7 @@ RentTeacher::RentTeacher(QWidget *parent) :
     loadData();
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
-    connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[=](QListWidgetItem* item) {
+    connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
         if (row > 0 && row < ui->pageListWidget->count()) {
             ui->stackedWidget->setCurrentIndex(row);
