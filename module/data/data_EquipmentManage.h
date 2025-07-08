@@ -4,6 +4,10 @@
 
 #ifndef DATA_EQUIPMENTMANAGE_H
 #define DATA_EQUIPMENTMANAGE_H
+
+#include <QString>
+#include <QDateTime>
+#include <QList>
 namespace data::Equipment {
     /**
      * @brief 删除设备管理数据库。
@@ -19,6 +23,20 @@ namespace data::Equipment {
      */
     void buildDB();
 
+    /*************/
+    struct fullEquipmentRecord {
+        int id;
+        QString type;
+        QString name;
+        int class_id;
+        QDateTime inDate;
+        QString status;
+    };
+
+    QList<fullEquipmentRecord> loadFullEquipmentRecords();
+    /*************/
+
+
     namespace EquipmentClass {
         /**
          * @brief 创建设备表。
@@ -27,6 +45,15 @@ namespace data::Equipment {
          */
         void createEquipmentClassTable();
 
+    }
+
+    namespace EquipmentInstnace {
+        /**
+         * @brief 创建设备表。
+         *
+         * 该函数检查名为"equipment_instance"的表是否存在。如果不存在，则创建一个新表。
+         */
+        void createEquipmentInstanceTable();
     }
 
 }
