@@ -1,4 +1,6 @@
+﻿
 cmake_minimum_required(VERSION 3.30)
+
 project(LabNexus)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -29,9 +31,21 @@ add_executable(LabNexus main.cpp
         view/equipmentManage/equipment_home.cpp
         view/equipmentManage/equipment_home.h
         view/equipmentManage/equipment_home.ui
-        view/maintenanceService/maintenance_home.cpp
-        view/maintenanceService/maintenance_home.h
-        view/maintenanceService/maintenance_home.ui
+        view/equipmentManage/kaddmanage.cpp
+        view/equipmentManage/kaddmanage.h
+        view/equipmentManage/kaddmanage.ui
+        view/equipmentManage/kchangemanage.cpp
+        view/equipmentManage/kchangemanage.h
+        view/equipmentManage/kchangemanage.ui
+        view/equipmentManage/kdeletemanage.cpp
+        view/equipmentManage/kdeletemanage.h
+        view/equipmentManage/kdeletemanage.ui
+        view/equipmentManage/applysee.cpp
+        view/equipmentManage/applysee.h
+        view/equipmentManage/applysee.ui
+        view/equipmentManage/exam.cpp
+        view/equipmentManage/exam.h
+        view/equipmentManage/exam.ui
         view/bookingService/rent.cpp
         view/bookingService/rent.h
         view/bookingService/rent.ui
@@ -77,6 +91,7 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
+
 )
 target_link_libraries(LabNexus
         Qt::Core
