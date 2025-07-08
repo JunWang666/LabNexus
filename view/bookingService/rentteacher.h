@@ -29,6 +29,7 @@ public:
     void setUpModel_device();
     void setUpModel_request();
     // void setColEditable(QStandardItemModel *model,int col,bool editable);
+    void setIndex(int row);
 public slots:
     void on_btnSend_clicked();
     void on_btnCheck_clicked();

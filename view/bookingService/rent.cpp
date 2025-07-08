@@ -16,8 +16,8 @@ Rent::Rent(QWidget *parent) :
     loadData();
 }
 
-Rent::Rent(const QString &id, QWidget *parent):
-    QWidget(parent),ui(new Ui::Rent), id(id){
+Rent::Rent(const QString &name,const QString &id, QWidget *parent):
+    QWidget(parent),ui(new Ui::Rent), name(name),id(id){
     ui->setupUi(this);
     this->setWindowTitle("temp_rent");
     setUpModel();
@@ -75,7 +75,7 @@ void Rent::on_btnSend_clicked()
         QString status = model->data(statusIndex).toString();
         if (status == "可用") {
             QString name = model->data(nameIndex).toString();
-            sendRent = new SendRent(name,this);
+            sendRent = new SendRent(name,id,this);
             sendRent->show();
         }
     }

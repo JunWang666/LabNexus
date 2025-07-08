@@ -88,9 +88,9 @@ namespace view::homepage {
         service::log() << "教师 " << T_name << " 点击了审批按钮";
 
         // TODO: 打开审批页面，显示待审批的学生借用申请
-        rentTeacher->show();
-        QMessageBox::information(this, "审批",
-                                 QString("审批功能开发中...\n用户: %1\nID: %2\n\n在这里您可以审批学生的设备借用申请。").arg(T_name).arg(T_ID));
+        rentTeacher->setIndex(1);
+        // QMessageBox::information(this, "审批",
+        //                          QString("审批功能开发中...\n用户: %1\nID: %2\n\n在这里您可以审批学生的设备借用申请。").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_logoutButton_clicked() {

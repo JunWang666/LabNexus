@@ -21,7 +21,7 @@ Q_OBJECT
 
 public:
     explicit Rent(QWidget *parent = nullptr);
-    explicit Rent(const QString&id,QWidget *parent = nullptr);
+    explicit Rent(const QString &name,const QString&id,QWidget *parent = nullptr);
     ~Rent() override;
     void loadData();
     void setUpModel();
@@ -35,6 +35,7 @@ private:
     Apply* checkApply;
     dataModel::EquipmentDataModel* model;
     fliterModel::FilterProxyMdel* proxyModel;
+    QString name;
     QString id;
 };
 } // view::Order

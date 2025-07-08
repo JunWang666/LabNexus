@@ -15,7 +15,7 @@ namespace view::homepage {
         ui(new Ui::studentHomepage), S_name(name), S_ID(ID) {
         ui->setupUi(this);
         setupUI();
-        rent = new view::Order::Rent(ID,this);
+        rent = new view::Order::Rent(name,ID,this);
     }
 
     studentHomepage::~studentHomepage() {

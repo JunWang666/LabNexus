@@ -92,6 +92,11 @@ void RentTeacher::setUpModel_request() {
     requestFilterProxyMdel->setGroupFilter("Student");
 }
 
+void RentTeacher::setIndex(int row) {
+    ui->pageListWidget->setCurrentRow(row);
+    ui->stackedWidget->setCurrentIndex(row);
+}
+
 // void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editable) {
 //     if (!model) {
 //         return;
@@ -117,7 +122,7 @@ void RentTeacher::on_btnSend_clicked()
         QString status = modelDevice->data(statusIndex).toString();
         if (status == "可用"){
             QString name = modelDevice->data(nameIndex).toString();
-            sendRent = new SendRent(name, this);
+            sendRent = new SendRent(name, id,this);
             sendRent->show();
         }
     }
