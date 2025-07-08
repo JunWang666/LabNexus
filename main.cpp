@@ -18,6 +18,15 @@ int main(int argc, char *argv[]) {
     data::UserControl::buildDB();
     data::Booking::buildDB();
 
+    QFile styleFile(":/styles/fluent.qss");
+    if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
+        QString styleSheet = QLatin1String(styleFile.readAll());
+        a.setStyleSheet(styleSheet);
+        styleFile.close();
+    } else {
+        // 处理错误，例如打印日志
+    }
+
     // 测试Booking表格视图
     // auto *bookingModel = new dataModel::BookingDataModel(nullptr);
     // QTableView *tableView = new QTableView;

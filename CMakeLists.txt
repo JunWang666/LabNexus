@@ -75,6 +75,9 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
+        assets/style/fluentDesign.qss
+        assets/style/style.qrc
+        assets/style/style_res.qrc
 )
 target_link_libraries(LabNexus
         Qt::Core
