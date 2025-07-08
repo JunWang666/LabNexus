@@ -89,10 +89,12 @@ namespace view::equipment {
         // TODO: 实现超期预警功能
     }
 
+
     void equipment_home::on_blacklist_clicked() //访问黑名单
     {
         // TODO: 实现访问黑名单功能
     }
+
 
     void equipment_home::on_searchbtn_clicked() //索引
     {

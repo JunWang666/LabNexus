@@ -1,4 +1,4 @@
-#ifndef KDELETEMANAGE_H
+﻿#ifndef KDELETEMANAGE_H
 #define KDELETEMANAGE_H
 
 #include <QDialog>
@@ -20,10 +20,15 @@ public:
     ~kdeletemanage() override;
 
 private slots:
-    void on_deleteButton_clicked();
-    void on_batchDeleteButton_clicked();
-    void on_deleteRecordButton_clicked();
-    void on_undoButton_clicked();
+
+
+    void on_addrecord_clicked();
+
+    void on_changerecord_clicked();
+
+    void on_deleterecord_clicked();
+
+    void on_close_clicked();
 
 private:
     Ui::kdeletemanage *ui;

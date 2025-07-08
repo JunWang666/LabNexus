@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>view::equipment::kdeletemanage</class>
-    <widget class="QWidget" name="view::equipment::kdeletemanage">
+ <class>view::equipment::kdeletemanage</class>
+ <widget class="QWidget" name="view::equipment::kdeletemanage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,30 +15,30 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-       <widget class="QPushButton" name="deleteButton">
+    <widget class="QPushButton" name="addrecord">
      <property name="text">
-      <string>删除</string>
+      <string>新增记录</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-       <widget class="QPushButton" name="batchDeleteButton">
+    <widget class="QPushButton" name="changerecord">
      <property name="text">
-      <string>批量删除</string>
+      <string>修改记录</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
-       <widget class="QPushButton" name="deleteRecordButton">
+    <widget class="QPushButton" name="deleterecord">
      <property name="text">
       <string>删除记录</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-       <widget class="QPushButton" name="undoButton">
+    <widget class="QPushButton" name="close">
      <property name="text">
-      <string>撤销</string>
+      <string>取消</string>
      </property>
     </widget>
    </item>
