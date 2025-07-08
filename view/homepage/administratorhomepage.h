@@ -8,6 +8,9 @@
 #include <QWidget>
 #include <QString>
 
+#include "view/bookingService/managercheck.h"
+#include "view/bookingService/rent.h"
+
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
 
@@ -40,6 +43,9 @@ namespace view::homepage {
         QString A_ID; // 管理员ID
 
         void setupUI(); // 初始化界面
+
+    private:
+        view::Order::ManagerCheck* orderCheck;
     };
 } // view::homepage
 

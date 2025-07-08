@@ -7,7 +7,7 @@
 
 #include <QWidget>
 #include <QString>
-
+#include "view/bookingService/rentteacher.h"
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
 
@@ -41,6 +41,9 @@ namespace view::homepage {
         QString T_ID; // 教师ID
 
         void setupUI(); // 初始化界面
+    private:
+        view::Order::RentTeacher* rentTeacher;
+
     };
 } // view::homepage
 

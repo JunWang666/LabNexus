@@ -15,6 +15,7 @@ namespace view::homepage {
         ui(new Ui::studentHomepage), S_name(name), S_ID(ID) {
         ui->setupUi(this);
         setupUI();
+        rent = new view::Order::Rent(ID,this);
     }
 
     studentHomepage::~studentHomepage() {
@@ -42,10 +43,10 @@ namespace view::homepage {
         // TODO: 打开设备借用页面
         // auto *borrowPage = new view::booking::booking_home();
         // borrowPage->show();
-
-        QMessageBox::information(this, "器材借用",
-                                 QString("器材借用功能开发中...\n用户: %1\nID: %2\n\n在这里您可以申请借用实验设备，申请需要等待教师审批。").arg(S_name).arg(
-                                     S_ID));
+        rent->show();
+        // QMessageBox::information(this, "器材借用",
+        //                          QString("器材借用功能开发中...\n用户: %1\nID: %2\n\n在这里您可以申请借用实验设备，申请需要等待教师审批。").arg(S_name).arg(
+        //                              S_ID));
     }
 
     void studentHomepage::on_returnEquipmentButton_clicked() {
@@ -60,6 +61,7 @@ namespace view::homepage {
         service::log() << "学生 " << S_name << " 点击了借用日志按钮";
 
         // TODO: 打开借用历史页面
+        rent->on_btnCheck_clicked();
         QMessageBox::information(this, "我的借用日志",
                                  QString("借用日志功能开发中...\n用户: %1\nID: %2\n\n在这里您可以查看自己的设备借用历史记录。").arg(S_name).arg(S_ID));
     }
@@ -70,7 +72,7 @@ namespace view::homepage {
         // TODO: 打开设备报修页面
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
-
+        rent->show();
         QMessageBox::information(this, "器材报修",
                                  QString("器材报修功能开发中...\n用户: %1\nID: %2\n\n在这里您可以报告设备故障或损坏。").arg(S_name).arg(S_ID));
     }
