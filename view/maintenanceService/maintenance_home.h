@@ -5,7 +5,7 @@
 #ifndef MAINTENANCE_HOME_H
 #define MAINTENANCE_HOME_H
 
-#include <QWidget>
+#include "pch.h"
 
 namespace view::maintenance {
 QT_BEGIN_NAMESPACE

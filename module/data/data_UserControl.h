@@ -9,6 +9,8 @@
 #include "service/database/databaseManager.h"
 
 namespace data::UserControl {
+    inline static QString path = "./user.db";
+
     enum class UserControlError {
         UserNotFound,
         IncorrectPassword,
@@ -18,6 +20,8 @@ namespace data::UserControl {
         GroupAlreadyExists,
         DatabaseError
     };
+
+    inline int currentUserId = -1; // 当前登录用户的ID，默认为-1表示未登录
 
     void dropDB();
     void buildDB();

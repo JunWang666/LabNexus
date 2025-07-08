@@ -3,10 +3,16 @@
 #include "pch.h"
 #include "module/data/data_Booking.h"
 #include <QTableView>
+
+#include "module/data/data_mail.h"
 #include "module/model/BookingDataModel.h"
+#include "view/bookingService/booking_home.h"
+#include "view/bookingService/rent.h"
 #include "view/homepage/teacherhomepage.h"
 #include "view/loginPage/loginpage.h"
 #include "view/loginPage/registerpage.h"
+#include "view/messageCenter/messagewindow.h"
+#include "view/equipmentManage/equipment_home.h"
 #ifdef Q_OS_WIN
 #include <windows.h>
 #include <WinUser.h>
@@ -39,8 +45,6 @@ void applyBlurEffect(HWND hwnd)
 #endif
 }
 
-
-
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
@@ -51,6 +55,8 @@ int main(int argc, char *argv[]) {
 
     data::UserControl::buildDB();
     data::Booking::buildDB();
+    data::mail::buildDB();
+    data::Equipment::buildDB();
 
     QFile styleFile(":/styles/fluent.qss");
     if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
@@ -68,7 +74,7 @@ int main(int argc, char *argv[]) {
       HWND hwnd = (HWND)b.winId();
       //applyBlurEffect(hwnd);
 #endif
-    b.setAttribute(Qt::WA_NoSystemBackground);
+    //b.setAttribute(Qt::WA_NoSystemBackground);
     // 显示窗口
     b.show();
 

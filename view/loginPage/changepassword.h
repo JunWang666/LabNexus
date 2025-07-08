@@ -5,9 +5,7 @@
 #ifndef CHANGEPASSWORD_H
 #define CHANGEPASSWORD_H
 
-#include <QWidget>
-#include <QLineEdit>
-#include <QString>
+#include "pch.h"
 
 namespace view::loginPage {
     QT_BEGIN_NAMESPACE

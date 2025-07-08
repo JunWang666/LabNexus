@@ -5,7 +5,7 @@
 #ifndef BOOKING_HOME_H
 #define BOOKING_HOME_H
 
-#include <QWidget>
+#include "pch.h"
 
 namespace view::booking{
 QT_BEGIN_NAMESPACE

@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_maintenance_home.h" resolved
 
+#include "pch.h"
 #include "maintenance_home.h"
 #include "ui_maintenance_home.h"
 
