@@ -7,6 +7,7 @@
 #include "equipment_home.h"
 #include "ui_equipment_home.h"
 
+
 namespace view::equipment {
 equipment_home::equipment_home(QWidget *parent) :
     QWidget(parent), ui(new Ui::equipment_home) {
@@ -58,7 +59,8 @@ void equipment_home::on_kreall_clicked()//整理库数据
 
 void equipment_home::on_kchange_clicked()//修改库数据
 {
-
+    view::equipment::kchangemanage equipmentHome;
+    equipmentHome.show();
 }
 
 void equipment_home::on_kdel_clicked()//删除库数据
@@ -66,7 +68,27 @@ void equipment_home::on_kdel_clicked()//删除库数据
 
 }
 
-void equipment_home::on_exam_clicked()//检查和审批审查
+void equipment_home::on_kexam_clicked()//检查和审批审查
+{
+
+}
+
+void equipment_home::on_kseeborrow_clicked()//看查借用日志
+{
+
+}
+
+void equipment_home::on_seefix_clicked()//看查维修日志
+{
+
+}
+
+void equipment_home::on_outdata_clicked()//超期预警
+{
+
+}
+
+void equipment_home::on_blacklist_clicked()//访问黑名单
 {
 
 }
