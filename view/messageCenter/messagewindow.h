@@ -5,7 +5,7 @@
 #ifndef MESSAGEWINDOW_H
 #define MESSAGEWINDOW_H
 
-#include <QWidget>
+#include "pch.h"
 #include "messageblock.h"
 
 namespace view::messageCenter {

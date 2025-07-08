@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_MessageBlock.h" resolved
 
+#include "pch.h"
 #include "messageblock.h"
 #include "ui_MessageBlock.h"
 

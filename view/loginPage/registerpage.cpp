@@ -4,12 +4,9 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_registerPage.h" resolved
 
+#include "pch.h"
 #include "registerpage.h"
 #include "ui_registerPage.h"
-#include "module/data/data_UserControl.h"
-#include "service/logger/logger.h"
-#include <QMessageBox>
-#include <QRegularExpression>
 
 namespace view::login {
 registerPage::registerPage(QWidget *parent) :

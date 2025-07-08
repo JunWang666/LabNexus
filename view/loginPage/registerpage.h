@@ -5,8 +5,7 @@
 #ifndef REGISTERPAGE_H
 #define REGISTERPAGE_H
 
-#include <QWidget>
-#include <QString>
+#include "pch.h"
 
 namespace view::login {
 QT_BEGIN_NAMESPACE

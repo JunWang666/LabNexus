@@ -4,11 +4,10 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_teacherHomepage.h" resolved
 
+#include "pch.h"
 #include "teacherhomepage.h"
 #include "ui_teacherHomepage.h"
 #include "../loginPage/loginpage.h"
-#include "service/logger/logger.h"
-#include <QMessageBox>
 
 namespace view::homepage {
     teacherHomepage::teacherHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),

@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_MessageWindow.h" resolved
 
+#include "pch.h"
 #include "messagewindow.h"
 #include "ui_MessageWindow.h"
 #include "module/data/data_mail.h"
