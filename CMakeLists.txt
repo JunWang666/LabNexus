@@ -78,6 +78,7 @@ add_executable(LabNexus main.cpp
         assets/style/fluentDesign.qss
         assets/style/style.qrc
         assets/style/style_res.qrc
+        assets/style/blurredTranslucent.h
 )
 target_link_libraries(LabNexus
         Qt::Core
