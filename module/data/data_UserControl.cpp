@@ -95,6 +95,7 @@ namespace data::UserControl {
             }
 
             log(service::LogLevel::INFO) << "登录成功。密码验证成功: " << idNumber;
+            currentUserId = userId;
             return userId;
         }
 

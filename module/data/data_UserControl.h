@@ -19,6 +19,8 @@ namespace data::UserControl {
         DatabaseError
     };
 
+    inline int currentUserId = -1; // 当前登录用户的ID，默认为-1表示未登录
+
     void dropDB();
     void buildDB();
     namespace Login {

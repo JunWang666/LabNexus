@@ -7,6 +7,7 @@
 #include "view/homepage/teacherhomepage.h"
 #include "view/loginPage/loginpage.h"
 #include "view/loginPage/registerpage.h"
+#include "view/messageCenter/messagewindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -21,7 +22,7 @@ int main(int argc, char *argv[]) {
     data::Booking::buildDB();
     data::mail::buildDB();
 
-    view::login::loginPage b;
+    view::messageCenter::MessageWindow b;
     b.show();
 
     return QApplication::exec();

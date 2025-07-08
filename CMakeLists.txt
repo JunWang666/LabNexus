@@ -77,6 +77,12 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.ui
         module/data/data_mail.h
         module/data/data_mail.cpp
+        view/messageCenter/messagewindow.ui
+        view/messageCenter/messagewindow.cpp
+        view/messageCenter/messagewindow.h
+        view/messageCenter/messageblock.ui
+        view/messageCenter/messageblock.cpp
+        view/messageCenter/messageblock.h
 )
 target_link_libraries(LabNexus
         Qt::Core
