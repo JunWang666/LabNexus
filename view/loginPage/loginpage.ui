@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <author/>
+    <comment/>
+    <exportmacro/>
+    <class>view::login::loginPage</class>
+    <widget class="QWidget" name="view::login::loginPage">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>800</width>
+                <height>600</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>实验室设备管理系统</string>
+        </property>
+        <widget class="QWidget" name="verticalLayoutWidget">
+            <property name="geometry">
+                <rect>
+                    <x>100</x>
+                    <y>10</y>
+                    <width>581</width>
+                    <height>141</height>
+                </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                    <widget class="QLabel" name="titleLabel">
+                        <property name="text">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span
+                                style=&quot; font-size:36pt;&quot;&gt;实验室设备管理系统&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+                            </string>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QFrame" name="loginFrame">
+            <property name="geometry">
+                <rect>
+                    <x>100</x>
+                    <y>180</y>
+                    <width>581</width>
+                    <height>161</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <widget class="QLabel" name="userIdLabel">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>20</y>
+                        <width>131</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;用户ID:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="passwordLabel">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>90</y>
+                        <width>131</width>
+                        <height>31</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;密码:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="userIdLineEdit">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>20</y>
+                        <width>401</width>
+                        <height>41</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="passwordLineEdit">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>90</y>
+                        <width>401</width>
+                        <height>41</height>
+                    </rect>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QFrame" name="buttonFrame">
+            <property name="geometry">
+                <rect>
+                    <x>490</x>
+                    <y>360</y>
+                    <width>191</width>
+                    <height>61</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+                <item>
+                    <widget class="QPushButton" name="loginButton">
+                        <property name="styleSheet">
+                            <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                        </property>
+                        <property name="text">
+                            <string>登录</string>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QFrame" name="registerFrame">
+            <property name="geometry">
+                <rect>
+                    <x>100</x>
+                    <y>360</y>
+                    <width>371</width>
+                    <height>61</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <widget class="QLabel" name="registerPromptLabel">
+                <property name="geometry">
+                    <rect>
+                        <x>20</x>
+                        <y>10</y>
+                        <width>131</width>
+                        <height>41</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>还没有账户？立即注册-&gt;</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="registerButton">
+                <property name="geometry">
+                    <rect>
+                        <x>160</x>
+                        <y>20</y>
+                        <width>177</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="styleSheet">
+                    <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                </property>
+                <property name="text">
+                    <string>注册</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QFrame" name="changePasswordFrame">
+            <property name="geometry">
+                <rect>
+                    <x>100</x>
+                    <y>430</y>
+                    <width>371</width>
+                    <height>31</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <widget class="QLabel" name="changePasswordPromptLabel">
+                <property name="geometry">
+                    <rect>
+                        <x>20</x>
+                        <y>5</y>
+                        <width>131</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>忘记密码？点击修改-&gt;</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="changePasswordButton">
+                <property name="geometry">
+                    <rect>
+                        <x>160</x>
+                        <y>5</y>
+                        <width>177</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="styleSheet">
+                    <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                </property>
+                <property name="text">
+                    <string>修改密码</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QFrame" name="announcementFrame">
+            <property name="geometry">
+                <rect>
+                    <x>100</x>
+                    <y>470</y>
+                    <width>581</width>
+                    <height>121</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <widget class="QGroupBox" name="announcementGroupBox">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>9</y>
+                        <width>561</width>
+                        <height>101</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>公告：</string>
+                </property>
+                <widget class="QTextEdit" name="announcementTextEdit">
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>20</y>
+                            <width>541</width>
+                            <height>71</height>
+                        </rect>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
+    </widget>
+    <pixmapfunction/>
+    <connections/>
+</ui>
