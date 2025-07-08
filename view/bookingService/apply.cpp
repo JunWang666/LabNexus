@@ -16,6 +16,14 @@ Apply::Apply(QWidget *parent) :
     loadData();
 }
 
+Apply::Apply(const QString &name, const QString &id, QWidget *parent):
+    QWidget(parent), ui(new Ui::Apply),name(name),id(id){
+    ui->setupUi(this);
+    setUpModel();
+    loadData();
+
+}
+
 Apply::~Apply() {
     delete ui;
 }
@@ -28,8 +36,10 @@ void Apply::loadData() {
 void Apply::setUpModel() {
     //初始化模型
     model = new dataModel::BookingDataModel(this);
+    fliterModel = new fliterModel::FilterProxyMdel(this);
+    fliterModel->setSourceModel(model);
     //设置模型
-    ui->applyTableView->setModel(model);
+    ui->applyTableView->setModel(fliterModel);
     //隐藏某些列
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_UserGroup);
@@ -40,6 +50,9 @@ void Apply::setUpModel() {
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
     //设置不可更改
     ui->applyTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //仅显示自己
+    fliterModel->setUserIdColumn(dataModel::BookingDataModel::Col_UserId);
+    fliterModel->setUserIdFilter(id.toInt());
 }
 
 void Apply::on_btnClose_clicked()
