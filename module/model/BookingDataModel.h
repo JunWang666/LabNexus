@@ -16,6 +16,23 @@ namespace dataModel {
         Q_OBJECT
 
     public:
+        enum Column {
+            Col_Id,
+            Col_UserId,
+            Col_UserName,
+            Col_UserGroup,
+            Col_CreateDate,
+            Col_RequestStartDate,
+            Col_RequestEndDate,
+            Col_ActualStartDate,
+            Col_ActualEndDate,
+            Col_ApprovalStatus,
+            Col_ApprovalDate,
+            Col_ApproverID,
+            Col_ApproverName,
+            Col_Count
+        };
+    public:
         explicit BookingDataModel(QObject *parent = nullptr);
 
         // --- 必须重写的核心函数 (用于读取和展示) ---

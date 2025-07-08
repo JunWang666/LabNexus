@@ -9,8 +9,7 @@
 
 #include "apply.h"
 #include "sendrent.h"
-#include "QStandardItemModel"
-#include "QStandardItem"
+#include "module/model/EquipmentDataModel.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class Rent; }
@@ -24,7 +23,7 @@ public:
     ~Rent() override;
     void loadData();
     void setUpModel();
-    void setColEditable(QStandardItemModel *model,int col,bool editable);
+    // void setColEditable(QStandardItemModel *model,int col,bool editable);
 public slots:
     void on_btnSend_clicked();
     void on_btnCheck_clicked();
@@ -32,7 +31,7 @@ private:
     Ui::Rent *ui;
     SendRent* sendRent;
     Apply* checkApply;
-    QStandardItemModel* model;
+    dataModel::EquipmentDataModel* model;
 };
 } // view::Order
 
