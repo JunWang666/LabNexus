@@ -1,4 +1,5 @@
-#include "pch.h"
+﻿#include "pch.h"
+#include "view/equipmentManage/equipment_home.h"
 
 // 测试各级别日志输出函数
 void testLogs() {
@@ -16,9 +17,12 @@ void testLogs() {
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    QPushButton button("Hello world!", nullptr);
-    button.resize(200, 100);
-    button.show();
+    // QPushButton button("Hello world!", nullptr);
+    // button.resize(200, 100);
+    // button.show();
+
+    view::equipment::equipment_home equipmentHome;
+    equipmentHome.show();
 
     // 初始化并测试日志输出
     service::logger::instance().setLogFile(

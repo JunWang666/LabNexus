@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by gouzuang on 25-7-6.
 //
 
@@ -18,6 +18,29 @@ Q_OBJECT
 public:
     explicit equipment_home(QWidget *parent = nullptr);
     ~equipment_home() override;
+
+private slots:
+    void on_toapply_clicked();
+
+    void on_stuexam_clicked();
+
+    void on_adfix_clicked();
+
+    void on_zreturn_clicked();
+
+    void on_zclose_clicked();
+
+    void on_kadd_clicked();
+
+    void on_kreall_clicked();
+
+    void on_kchange_clicked();
+
+    void on_kdel_clicked();
+
+    void on_exam_clicked();
+
+    void on_searchbtn_clicked();
 
 private:
     Ui::equipment_home *ui;

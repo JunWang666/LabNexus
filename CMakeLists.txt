@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.31)
+﻿cmake_minimum_required(VERSION 3.31)
 project(LabNexus)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -31,6 +31,12 @@ add_executable(LabNexus main.cpp
         view/maintenanceService/maintenance_home.cpp
         view/maintenanceService/maintenance_home.h
         view/maintenanceService/maintenance_home.ui
+        view/equipmentManage/kaddmanage.ui
+        view/equipmentManage/kchangemanage.ui
+        view/equipmentManage/kdeletemanage.ui
+        view/equipmentManage/exam.ui
+        view/equipmentManage/applysee.ui
+
 )
 target_link_libraries(LabNexus
         Qt::Core
