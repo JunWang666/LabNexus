@@ -12,6 +12,7 @@
 #include "module/model/EquipmentDataModel.h"
 #include "module/model/BookingDataModel.h"
 #include <QListWidget>
+#include "module/model/filterproxymdel.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class RentTeacher; }
@@ -22,6 +23,7 @@ Q_OBJECT
 
 public:
     explicit RentTeacher(QWidget *parent = nullptr);
+    explicit RentTeacher(const QString& name,const QString& id,QWidget *parent = nullptr);
     ~RentTeacher() override;
     void loadData();
     void setUpModel_device();
@@ -36,6 +38,10 @@ private:
     Apply* apply;
     dataModel::EquipmentDataModel* modelDevice;
     dataModel::BookingDataModel* modelRequest;
+    fliterModel::FilterProxyMdel* deviceFilterProxyMdel;
+    fliterModel::FilterProxyMdel* requestFilterProxyMdel;
+    QString name;
+    QString id;
 };
 } // view::Order
 

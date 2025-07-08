@@ -29,6 +29,24 @@ RentTeacher::RentTeacher(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+RentTeacher::RentTeacher(const QString &name, const QString &id, QWidget *parent) :
+    QWidget(parent),ui(new Ui::RentTeacher),name(name),id(id){
+    ui->setupUi(this);
+    setUpModel_device();
+    setUpModel_request();
+    loadData();
+    ui->pageListWidget->addItem("申请");
+    ui->pageListWidget->addItem("审批");
+    connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
+        const int row = ui->pageListWidget->row(item);
+        if (row > 0 && row < ui->pageListWidget->count()) {
+            ui->stackedWidget->setCurrentIndex(row);
+        }
+    });
+    ui->pageListWidget->setCurrentRow(0);
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 RentTeacher::~RentTeacher() {
     delete ui;
 }
@@ -41,17 +59,24 @@ void RentTeacher::loadData() {
 
 void RentTeacher::setUpModel_device() {
     modelDevice = new dataModel::EquipmentDataModel(this);
+    deviceFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
+    deviceFilterProxyMdel->setSourceModel(modelDevice);
     //设置模型
-    ui->sendTableView->setModel(modelDevice);
+    ui->sendTableView->setModel(deviceFilterProxyMdel);
     //隐藏ID和列数
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+    deviceFilterProxyMdel->setStatusColumn(dataModel::EquipmentDataModel::Col_Status);
+    deviceFilterProxyMdel->setStatusFilter("可用");
+
 }
 
 void RentTeacher::setUpModel_request() {
     modelRequest = new dataModel::BookingDataModel(this);
+    requestFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
+    requestFilterProxyMdel->setSourceModel(modelRequest);
     //设置模型
-    ui->examTableView->setModel(modelRequest);
+    ui->examTableView->setModel(requestFilterProxyMdel);
     //设置隐藏列
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_Count);
@@ -62,6 +87,9 @@ void RentTeacher::setUpModel_request() {
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverID);
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApprovalDate);
+    //只显示学生
+    requestFilterProxyMdel->setGroupColunm(dataModel::BookingDataModel::Col_Count);
+    requestFilterProxyMdel->setGroupFilter("Student");
 }
 
 // void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editable) {

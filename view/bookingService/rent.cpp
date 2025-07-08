@@ -16,6 +16,15 @@ Rent::Rent(QWidget *parent) :
     loadData();
 }
 
+Rent::Rent(const QString &id, QWidget *parent):
+    QWidget(parent),ui(new Ui::Rent), id(id){
+    ui->setupUi(this);
+    this->setWindowTitle("temp_rent");
+    setUpModel();
+    loadData();
+}
+
+
 Rent::~Rent() {
     delete ui;
 }
@@ -30,10 +39,14 @@ void Rent::setUpModel()
 {
     //初始化模型
     model = new dataModel::EquipmentDataModel(this);
+    proxyModel = new fliterModel::FilterProxyMdel(this);
+    proxyModel->setSourceModel(model);
     //给视图指定模型
-    ui->stuRentTableView->setModel(model);
+    ui->stuRentTableView->setModel(proxyModel);
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+    proxyModel->setStatusColumn(dataModel::EquipmentDataModel::Col_Status);
+    proxyModel->setStatusFilter("可用");
 }
 
 // void Rent::setColEditable(QStandardItemModel *model, int col, bool editable) {

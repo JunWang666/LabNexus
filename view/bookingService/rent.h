@@ -10,6 +10,7 @@
 #include "apply.h"
 #include "sendrent.h"
 #include "module/model/EquipmentDataModel.h"
+#include "module/model/filterproxymdel.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class Rent; }
@@ -20,6 +21,7 @@ Q_OBJECT
 
 public:
     explicit Rent(QWidget *parent = nullptr);
+    explicit Rent(const QString&id,QWidget *parent = nullptr);
     ~Rent() override;
     void loadData();
     void setUpModel();
@@ -32,6 +34,8 @@ private:
     SendRent* sendRent;
     Apply* checkApply;
     dataModel::EquipmentDataModel* model;
+    fliterModel::FilterProxyMdel* proxyModel;
+    QString id;
 };
 } // view::Order
 

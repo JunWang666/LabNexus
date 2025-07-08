@@ -24,13 +24,16 @@ void ManagerCheck::loadData() {
 void ManagerCheck::setUpModel() {
     //初始化模型
     model = new dataModel::BookingDataModel(this);
+    fliterModel = new fliterModel::FilterProxyMdel(this);
+    fliterModel->setSourceModel(model);
     //设置模型
-    ui->CheckTableView->setModel(model);
+    ui->CheckTableView->setModel(fliterModel);
     //隐藏某些列
     ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
     ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_UserGroup);
     ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_CreateDate);
     ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_Count);
+    //管理员可以查看全部信息
 }
 
 // void ManagerCheck::setColEditable(QStandardItemModel *model, int col, bool editable) {
