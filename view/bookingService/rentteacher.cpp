@@ -17,6 +17,16 @@ RentTeacher::RentTeacher(QWidget *parent) :
     setUpModel_device();
     setUpModel_request();
     loadData();
+    ui->pageListWidget->addItem("申请");
+    ui->pageListWidget->addItem("审批");
+    connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[=](QListWidgetItem* item) {
+        const int row = ui->pageListWidget->row(item);
+        if (row > 0 && row < ui->pageListWidget->count()) {
+            ui->stackedWidget->setCurrentIndex(row);
+        }
+    });
+    ui->pageListWidget->setCurrentRow(0);
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 RentTeacher::~RentTeacher() {
@@ -41,17 +51,17 @@ void RentTeacher::setUpModel_device() {
 void RentTeacher::setUpModel_request() {
     modelRequest = new dataModel::BookingDataModel(this);
     //设置模型
-    ui->sendTableView->setModel(modelRequest);
+    ui->examTableView->setModel(modelRequest);
     //设置隐藏列
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_Count);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_ActualStartDate);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_ActualEndDate);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_UserGroup);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_CreateDate);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverID);
-    ui->sendTableView->hideColumn(dataModel::BookingDataModel::Col_ApprovalDate);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_Count);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ActualStartDate);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ActualEndDate);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_UserGroup);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_CreateDate);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverID);
+    ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApprovalDate);
 }
 
 // void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editable) {

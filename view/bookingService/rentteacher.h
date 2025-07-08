@@ -11,6 +11,7 @@
 #include "sendrent.h"
 #include "module/model/EquipmentDataModel.h"
 #include "module/model/BookingDataModel.h"
+#include <QListWidget>
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class RentTeacher; }
