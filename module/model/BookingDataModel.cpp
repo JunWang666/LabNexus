@@ -6,22 +6,7 @@
 #include "BookingDataModel.h"
 
 namespace dataModel {
-    enum Column {
-        Col_Id,
-        Col_UserId,
-        Col_UserName,
-        Col_UserGroup,
-        Col_CreateDate,
-        Col_RequestStartDate,
-        Col_RequestEndDate,
-        Col_ActualStartDate,
-        Col_ActualEndDate,
-        Col_ApprovalStatus,
-        Col_ApprovalDate,
-        Col_ApproverID,
-        Col_ApproverName,
-        Col_Count
-    };
+
 
     BookingDataModel::BookingDataModel(QObject *parent)
         : QAbstractTableModel(parent) {
