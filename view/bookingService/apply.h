@@ -6,8 +6,7 @@
 #define APPLY_H
 
 #include <QWidget>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "module/model/BookingDataModel.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class Apply; }
@@ -19,10 +18,13 @@ Q_OBJECT
 public:
     explicit Apply(QWidget *parent = nullptr);
     ~Apply() override;
+    void loadData();
+    void setUpModel();
 public slots:
     void on_btnClose_clicked();
 private:
     Ui::Apply *ui;
+    dataModel::BookingDataModel *model;
 };
 } // view::Order
 

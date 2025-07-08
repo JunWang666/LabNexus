@@ -8,6 +8,8 @@
 #include "view/loginPage/loginpage.h"
 #include "view/loginPage/registerpage.h"
 #include "view/messageCenter/messagewindow.h"
+#include "view/equipmentManage/equipment_home.h"
+
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
