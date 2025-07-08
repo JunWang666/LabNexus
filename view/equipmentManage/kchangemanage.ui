@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>view::equipment::kchangemanage</class>
+ <widget class="QWidget" name="view::equipment::kchangemanage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -62,17 +62,17 @@
        </widget>
       </item>
       <item row="4" column="0" colspan="3">
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="changeValueEdit"/>
       </item>
       <item row="5" column="2">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="deleteButton">
         <property name="text">
          <string>删除</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="3">
-       <widget class="QLineEdit" name="nameline"/>
+       <widget class="QLineEdit" name="equipmentNameEdit"/>
       </item>
       <item row="6" column="1">
        <widget class="QPushButton" name="before">
@@ -82,7 +82,7 @@
        </widget>
       </item>
       <item row="6" column="2">
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="cancelButton">
         <property name="text">
          <string>取消</string>
         </property>
