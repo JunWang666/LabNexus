@@ -57,6 +57,8 @@ add_executable(LabNexus main.cpp
         module/data/data_Booking.h
         module/model/BookingDataModel.cpp
         module/model/BookingDataModel.h
+        module/model/EquipmentDataModel.cpp
+        module/model/EquipmentDataModel.h
 )
 target_link_libraries(LabNexus
         Qt::Core
