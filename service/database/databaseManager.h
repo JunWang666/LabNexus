@@ -40,6 +40,12 @@ namespace service {
 
         bool executeNonQuery(const QString &queryString);
 
+        // 执行查询并获取所有结果到内存中
+        QList<QVariantMap> executeQueryAndFetchAll(const QString &queryString);
+
+        // 为预处理查询也增加一个对应的版本
+        QList<QVariantMap> executePreparedQueryAndFetchAll(const QString &queryString, const QVariantList &parameters);
+
         // 带参数的查询
         QSqlQuery executePreparedQuery(const QString &queryString, const QVariantList &parameters);
 

@@ -1,4 +1,4 @@
-﻿
+
 cmake_minimum_required(VERSION 3.30)
 
 project(LabNexus)
@@ -91,7 +91,14 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
-
+        module/data/data_mail.h
+        module/data/data_mail.cpp
+        view/messageCenter/messagewindow.ui
+        view/messageCenter/messagewindow.cpp
+        view/messageCenter/messagewindow.h
+        view/messageCenter/messageblock.ui
+        view/messageCenter/messageblock.cpp
+        view/messageCenter/messageblock.h
 )
 target_link_libraries(LabNexus
         Qt::Core
@@ -157,6 +164,25 @@ target_include_directories(TestBooking PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestBooking PRIVATE pch.h)
 add_test(NAME TestBooking COMMAND TestBooking)
 
+# 邮件模块测试
+add_executable(TestMail
+        tests/test_mail.cpp
+        service/logger/logger.cpp
+        service/database/databasePathProvidor.cpp
+        service/database/databaseManager.cpp
+        module/data/data_UserControl.cpp
+        module/data/data_mail.cpp
+)
+target_link_libraries(TestMail PRIVATE
+        Qt::Core
+        Qt::Widgets
+        Qt::Test
+        Qt::Sql
+)
+target_include_directories(TestMail PRIVATE ${PROJECT_SOURCE_DIR})
+target_precompile_headers(TestMail PRIVATE pch.h)
+add_test(NAME TestMail COMMAND TestMail)
+
 enable_testing()
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -190,7 +216,7 @@ endif ()
 
 # 为测试目标复制 Qt6 测试库 DLL
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    foreach (target TestLogs TestDB TestBooking)
+    foreach (target TestLogs TestDB TestBooking TestMail)
         add_custom_command(TARGET ${target} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6Test${DEBUG_SUFFIX}.dll"
@@ -204,9 +230,13 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
             COMMAND ${CMAKE_COMMAND} -E copy
             "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
             "$<TARGET_FILE_DIR:TestBooking>")
+    add_custom_command(TARGET TestMail POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
+            "$<TARGET_FILE_DIR:TestMail>")
     # 复制 Qt 平台插件供测试使用
     if (EXISTS "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
-        foreach (target TestLogs TestDB TestBooking)
+        foreach (target TestLogs TestDB TestBooking TestMail)
             add_custom_command(TARGET ${target} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E make_directory
                     "$<TARGET_FILE_DIR:${target}>/plugins/platforms")
@@ -218,7 +248,7 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     endif ()
     # 复制 SQLite 驱动插件
     if (EXISTS "${QT_INSTALL_PATH}/plugins/sqldrivers/qsqlite${DEBUG_SUFFIX}.dll")
-        foreach (target TestLogs TestDB TestBooking)
+        foreach (target TestLogs TestDB TestBooking TestMail)
             add_custom_command(TARGET ${target} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E make_directory
                     "$<TARGET_FILE_DIR:${target}>/plugins/sqldrivers")

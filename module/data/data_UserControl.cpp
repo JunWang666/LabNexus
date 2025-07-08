@@ -27,18 +27,19 @@ namespace data::UserControl {
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
+
+            Login::createUserTable();
+            permission::createGroupTable();
+            permission::createUserGroupTable();
+            // 创建用户组
+            if (auto r = permission::createGroup("Student", ""); !r) {
+                log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
+            }
+            if (auto r = permission::createGroup("Teacher", ""); !r) {
+                log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
+            }
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
-        Login::createUserTable();
-        permission::createGroupTable();
-        permission::createUserGroupTable();
-        // 创建用户组
-        if (auto r = permission::createGroup("Student", ""); !r) {
-            log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
-        }
-        if (auto r = permission::createGroup("Teacher", ""); !r) {
-            log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
         }
     }
 
@@ -94,6 +95,7 @@ namespace data::UserControl {
             }
 
             log(service::LogLevel::INFO) << "登录成功。密码验证成功: " << idNumber;
+            currentUserId = userId;
             return userId;
         }
 

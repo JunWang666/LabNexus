@@ -27,11 +27,13 @@ namespace data::Equipment {
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
+            EquipmentClass::createEquipmentClassTable();
+            EquipmentInstnace::createEquipmentInstanceTable();
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
-        EquipmentClass::createEquipmentClassTable();
-        EquipmentInstnace::createEquipmentInstanceTable();
+        
+
     }
 
         /**
