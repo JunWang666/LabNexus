@@ -18,47 +18,33 @@ ManagerCheck::~ManagerCheck() {
 }
 
 void ManagerCheck::loadData() {
-    model->removeRows(0, model->rowCount());
-    /*占位符，获取数据
-     * QList<Request> requ = dataBaseManager.getdata();
-     */
-    // for (const auto& req : /*requ*/)
-    // {
-    //     QList<QStandardItem*> items;
-    //     /*
-    //      *添加数据 items.append();
-    //      */
-    //     model->appendRow(items);
-    // }
-
+    model->fetchData();
 }
 
 void ManagerCheck::setUpModel() {
-    model = new QStandardItemModel(this);
-    model->setColumnCount(4);
-    //增加表头
-    model->setHorizontalHeaderLabels({
-        QString("借用人"),
-        QString("借用时间"),
-        QString("归还时间"),
-        QString("批准")
-    });
+    //初始化模型
+    model = new dataModel::BookingDataModel(this);
     //设置模型
     ui->CheckTableView->setModel(model);
+    //隐藏某些列
+    ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
+    ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_UserGroup);
+    ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_CreateDate);
+    ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_Count);
 }
 
-void ManagerCheck::setColEditable(QStandardItemModel *model, int col, bool editable) {
-    if (!model) {
-        return;
-    }
-    //按行遍历，将每行的特定列设置状态
-    for (int row = 0; row < model->rowCount(); row++) {
-        QStandardItem *item = model->item(row, col);
-        if (item) {
-            item->setEditable(editable);
-        }
-    }
-}
+// void ManagerCheck::setColEditable(QStandardItemModel *model, int col, bool editable) {
+//     if (!model) {
+//         return;
+//     }
+//     //按行遍历，将每行的特定列设置状态
+//     for (int row = 0; row < model->rowCount(); row++) {
+//         QStandardItem *item = model->item(row, col);
+//         if (item) {
+//             item->setEditable(editable);
+//         }
+//     }
+// }
 
 void ManagerCheck::on_btnClose_clicked()
 {
