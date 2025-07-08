@@ -5,10 +5,13 @@
 #ifndef DATA_EQUIPMENTMANAGE_H
 #define DATA_EQUIPMENTMANAGE_H
 
+#include "pch.h"
 #include <QString>
 #include <QDateTime>
 #include <QList>
 namespace data::Equipment {
+    inline static QString path = "./equipment.db";
+
     /**
      * @brief 删除设备管理数据库。
      *

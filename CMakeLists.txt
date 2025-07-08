@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.30)
 
 project(LabNexus)
@@ -183,6 +182,17 @@ target_include_directories(TestMail PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestMail PRIVATE pch.h)
 add_test(NAME TestMail COMMAND TestMail)
 
+add_executable(TestEquipmentManage tests/test_equipment_manage.cpp
+        service/logger/logger.cpp
+        service/database/databaseManager.cpp
+        module/data/data_EquipmentManage.cpp
+)
+
+target_link_libraries(TestEquipmentManage PRIVATE Qt6::Core Qt6::Sql Qt6::Test Qt6::Widgets)
+target_include_directories(TestEquipmentManage PRIVATE ${PROJECT_SOURCE_DIR})
+target_precompile_headers(TestEquipmentManage PRIVATE pch.h)
+add_test(NAME TestEquipmentManage COMMAND TestEquipmentManage)
+
 enable_testing()
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -216,7 +226,7 @@ endif ()
 
 # 为测试目标复制 Qt6 测试库 DLL
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    foreach (target TestLogs TestDB TestBooking TestMail)
+    foreach (target TestLogs TestDB TestBooking TestMail TestEquipmentManage)
         add_custom_command(TARGET ${target} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6Test${DEBUG_SUFFIX}.dll"
@@ -234,9 +244,13 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
             COMMAND ${CMAKE_COMMAND} -E copy
             "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
             "$<TARGET_FILE_DIR:TestMail>")
+    add_custom_command(TARGET TestEquipmentManage POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
+            "$<TARGET_FILE_DIR:TestEquipmentManage>")
     # 复制 Qt 平台插件供测试使用
     if (EXISTS "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
-        foreach (target TestLogs TestDB TestBooking TestMail)
+        foreach (target TestLogs TestDB TestBooking TestMail TestEquipmentManage)
             add_custom_command(TARGET ${target} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E make_directory
                     "$<TARGET_FILE_DIR:${target}>/plugins/platforms")
@@ -248,7 +262,7 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     endif ()
     # 复制 SQLite 驱动插件
     if (EXISTS "${QT_INSTALL_PATH}/plugins/sqldrivers/qsqlite${DEBUG_SUFFIX}.dll")
-        foreach (target TestLogs TestDB TestBooking TestMail)
+        foreach (target TestLogs TestDB TestBooking TestMail TestEquipmentManage)
             add_custom_command(TARGET ${target} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E make_directory
                     "$<TARGET_FILE_DIR:${target}>/plugins/sqldrivers")
