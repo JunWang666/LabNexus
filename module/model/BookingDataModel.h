@@ -31,8 +31,6 @@ namespace dataModel {
         bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
         Qt::ItemFlags flags(const QModelIndex &index) const override;
-        //返回数据库映射链表
-        QList<data::Booking::fullBookingRecord> getBookingData() const;
 
     public slots:
         // --- 自定义公共槽函数，用于控制模型行为 ---

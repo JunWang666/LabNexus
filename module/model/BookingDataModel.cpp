@@ -147,8 +147,4 @@ namespace dataModel {
         m_records = data::Booking::loadBookingFullRecords();
         endResetModel();
     }
-    //增加返回记录函数
-    QList<data::Booking::fullBookingRecord> BookingDataModel::getBookingData() const {
-        return m_records;
-    }
 } // namespace dataModel
