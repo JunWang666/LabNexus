@@ -45,7 +45,6 @@ private slots:
     private:
         view::equipment::Ui::equipment_home *ui;
     };
-
 } // view::equipment
 
 #endif // EQUIPMENT_HOME_H
