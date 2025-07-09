@@ -50,54 +50,32 @@ border-radius:20px;
 
 QPushButton{
 border-radius:10px;
-
-       background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.496955, fy:1, stop:0 rgba(0, 220,
-       255, 255), stop:1 rgba(255, 205, 120, 255));
-       font:700 20pt &quot;Microsoft YaHei UI&quot;;
-       color: rgb(112, 112, 112);
+       background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(207, 0, 73, 255),
+       stop:0.363636 rgba(143, 92, 142, 255), stop:0.698864 rgba(96, 165, 163, 255), stop:1 rgba(0, 135, 255, 255));
+       font: 20pt &quot;Microsoft YaHei UI&quot;;
 }
 
 QPushButton#messageButton{
-
 border-radius:10px;
-       background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.496955, fy:1, stop:0 rgba(0, 220,
-       255, 255), stop:1 rgba(255, 205, 120, 255));
-       font:700 20pt &quot;Microsoft YaHei UI&quot;;
-       color: rgb(112, 112, 112);
+       background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(207, 0, 73, 255),
+       stop:0.363636 rgba(143, 92, 142, 255), stop:0.698864 rgba(96, 165, 163, 255), stop:1 rgba(0, 135, 255, 255));
+       font: 20pt &quot;Microsoft YaHei UI&quot;;
 }
 
 
 QPushButton:hover{
 border-radius:10px;
-       background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220,
-       255, 255), stop:1 rgba(255, 205, 120, 255));
+       background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 165, 165, 255),
+       stop:0.471591 rgba(123, 162, 147, 255), stop:1 rgba(255, 159, 128, 255));
        font: 20pt &quot;Microsoft YaHei UI&quot;;
 }
 QPushButton:pressed{
-       border-radius:10px;
-
-       background-color: qradialgradient(spread:pad, cx:0.506, cy:0.9375, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0,
-       220, 255, 255), stop:1 rgba(255, 189, 78, 255));
-       padding-top:5px;
-       padding-left:5px;
-
+       background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 165, 165, 255),
+       stop:0.471591 rgba(123, 162, 147, 255), stop:1 rgba(255, 159, 128, 255));
        font: 20pt &quot;Microsoft YaHei UI&quot;;
-       }
-       QPushButton#messageButton:hover{
-       border-radius:10px;
-       background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220,
-       255, 255), stop:1 rgba(255, 205, 120, 255));
-       font: 20pt &quot;Microsoft YaHei UI&quot;;
-       }
-       QPushButton#messageButton:pressed{
 border-radius:10px;
-
-       background-color: qradialgradient(spread:pad, cx:0.506, cy:0.9375, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0,
-       220, 255, 255), stop:1 rgba(255, 189, 78, 255));
 padding-top:5px;
 padding-left:5px;
-
-       font: 20pt &quot;Microsoft YaHei UI&quot;;
        }
    </string>
   </property>

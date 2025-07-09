@@ -11,7 +11,7 @@
 #include "module/data/data_UserControl.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
-#include "service/styleHelper/StyleHelper.h"
+#include "service/styleHelper/MicaHelper.h"
 
 namespace view::messageCenter {
     MessageWindow::MessageWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MessageWindow) {

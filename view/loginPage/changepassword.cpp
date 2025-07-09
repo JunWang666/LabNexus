@@ -44,6 +44,12 @@ namespace view::loginPage {
         delete ui;
     }
 
+
+    void changePassword::setData(const QString &IDD)
+    {
+        ui->lineEdit_userId->setText(IDD);
+        ui->lineEdit_userId->setReadOnly(true);
+    }
     void changePassword::setupPasswordFields() {
         // 设置密码输入框为密码模式
         ui->lineEdit_oldPassword->setEchoMode(QLineEdit::Password);
@@ -87,6 +93,7 @@ namespace view::loginPage {
 
     bool changePassword::validateUserCredentials(const QString &id, const QString &name, const QString &oldPassword) {
         // 使用LabNexus的用户验证系统
+        change_name=0;
         auto result = data::UserControl::Login::isUserPasswordValid(id, oldPassword);
         if (!result.has_value()) {
             return false;
@@ -97,7 +104,7 @@ namespace view::loginPage {
         // 验证用户名是否匹配
         auto nameResult = data::UserControl::UserInfo::getUserNameById(userId);
         if (!nameResult.has_value() || nameResult.value() != name) {
-            return false;
+            change_name=1;
         }
 
         return true;
@@ -111,7 +118,8 @@ namespace view::loginPage {
         }
 
         int userId = userResult.value();
-        auto updateResult = data::UserControl::Login::updateUserPassword(userId, newPassword);
+        auto updateResult = data::UserControl::Login::updateUserPassword(userResult.value(), newPassword);
+        if(change_name) data::UserControl::UserInfo::changeUserName(userResult.value(),userName);
         return updateResult.has_value() && updateResult.value();
     }
 
@@ -160,7 +168,6 @@ namespace view::loginPage {
 
         // 更新密码
         if (updateUserPassword(userId, newPassword)) {
-            QMessageBox::information(this, "成功", "密码修改成功！");
             service::log() << "密码修改成功，用户ID: " << userId << " 姓名: " << userName;
 
             // 发送信号返回登录页面
@@ -196,4 +203,7 @@ namespace view::loginPage {
     {
         Q_UNUSED(event);
     }
+
+
+
 } // view::loginPage

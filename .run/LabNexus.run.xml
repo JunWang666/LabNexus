@@ -4,14 +4,23 @@
                    PASS_PARENT_ENVS_2="true" PROJECT_NAME="LabNexus" TARGET_NAME="LabNexus" CONFIG_NAME="Debug-MinGW"
                    RUN_TARGET_PROJECT_NAME="LabNexus" RUN_TARGET_NAME="LabNexus">
         <method v="2">
-            <option name="DeactivateBeforeRunTask">
-                <option name="dataSourceId" value="db3d5a6f-1fe4-48e3-bfc2-e92e0ddcdab8"/>
-            </option>
+            <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask"
+                    enabled="true"/>
             <option name="DeactivateBeforeRunTask">
                 <option name="dataSourceId" value="864b80c5-1ef6-46af-b1c3-4128c2076967"/>
             </option>
-            <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask"
-                    enabled="true"/>
+            <option name="DeactivateBeforeRunTask">
+                <option name="dataSourceId" value="84bc1529-57ee-4be1-bb05-06f1ea03640d"/>
+            </option>
+            <option name="DeactivateBeforeRunTask">
+                <option name="dataSourceId" value="2eab7833-da69-4494-a5a8-3ba071c0a4d8"/>
+            </option>
+            <option name="DeactivateBeforeRunTask">
+                <option name="dataSourceId" value="952a0337-8664-4618-aa80-275b94474708"/>
+            </option>
+            <option name="DeactivateBeforeRunTask">
+                <option name="dataSourceId" value="db3d5a6f-1fe4-48e3-bfc2-e92e0ddcdab8"/>
+            </option>
         </method>
-    </configuration
+    </configuration>
 </component>

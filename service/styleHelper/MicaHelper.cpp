@@ -2,7 +2,7 @@
 // Created by gouzuang on 25-7-9.
 //
 
-#include "StyleHelper.h"
+#include "MicaHelper.h"
 
 // 仅在 Windows 平台下编译此文件的内容
 #if defined(Q_OS_WIN)
