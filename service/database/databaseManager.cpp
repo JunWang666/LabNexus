@@ -6,6 +6,8 @@
 #include <QFileInfo>
 #include <QSqlError>
 #include <QUuid>
+#include <QThread>
+#include <QCoreApplication>
 
 namespace service {
     DatabaseManager::DatabaseManager(const QString &databasePath)
@@ -27,15 +29,23 @@ namespace service {
     }
 
     void DatabaseManager::cleanup() {
+        // 设置连接状态为假，阻止新的查询
+        m_connected = false;
+
         // 如果连接对象有效且是打开状态，则关闭
         if (m_database.isValid() && m_database.isOpen()) {
             m_database.close();
         }
-        m_connected = false;
 
-        // 从全局连接列表中移除此连接
-        if (QSqlDatabase::contains(m_connectionName)) {
-            QSqlDatabase::removeDatabase(m_connectionName);
+        // 清空数据库对象，这会释放所有内部资源
+        m_database = QSqlDatabase();
+
+        // 只有在应用程序仍在运行时才尝试移除连接
+        // 在程序退出时，静态对象析构顺序不确定，Qt可能已经开始清理
+        if (QCoreApplication::instance() && !QCoreApplication::instance()->closingDown()) {
+            if (QSqlDatabase::contains(m_connectionName)) {
+                QSqlDatabase::removeDatabase(m_connectionName);
+            }
         }
     }
 
@@ -79,6 +89,7 @@ namespace service {
     }
 
     QSqlQuery DatabaseManager::executeQuery(const QString &queryString) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
             return QSqlQuery(m_database);
@@ -90,7 +101,7 @@ namespace service {
         } else {
             m_lastError.clear();
         }
-        return query; // 返回一个副本，生命周期由调用者管理
+        return query;
     }
 
     // 执行非查询语句
@@ -148,6 +159,7 @@ namespace service {
 
     // 执行预处理查询
     QSqlQuery DatabaseManager::executePreparedQuery(const QString &queryString, const QVariantList &parameters) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
             return QSqlQuery(m_database);
@@ -238,4 +250,18 @@ namespace service {
         }
     }
 
+    // 移除查询跟踪功能的实现，因为它们不再需要
+    void DatabaseManager::registerQuery(QSqlQuery *query) {
+        // 空实现，保持接口兼容性
+        Q_UNUSED(query)
+    }
+
+    void DatabaseManager::unregisterQuery(QSqlQuery *query) {
+        // 空实现，保持接口兼容性
+        Q_UNUSED(query)
+    }
+
+    void DatabaseManager::clearAllQueries() {
+        // 空实现，保持接口兼容性
+    }
 }

@@ -32,7 +32,6 @@ void applyBlurEffect(HWND hwnd)
         auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)GetProcAddress(hUser, "SetWindowCompositionAttribute");
         if (setWindowCompositionAttribute)
         {
-            // [!!!] 主要修正：使用你头文件中定义的全大写类型名
             ACCENT_POLICY accent = { ACCENT_ENABLE_BLURBEHIND, 0, 0, 0 };
             WINDOWCOMPOSITIONATTRIBDATA data;
             data.Attrib = WCA_ACCENT_POLICY;
@@ -67,7 +66,8 @@ int main(int argc, char *argv[]) {
         log(LogLevel::ERR)<< "无法加载样式表文件: " << styleFile.fileName();
     }
 
-    view::login::loginPage b;
+    data::UserControl::currentUserId = 2;
+    view::messageCenter::MessageWindow b;
 
 #ifdef Q_OS_WIN
       // 从窗口实例 b 获取句柄，而不是用 this

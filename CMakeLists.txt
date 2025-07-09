@@ -102,12 +102,15 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messageblock.ui
         view/messageCenter/messageblock.cpp
         view/messageCenter/messageblock.h
+        service/styleHelper/StyleHelper.cpp
+        service/styleHelper/StyleHelper.h
 )
 target_link_libraries(LabNexus
         Qt::Core
         Qt::Gui
         Qt::Widgets
         Qt::Sql
+        dwmapi
 )
 target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(LabNexus PRIVATE pch.h)
