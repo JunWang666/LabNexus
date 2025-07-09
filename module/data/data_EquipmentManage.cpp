@@ -122,7 +122,7 @@ namespace data::Equipment {
                         name TEXT NOT NULL,
                         class_id INTEGER NOT NULL,
                         status TEXT NOT NULL DEFAULT '可用',
-                        rentId INTEGER
+                        rentId INTEGER,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
                     )
