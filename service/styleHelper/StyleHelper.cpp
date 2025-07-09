@@ -28,7 +28,7 @@
 #endif // Q_OS_WIN
 
 namespace service::style {
-    void setMica(QWidget* window) {
+    void setMica(QWidget *window) {
         // 确保只在 Windows 平台上执行
 #if defined(Q_OS_WIN)
         if (!window) {
