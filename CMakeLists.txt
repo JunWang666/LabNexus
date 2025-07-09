@@ -6,7 +6,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-
 find_package(Qt6 COMPONENTS
         Core
         Gui
@@ -75,6 +74,10 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
+        view/loginPage/style.qrc
+
+
+
 )
 target_link_libraries(LabNexus
         Qt::Core

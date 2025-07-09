@@ -9,12 +9,15 @@
 #include "../loginPage/loginpage.h"
 #include "service/logger/logger.h"
 #include <QMessageBox>
-
+#include <QMouseEvent>
 namespace view::homepage {
     teacherHomepage::teacherHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),
         ui(new Ui::teacherHomepage), T_name(name), T_ID(ID) {
         ui->setupUi(this);
         setupUI();
+        this->setWindowFlag(Qt::FramelessWindowHint);
+        this->setAttribute(Qt::WA_TranslucentBackground);
+
     }
 
     teacherHomepage::~teacherHomepage() {
@@ -29,9 +32,7 @@ namespace view::homepage {
             .arg(T_name));
 
         // 设置公告文本框为只读
-        ui->announcementTextEdit->setReadOnly(true);
-        ui->announcementTextEdit->setText(
-            "欢迎使用实验室设备管理系统！\n作为教师用户，您可以：\n1. 借用和归还实验设备\n2. 查看借用历史记录\n3. 报修设备故障\n4. 审批学生的借用申请\n5. 修改个人信息");
+
 
         service::log() << "教师主页初始化完成 - 用户: " << T_name << " (ID: " << T_ID << ")";
     }
@@ -113,5 +114,32 @@ namespace view::homepage {
         // TODO: 打开消息中心页面
         QMessageBox::information(this, "消息中心",
                                  QString("消息中心功能开发中...\n用户: %1\nID: %2\n\n在这里您可以查看系统通知和消息。").arg(T_name).arg(T_ID));
+    }
+
+    void teacherHomepage::on_Button_clicked()
+    {
+        ui->frame_3->show();
+        ui->frame_4->hide();
+    }
+    void teacherHomepage::on_Button2_clicked()
+    {
+        ui->frame_3->hide();
+        ui->frame_4->show();
+    }
+    void teacherHomepage::mousePressEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton)
+            mouseOffset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+    }
+
+    void teacherHomepage::mouseMoveEvent(QMouseEvent *event)
+    {
+        if (event->buttons() & Qt::LeftButton)
+            move(event->globalPosition().toPoint() - mouseOffset);
+    }
+
+    void teacherHomepage::mouseReleaseEvent(QMouseEvent *event)
+    {
+        Q_UNUSED(event);
     }
 } // view::homepage

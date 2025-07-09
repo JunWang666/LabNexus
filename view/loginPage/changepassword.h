@@ -42,7 +42,7 @@ namespace view::loginPage {
         QString prePassword;
         QString newPassword;
         QString userName;
-
+        QPoint mouseOffset;
         // 私有方法
         bool isPasswordValid(const QString &password);
 
@@ -53,6 +53,9 @@ namespace view::loginPage {
         bool validateUserCredentials(const QString &id, const QString &name, const QString &oldPassword);
 
         bool updateUserPassword(const QString &id, const QString &newPassword);
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
     };
 } // view::loginPage
 

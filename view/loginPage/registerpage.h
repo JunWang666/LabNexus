@@ -24,14 +24,17 @@ private slots:
     void on_submitButton_clicked();
     void on_studentRadioButton_clicked();
     void on_teacherRadioButton_clicked();
-
+    void on_pushButton_cancel_clicked();
 private:
     Ui::registerPage *ui;
     QString name;
     QString ID;
     QString password;
+    QPoint mouseOffset;
     int identity; // 1=学生, 2=老师
-    
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     bool isPasswordValid(const QString &password);
 };
 } // view::login
