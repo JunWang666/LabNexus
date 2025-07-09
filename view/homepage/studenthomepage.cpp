@@ -54,8 +54,8 @@ namespace view::homepage {
 
         // TODO: 打开设备归还页面
         rent->setIndex(Order::Rent::Col_Return);
-        QMessageBox::information(this, "器材归还",
-                                 QString("器材归还功能开发中...\n用户: %1\nID: %2\n\n在这里您可以归还已借用的设备。").arg(S_name).arg(S_ID));
+        // QMessageBox::information(this, "器材归还",
+        //                          QString("器材归还功能开发中...\n用户: %1\nID: %2\n\n在这里您可以归还已借用的设备。").arg(S_name).arg(S_ID));
     }
 
     void studentHomepage::on_borrowHistoryButton_clicked() {
@@ -63,8 +63,8 @@ namespace view::homepage {
 
         // TODO: 打开借用历史页面
         rent->on_btnCheck_clicked();
-        QMessageBox::information(this, "我的借用日志",
-                                 QString("借用日志功能开发中...\n用户: %1\nID: %2\n\n在这里您可以查看自己的设备借用历史记录。").arg(S_name).arg(S_ID));
+        // QMessageBox::information(this, "我的借用日志",
+        //                          QString("借用日志功能开发中...\n用户: %1\nID: %2\n\n在这里您可以查看自己的设备借用历史记录。").arg(S_name).arg(S_ID));
     }
 
     void studentHomepage::on_reportMaintenanceButton_clicked() {
@@ -74,8 +74,8 @@ namespace view::homepage {
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
         rent->setIndex(Order::Rent::Col_Repair);
-        QMessageBox::information(this, "器材报修",
-                                 QString("器材报修功能开发中...\n用户: %1\nID: %2\n\n在这里您可以报告设备故障或损坏。").arg(S_name).arg(S_ID));
+        // QMessageBox::information(this, "器材报修",
+        //                          QString("器材报修功能开发中...\n用户: %1\nID: %2\n\n在这里您可以报告设备故障或损坏。").arg(S_name).arg(S_ID));
     }
 
     void studentHomepage::on_editProfileButton_clicked() {

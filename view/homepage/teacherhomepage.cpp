@@ -53,8 +53,8 @@ namespace view::homepage {
 
         // TODO: 打开设备归还页面
         rentTeacher->setIndex(Order::RentTeacher::Col_Return);
-        QMessageBox::information(this, "器材归还",
-                                 QString("器材归还功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
+        // QMessageBox::information(this, "器材归还",
+        //                          QString("器材归还功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_borrowHistoryButton_clicked() {
@@ -62,8 +62,8 @@ namespace view::homepage {
 
         // TODO: 打开借用历史页面
         rentTeacher->on_btnCheck_clicked();
-        QMessageBox::information(this, "我的借用日志",
-                                 QString("借用日志功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
+        // QMessageBox::information(this, "我的借用日志",
+        //                          QString("借用日志功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_reportMaintenanceButton_clicked() {
@@ -73,8 +73,8 @@ namespace view::homepage {
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
         rentTeacher->setIndex(Order::RentTeacher::Col_Repair);
-        QMessageBox::information(this, "器材报修",
-                                 QString("器材报修功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
+        // QMessageBox::information(this, "器材报修",
+        //                          QString("器材报修功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_editProfileButton_clicked() {
