@@ -9,7 +9,7 @@
 #include "service/database/databaseManager.h"
 
 namespace data::UserControl {
-    inline static QString path = "./user.db";
+    inline QString path = "./user.db";
 
     enum class UserControlError {
         UserNotFound,

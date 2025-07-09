@@ -10,7 +10,7 @@
 #include <QDateTime>
 #include <QList>
 namespace data::Equipment {
-    inline static QString path = "./equipment.db";
+    inline QString path = "./equipment.db";
 
     /**
      * @brief 删除设备管理数据库。

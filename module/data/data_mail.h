@@ -9,7 +9,7 @@
 #include <QDateTime>
 
 namespace data::mail {
-    inline static QString path = "mail.db";
+    inline QString path = "mail.db";
 
     struct Mail {
         int id;
