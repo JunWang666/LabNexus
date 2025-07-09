@@ -94,7 +94,7 @@ add_executable(LabNexus main.cpp
         module/model/ApprovalStatusDelegate.cpp
         module/model/ApprovalStatusDelegate.h
         module/model/RepairStatusDelegate.cpp
-        module/model/RepairStatusDelegate.
+        module/model/RepairStatusDelegate.h
         view/loginPage/style.qrc
         assets/style/fluentDesign.qss
         assets/style/style.qrc
