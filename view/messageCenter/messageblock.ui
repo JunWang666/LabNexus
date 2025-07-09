@@ -33,7 +33,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-       <widget class="QPushButton" name="frame">
+    <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
        <horstretch>0</horstretch>
@@ -53,7 +53,7 @@
       </size>
      </property>
      <property name="styleSheet">
-         <string notr="true">QPushButton#frame {
+      <string notr="true">QFrame#frame {
        /* 设置背景颜色 */
        background-color: #F3F2F1;
 
@@ -65,15 +65,21 @@
        }
 
        /* 鼠标悬停时的效果，可以增加一些交互感 */
-             QPushButton#frame:hover {
+       QFrame#frame:hover {
        background-color: #E1DFDD;
        }
 
-             QPushButton#frame QLabel {
+       QFrame#frame QLabel {
        background-color: transparent;
        border: none; /* 同时最好也禁用边框 */
        }
       </string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

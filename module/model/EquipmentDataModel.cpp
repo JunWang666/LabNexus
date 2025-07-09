@@ -31,7 +31,6 @@ namespace dataModel{
                 case Col_ID:     return record.id;
                 case Col_Name:   return record.name;
                 case Col_Type:   return record.type;
-                case Col_RentId: return record.rentId;
                 case Col_Status: return record.status;
                 case Col_InDate: return record.inDate;
                 default:         return QVariant();
@@ -45,7 +44,7 @@ namespace dataModel{
             return QVariant();
         if (orientation == Qt::Horizontal) {
             static QStringList headers = {
-                "设备ID","设备名称","设备类型","借用人ID","当前状态","入库时间"
+                "设备ID","设备名称","设备类型","当前状态","入库时间"
             };
             if (section >= 0 && section < headers.size())
                 return headers.at(section);
@@ -58,10 +57,9 @@ namespace dataModel{
             return false;
         auto &record = myEquipmentRecord[index.row()];
         int col = index.column();
-        switch (col) {//只有状态和名字和借用人ID可以更改
+        switch (col) {//只有状态和名字可以更改
             case Col_Name: record.name = value.toString(); break;
             case Col_Status: record.status = value.toString(); break;
-            case Col_RentId: record.rentId = value.toInt(); break;
             default: return false;
         }
         emit dataChanged(index, index);
@@ -72,7 +70,7 @@ namespace dataModel{
         if (!index.isValid())
             return Qt::NoItemFlags;
         Qt::ItemFlags defaultItemFlags = QAbstractItemModel::flags(index);//获取默认标签
-        if (index.column() == Col_Name || index.column() == Col_Status || index.column() == Col_RentId) {//只有状态和名字和借用人ID可以更改
+        if (index.column() == Col_Name || index.column() == Col_Status) {//只有状态和名字可以更改
             defaultItemFlags |= Qt::ItemIsEditable;
         }
         return defaultItemFlags;

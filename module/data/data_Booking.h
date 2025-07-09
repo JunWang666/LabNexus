@@ -11,7 +11,7 @@
 #include <QVariant>
 
 namespace data::Booking {
-    inline  QString path = "./booking.db";
+    inline static QString path = "./booking.db";
 
     /**
      * @brief 删除预订数据库。
