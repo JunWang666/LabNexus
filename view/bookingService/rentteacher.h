@@ -15,6 +15,7 @@
 #include "module/model/filterproxymdel.h"
 #include "module/model/ApprovalStatusDelegate.h"
 #include "module/model/RepairStatusDelegate.h"
+#include <QMessageBox>
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class RentTeacher; }
@@ -44,6 +45,7 @@ public:
 public slots:
     void on_btnSend_clicked();
     void on_btnCheck_clicked();
+    void on_btnReturn_clicked();
 private:
     Ui::RentTeacher *ui;
     SendRent* sendRent;

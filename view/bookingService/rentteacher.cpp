@@ -189,5 +189,22 @@ void RentTeacher::on_btnCheck_clicked()
     apply->show();
 }
 
-
+void RentTeacher::on_btnReturn_clicked() {
+    QItemSelectionModel *selectionModel = ui->returnTableView->selectionModel();
+    if (selectionModel->hasSelection()) {
+        QModelIndexList  indexes = selectionModel->selectedRows();
+        int index = indexes.at(0).row();
+        QModelIndex idIndex = modelReturn->index(index, dataModel::EquipmentDataModel::Col_ID);
+        int id = modelReturn->data(idIndex).toInt();
+        if (data::Equipment::updateEquipmentOnReturn(id)) {
+            loadData();
+        }
+        else {
+            QMessageBox::warning(this,"警告","归还失败",QMessageBox::Ok);
+        }
+    }
+    else {
+        QMessageBox::warning(this,"警告","请选择要归还的设备",QMessageBox::Ok);
+    }
+}
 } // view::Order

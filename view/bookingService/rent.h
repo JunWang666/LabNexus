@@ -36,6 +36,7 @@ public:
 public slots:
     void on_btnSend_clicked();
     void on_btnCheck_clicked();
+    void on_btnReturn_clicked();
 private:
     Ui::Rent *ui;
     SendRent* sendRent;
