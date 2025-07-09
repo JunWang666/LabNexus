@@ -5,8 +5,7 @@
 #ifndef LOGINPAGE_H
 #define LOGINPAGE_H
 
-#include <QWidget>
-#include <QtSql/QSqlDatabase>
+#include "pch.h"
 
 namespace view::loginPage {
     class changePassword;

@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_studentHomepage.h" resolved
 
+#include "pch.h"
 #include "studenthomepage.h"
 #include "ui_studentHomepage.h"
 #include "../loginPage/loginpage.h"
@@ -11,6 +12,7 @@
 #include <QMessageBox>
 #include <QPropertyAnimation>
 #include <QMouseEvent>
+
 namespace view::homepage {
     studentHomepage::studentHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),
         ui(new Ui::studentHomepage), S_name(name), S_ID(ID) {

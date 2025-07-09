@@ -6,8 +6,8 @@
 #define MANAGERCHECK_H
 
 #include <QWidget>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "module/model/BookingDataModel.h"
+
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class ManagerCheck; }
@@ -21,12 +21,12 @@ public:
     ~ManagerCheck() override;
     void loadData();
     void setUpModel();
-    void setColEditable(QStandardItemModel *model,int col,bool editable);
+    // void setColEditable(QStandardItemModel *model,int col,bool editable);
 public slots:
     void on_btnClose_clicked();
 private:
     Ui::ManagerCheck *ui;
-    QStandardItemModel *model;
+    dataModel::BookingDataModel *model;
 };
 } // view::Order
 

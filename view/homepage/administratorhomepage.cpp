@@ -4,12 +4,14 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_administratorHomepage.h" resolved
 
+#include "pch.h"
 #include "administratorhomepage.h"
 #include "ui_administratorHomepage.h"
 #include "../loginPage/loginpage.h"
 #include "service/logger/logger.h"
 #include <QMessageBox>
 #include <QMouseEvent>
+
 namespace view::homepage {
     administratorHomepage::administratorHomepage(const QString &name, const QString &ID,
                                                  QWidget *parent) : QWidget(parent), ui(new Ui::administratorHomepage),

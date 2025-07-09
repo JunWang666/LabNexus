@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_registerPage.h" resolved
 
+#include "pch.h"
 #include "registerpage.h"
 #include "ui_registerPage.h"
 #include "module/data/data_UserControl.h"
@@ -11,6 +12,7 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QMouseEvent>
+
 namespace view::login {
 registerPage::registerPage(QWidget *parent) :
     QWidget(parent), ui(new Ui::registerPage) {

@@ -9,7 +9,7 @@ namespace data::Booking {
         QFile dbFile(path);
         if (dbFile.exists()) {
             if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功";
+                log(LogLevel::INFO) << "数据库文件删除成功" << path;
             } else {
                 log(LogLevel::ERR) << "数据库文件删除失败";
             }
@@ -23,17 +23,18 @@ namespace data::Booking {
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功";
+                log(service::LogLevel::INFO) << "数据库文件创建成功" << path;
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
+
+            createBookingApprovalTable();
+            createBookingEquipmentTable();
+            createBookingInfoTable();
+            createBookingTimeTable();
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
-        createBookingApprovalTable();
-        createBookingEquipmentTable();
-        createBookingInfoTable();
-        createBookingTimeTable();
     }
 
 
@@ -140,37 +141,20 @@ namespace data::Booking {
               LEFT JOIN booking_time bt ON bt.booking_id = bi.id
               LEFT JOIN booking_approval ba ON ba.booking_id = bi.id
         )";
-        auto query = db.executeQuery(queryStr);
-        while (query.next()) {
-            fullBookingRecord rec;
-            rec.id = query.value("id").toInt();
-            rec.userId = query.value("user_id").toInt();
-            rec.createDate = query.value("create_date").toDateTime();
-            rec.requestStartDate = query.value("request_start_time").toDateTime();
-            rec.requestEndDate = query.value("request_end_time").toDateTime();
-            rec.actualStartDate = query.value("actual_start_time").toDateTime();
-            rec.actualEndDate = query.value("actual_end_time").toDateTime();
-            rec.approvalStatus = query.value("approval_status").toString();
-            rec.approvalDate = query.value("approval_time").toDateTime();
-            rec.approverID = query.value("approver_id").toInt();
-
-            auto userNameResult = data::UserControl::UserInfo::getUserNameById(rec.userId);
-            if (userNameResult) {
-                rec.userName = *userNameResult;
-            } else {
-                rec.userName = "未知";
-                log(LogLevel::ERR) << "无法获取申请人人名称: " << rec.userId;
-            }
-
-            auto approverNameResult = data::UserControl::UserInfo::getUserNameById(rec.approverID);
-            if (approverNameResult) {
-                rec.approverName = *approverNameResult;
-            } else {
-                rec.approverName = "未知";
-                log(LogLevel::ERR) << "无法获取审批人名称: " << rec.approverID;
-            }
-
-            records.append(rec);
+        auto results = db.executeQueryAndFetchAll(queryStr);
+        for (const auto &row: results) {
+            fullBookingRecord record;
+            record.id = row["id"].toInt();
+            record.userId = row["user_id"].toInt();
+            record.createDate = row["create_date"].toDateTime();
+            record.requestStartDate = row["request_start_time"].toDateTime();
+            record.requestEndDate = row["request_end_time"].toDateTime();
+            record.actualStartDate = row["actual_start_time"].toDateTime();
+            record.actualEndDate = row["actual_end_time"].toDateTime();
+            record.approvalStatus = row["approval_status"].toString();
+            record.approvalDate = row["approval_time"].toDateTime();
+            record.approverID = row["approver_id"].toInt();
+            records.append(record);
         }
         return records;
     }
@@ -185,5 +169,41 @@ namespace data::Booking {
 
     bool updateBookingApprovalField(int bookingId, const QString &fieldName, const QVariant &value) {
         return false;
+    }
+
+    bool createFullBookingRecord(int bookingId, int userId, const QDateTime &createDate,
+                                 int equipmentClassId, int equipmentId,
+                                 const QDateTime &requestStartTime, const QDateTime &requestEndTime,
+                                 const QString &approvalStatus, int approverId) {
+        service::DatabaseManager db(path);
+
+        QString infoQuery = QString("INSERT INTO booking_info (id, user_id, create_date) VALUES (%1, %2, '%3')")
+                .arg(bookingId)
+                .arg(userId)
+                .arg(createDate.toString("yyyy-MM-dd hh:mm:ss"));
+        if (!db.executeNonQuery(infoQuery)) return false;
+
+        QString equipmentQuery = QString(
+                    "INSERT INTO booking_equipment (booking_id, equipment_class_id, equipment_id) VALUES (%1, %2, %3)")
+                .arg(bookingId)
+                .arg(equipmentClassId)
+                .arg(equipmentId);
+        if (!db.executeNonQuery(equipmentQuery)) return false;
+
+        QString timeQuery = QString(
+                    "INSERT INTO booking_time (booking_id, request_start_time, request_end_time) VALUES (%1, '%2', '%3')")
+                .arg(bookingId)
+                .arg(requestStartTime.toString("yyyy-MM-dd hh:mm:ss"))
+                .arg(requestEndTime.toString("yyyy-MM-dd hh:mm:ss"));
+        if (!db.executeNonQuery(timeQuery)) return false;
+
+        QString approvalQuery = QString(
+                    "INSERT INTO booking_approval (booking_id, approval_status, approver_id) VALUES (%1, '%2', %3)")
+                .arg(bookingId)
+                .arg(approvalStatus)
+                .arg(approverId);
+        if (!db.executeNonQuery(approvalQuery)) return false;
+
+        return true;
     }
 }
