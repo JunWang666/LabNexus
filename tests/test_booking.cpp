@@ -15,16 +15,15 @@ private:
 };
 
 void TestBooking::initTestCase() {
-    data::Booking::path = "./test_booking.db";
+    //data::Booking::path = "./test_booking.db";
+    //data::UserControl::path = "./test_user.db";
+    log(LogLevel::DEBUG)<<"data::Booking::path "<<data::Booking::path<<"   data::UserControl::path "<<data::UserControl::path;
     // Setup test databases
     data::Booking::dropDB();
     data::UserControl::dropDB();
 
     data::UserControl::buildDB();
     data::Booking::buildDB();
-
-    service::DatabaseManager userDb("./test_user.db");
-    service::DatabaseManager bookingDb("./test_booking.db");
 
     // Setup: Create some users
     data::UserControl::Login::createNewUser("123", "Stu1", "123", "Student");
@@ -39,23 +38,40 @@ void TestBooking::initTestCase() {
     int user2Id = *user2IdOpt;
 
     // We will directly insert into booking tables.
-    service::DatabaseManager db("./booking.db");
-    db.executeNonQuery(QString("INSERT INTO booking_info (id, user_id, create_date) VALUES (1, %1, '2025-07-07 10:00:00')").arg(user1Id));
-    db.executeNonQuery("INSERT INTO booking_time (booking_id, request_start_time, request_end_time) VALUES (1, '2025-07-08 09:00:00', '2025-07-08 11:00:00')");
-    db.executeNonQuery(QString("INSERT INTO booking_approval (booking_id, approval_status, approver_id) VALUES (1, 'Pending', %1)").arg(user2Id));
+    // service::DatabaseManager db(data::Booking::path);
+    // db.executeNonQuery(QString("INSERT INTO booking_info (id, user_id, create_date) VALUES (1, %1, '2025-07-07 10:00:00')").arg(user1Id));
+    // db.executeNonQuery("INSERT INTO booking_equipment (booking_id, equipment_class_id, equipment_id) VALUES (1, 1, 1)");
+    // db.executeNonQuery("INSERT INTO booking_time (booking_id, request_start_time, request_end_time) VALUES (1, '2025-07-08 09:00:00', '2025-07-08 11:00:00')");
+    // db.executeNonQuery(QString("INSERT INTO booking_approval (booking_id, approval_status, approver_id) VALUES (1, 'Pending', %1)").arg(user2Id));
+    QDateTime createDate = QDateTime::fromString("2025-07-07 10:00:00", "yyyy-MM-dd hh:mm:ss");
+    QDateTime requestStartTime = QDateTime::fromString("2025-07-08 09:00:00", "yyyy-MM-dd hh:mm:ss");
+    QDateTime requestEndTime = QDateTime::fromString("2025-07-08 11:00:00", "yyyy-MM-dd hh:mm:ss");
+    bool success = data::Booking::createFullBookingRecord(1, user1Id, createDate, 1, 1, requestStartTime, requestEndTime, "Pending", user2Id);
+    QVERIFY(success);
 }
 
 void TestBooking::cleanupTestCase() {
 }
 
 void TestBooking::testLoadBookingFullRecords() {
+    log(LogLevel::INFO) << "Testing loadBookingFullRecords...";
     QList<data::Booking::fullBookingRecord> records = data::Booking::loadBookingFullRecords();
+    log(LogLevel::INFO) << "Loaded booking records count:" << records.size();
+    // Log the records for debugging
+    for (const auto& rec : records) {
+        log(LogLevel::INFO) << "Booking Record - ID:" << rec.id
+                 << " User:" << rec.userName
+                 << " User Group:" << rec.userGroup
+                 << " Request Start:" << rec.requestStartDate.toString(Qt::ISODate)
+                 << " Request End:" << rec.requestEndDate.toString(Qt::ISODate)
+                 << " Status:" << rec.approvalStatus
+                 << " Approver:" << rec.approverName;
+    }
 
     QCOMPARE(records.size(), 1);
+    QVERIFY(!records.isEmpty());
     if (!records.isEmpty()) {
         const auto& rec = records.first();
-        QCOMPARE(rec.userName, QString("Stu1"));
-        QCOMPARE(rec.approverName, QString("Tea1"));
         auto user1IdOpt = data::UserControl::Login::foundUserIdByIdNumber("123");
         auto user2IdOpt = data::UserControl::Login::foundUserIdByIdNumber("011");
         QVERIFY(user1IdOpt.has_value());

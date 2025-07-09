@@ -5,8 +5,7 @@
 #ifndef LOGINPAGE_H
 #define LOGINPAGE_H
 
-#include <QWidget>
-#include <QtSql/QSqlDatabase>
+#include "pch.h"
 
 namespace view::loginPage {
     class changePassword;
@@ -44,9 +43,11 @@ namespace view::login {
 
     private:
         Ui::loginPage *ui;
-
+        QPoint mouseOffset;
         int confirm_user(QString &ID_c, QString &password_c);
-
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
         int user;
         // 0无效
         // 001学生

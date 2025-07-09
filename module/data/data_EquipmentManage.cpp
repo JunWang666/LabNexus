@@ -6,10 +6,10 @@
 
 namespace data::Equipment {
     void dropDB() {
-        QFile dbFile("./equipment.db");
+        QFile dbFile(path);
         if (dbFile.exists()) {
             if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功";
+                log(LogLevel::INFO) << "数据库文件删除成功"<<path;
             } else {
                 log(LogLevel::ERR) << "数据库文件删除失败";
             }
@@ -19,19 +19,21 @@ namespace data::Equipment {
     }
 
     void buildDB() {
-        QFile dbFile("./equipment.db");
+        QFile dbFile(path);
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功";
+                log(service::LogLevel::INFO) << "数据库文件创建成功"<<path;
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
+            EquipmentClass::createEquipmentClassTable();
+            EquipmentInstnace::createEquipmentInstanceTable();
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
-        EquipmentClass::createEquipmentClassTable();
-        EquipmentInstnace::createEquipmentInstanceTable();
+        
+
     }
 
         /**
@@ -40,7 +42,7 @@ namespace data::Equipment {
          */
     QList<fullEquipmentRecord> loadFullEquipmentRecords() {
         QList<fullEquipmentRecord> records;
-        service::DatabaseManager db("./equipment.db");
+        service::DatabaseManager db(path);
 
         // 使用 JOIN 查询将实例表和类别表关联起来
         // i 是 instance 的别名, c 是 class 的别名
@@ -59,21 +61,16 @@ namespace data::Equipment {
                 equipment_class AS c ON i.class_id = c.id
         )";
 
-        QSqlQuery query = db.executeQuery(queryString);
-        if (!query.isActive()) {
-            log(service::LogLevel::ERR) << "加载设备记录失败: " << query.lastError().text();
-            return records; // 返回空列表
-        }
-
-        while (query.next()) {
+        auto results = db.executeQueryAndFetchAll(queryString);
+        for (const auto &row : results) {
             fullEquipmentRecord rec;
-            rec.id = query.value("id").toInt();
-            rec.name = query.value("name").toString();
-            rec.status = query.value("status").toString();
-            rec.rentId = query.value("rentId").toInt();
-            rec.inDate = query.value("created_at").toDateTime();
-            rec.class_id = query.value("class_id").toInt();
-            rec.type = query.value("type_name").toString();
+            rec.id = row["id"].toInt();
+            rec.name = row["name"].toString();
+            rec.status = row["status"].toString();
+            rec.rentId = row["rentId"].toInt();
+            rec.inDate = row["created_at"].toDateTime();
+            rec.class_id = row["class_id"].toInt();
+            rec.type = row["type_name"].toString();
             records.append(rec);
         }
         return records;
@@ -96,7 +93,7 @@ namespace data::Equipment {
 
     namespace EquipmentClass {
             void createEquipmentClassTable() {
-                service::DatabaseManager db("./equipment.db");
+                service::DatabaseManager db(path);
                 if (!db.tableExists("equipment_class")) {
                     QString createTableQuery = R"(
                     CREATE TABLE equipment_class (
@@ -117,7 +114,7 @@ namespace data::Equipment {
 
     namespace EquipmentInstnace {
         void createEquipmentInstanceTable() {
-            service::DatabaseManager db("./equipment.db");
+            service::DatabaseManager db(path);
             if (!db.tableExists("equipment_instance")) {
                 QString createTableQuery = R"(
                 CREATE TABLE equipment_instance (

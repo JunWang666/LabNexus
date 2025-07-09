@@ -1,15 +1,15 @@
-//
-// Created by gouzuang on 25-7-6.
-//
+// databaseManager.cpp
 
 #include "databaseManager.h"
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QSqlError>
+#include <QUuid>
 #include <QThread>
+#include <QCoreApplication>
 
 namespace service {
-    // SQLite构造函数 - 自动连接
     DatabaseManager::DatabaseManager(const QString &databasePath)
         : m_databasePath(databasePath)
           , m_connected(false) {
@@ -19,87 +19,40 @@ namespace service {
         }
     }
 
-    // 析构函数 - 自动断开连接
     DatabaseManager::~DatabaseManager() {
-        safeCleanup();
+        cleanup();
     }
 
-    // 初始化
     void DatabaseManager::initialize() {
         m_connectionName = generateConnectionName();
         m_lastError.clear();
     }
 
-    // 安全清理资源
-    void DatabaseManager::safeCleanup() {
-        // 首先清理所有活跃查询
-        clearAllQueries();
-
-        // 等待一小段时间确保查询完全释放
-        QThread::msleep(10);
-
-        // 如果连接存在且打开，先关闭连接
-        if (m_connected && m_database.isOpen()) {
-            m_database.close();
-        }
+    void DatabaseManager::cleanup() {
+        // 设置连接状态为假，阻止新的查询
         m_connected = false;
 
-        // 安全移除数据库连接
-        if (!m_connectionName.isEmpty()) {
-            if (QSqlDatabase::contains(m_connectionName)) {
-                // 获取数据库实例并确保完全关闭
-                QSqlDatabase db = QSqlDatabase::database(m_connectionName, false);
-                if (db.isValid()) {
-                    if (db.isOpen()) {
-                        db.close();
-                    }
-                    // 等待数据库完全关闭
-                    QThread::msleep(50);
-                }
+        // 如果连接对象有效且是打开状态，则关闭
+        if (m_database.isValid() && m_database.isOpen()) {
+            m_database.close();
+        }
 
-                // 尝试移除连接
+        // 清空数据库对象，这会释放所有内部资源
+        m_database = QSqlDatabase();
+
+        // 只有在应用程序仍在运行时才尝试移除连接
+        // 在程序退出时，静态对象析构顺序不确定，Qt可能已经开始清理
+        if (QCoreApplication::instance() && !QCoreApplication::instance()->closingDown()) {
+            if (QSqlDatabase::contains(m_connectionName)) {
                 QSqlDatabase::removeDatabase(m_connectionName);
             }
-            m_connectionName.clear();
         }
     }
 
-    // 传统清理方法（保持兼容性）
-    void DatabaseManager::cleanup() {
-        safeCleanup();
-    }
-
-    // 查询跟踪方法
-    void DatabaseManager::registerQuery(QSqlQuery *query) {
-        QMutexLocker locker(&m_queryMutex);
-        m_activeQueries.insert(query);
-    }
-
-    void DatabaseManager::unregisterQuery(QSqlQuery *query) {
-        QMutexLocker locker(&m_queryMutex);
-        m_activeQueries.remove(query);
-    }
-
-    void DatabaseManager::clearAllQueries() {
-        QMutexLocker locker(&m_queryMutex);
-
-        // 强制完成所有活跃查询
-        for (QSqlQuery *query: m_activeQueries) {
-            if (query && query->isActive()) {
-                query->finish();
-                query->clear();
-            }
-        }
-
-        m_activeQueries.clear();
-    }
-
-    // 生成唯一连接名
     QString DatabaseManager::generateConnectionName() {
         return QString("DB_Connection_%1").arg(QUuid::createUuid().toString(QUuid::WithoutBraces));
     }
 
-    // 设置并连接数据库
     bool DatabaseManager::setupAndConnect() {
         if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
             m_lastError = "SQLite driver is not available";
@@ -108,14 +61,11 @@ namespace service {
 
         m_database = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
 
-        // 确��目录存在
         QFileInfo fileInfo(m_databasePath);
         QDir dir = fileInfo.absoluteDir();
-        if (!dir.exists()) {
-            if (!dir.mkpath(".")) {
-                m_lastError = QString("Failed to create directory: %1").arg(dir.absolutePath());
-                return false;
-            }
+        if (!dir.exists() && !dir.mkpath(".")) {
+            m_lastError = QString("Failed to create directory: %1").arg(dir.absolutePath());
+            return false;
         }
 
         m_database.setDatabaseName(m_databasePath);
@@ -130,178 +80,188 @@ namespace service {
         return true;
     }
 
-    // 检查连接状态
     bool DatabaseManager::isConnected() const {
         return m_connected && m_database.isOpen();
     }
 
-    // 获取最后错误信息
     QString DatabaseManager::getLastError() const {
         return m_lastError;
     }
 
-    // 执行查询
     QSqlQuery DatabaseManager::executeQuery(const QString &queryString) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
+        if (!isConnected()) {
+            m_lastError = "Database is not connected.";
+            return QSqlQuery(m_database);
+        }
         QSqlQuery query(m_database);
-        registerQuery(&query);
-
         if (!query.exec(queryString)) {
             m_lastError = query.lastError().text();
-            qDebug() << "Query execution failed:" << m_lastError;
+            log(LogLevel::ERR) << "Query execution failed:" << m_lastError;
         } else {
             m_lastError.clear();
         }
-
-        QSqlQuery result = query;
-        unregisterQuery(&query);
-        return result;
+        return query;
     }
 
     // 执行非查询语句
     bool DatabaseManager::executeNonQuery(const QString &queryString) {
+        if (!isConnected()) {
+            m_lastError = "Database is not connected.";
+            return false;
+        }
         QSqlQuery query(m_database);
-        registerQuery(&query);
-
-        bool success = false;
         if (query.exec(queryString)) {
             m_lastError.clear();
-            success = true;
+            return true;
         } else {
             m_lastError = query.lastError().text();
-            log(LogLevel::ERR) << "Query execution failed:" << m_lastError;
+            qDebug() << "NonQuery execution failed:" << m_lastError;
+            return false;
+        }
+    }
+
+    QList<QVariantMap> DatabaseManager::executeQueryAndFetchAll(const QString &queryString) {
+        QList<QVariantMap> resultList;
+
+        this->processQueryResults(queryString, [&resultList](const QSqlRecord &record) {
+            QVariantMap row;
+            for (int i = 0; i < record.count(); ++i) {
+                row.insert(record.fieldName(i), record.value(i));
+            }
+            resultList.append(row);
+        });
+
+        return resultList;
+    }
+
+    QList<QVariantMap> DatabaseManager::executePreparedQueryAndFetchAll(const QString &queryString,
+        const QVariantList &parameters) {
+        QList<QVariantMap> resultList;
+
+        QSqlQuery query = this->executePreparedQuery(queryString, parameters);
+        if (!m_lastError.isEmpty()) {
+            return resultList;
         }
 
-        // 立即清理并取消注册
-        query.finish();
-        query.clear();
-        unregisterQuery(&query);
+        while(query.next()) {
+            QVariantMap row;
+            QSqlRecord record = query.record();
+            for (int i = 0; i < record.count(); ++i) {
+                row.insert(record.fieldName(i), record.value(i));
+            }
+            resultList.append(row);
+        }
 
-        return success;
+        return resultList;
     }
+
 
     // 执行预处理查询
     QSqlQuery DatabaseManager::executePreparedQuery(const QString &queryString, const QVariantList &parameters) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
+        if (!isConnected()) {
+            m_lastError = "Database is not connected.";
+            return QSqlQuery(m_database);
+        }
         QSqlQuery query(m_database);
-        registerQuery(&query);
-
         query.prepare(queryString);
-
         for (const QVariant &param: parameters) {
             query.addBindValue(param);
         }
-
         if (!query.exec()) {
             m_lastError = query.lastError().text();
             qDebug() << "Prepared query execution failed:" << m_lastError;
         } else {
             m_lastError.clear();
         }
-
-        // 在返回之前取消注册本地预处理查询以防止悬空指针
-        QSqlQuery result = query;
-        unregisterQuery(&query);
-        return result;
+        return query;
     }
 
     // 执行预处理非查询语句
     bool DatabaseManager::executePreparedNonQuery(const QString &queryString, const QVariantList &parameters) {
+        if (!isConnected()) {
+            m_lastError = "Database is not connected.";
+            return false;
+        }
         QSqlQuery query(m_database);
-        registerQuery(&query);
-
         query.prepare(queryString);
-
         for (const QVariant &param: parameters) {
             query.addBindValue(param);
         }
-
-        bool success = false;
         if (query.exec()) {
             m_lastError.clear();
-            success = true;
+            return true;
         } else {
             m_lastError = query.lastError().text();
-            qDebug() << "Prepared query execution failed:" << m_lastError;
+            qDebug() << "Prepared non-query execution failed:" << m_lastError;
+            return false;
         }
-
-        // 立即清理并取消注册
-        query.finish();
-        query.clear();
-        unregisterQuery(&query);
-
-        return success;
     }
 
-    // 开始事务
+    // 事务管理
     bool DatabaseManager::beginTransaction() {
-        if (!m_database.transaction()) {
-            m_lastError = m_database.lastError().text();
-            return false;
-        }
-        m_lastError.clear();
-        return true;
+        return m_database.transaction();
     }
 
-    // 提交事务
     bool DatabaseManager::commitTransaction() {
-        if (!m_database.commit()) {
-            m_lastError = m_database.lastError().text();
-            return false;
-        }
-        m_lastError.clear();
-        return true;
+        return m_database.commit();
     }
 
-    // 回滚事务
     bool DatabaseManager::rollbackTransaction() {
-        if (!m_database.rollback()) {
-            m_lastError = m_database.lastError().text();
-            return false;
-        }
-        m_lastError.clear();
-        return true;
+        return m_database.rollback();
     }
 
-    // 检查表是否存在
+    // 便捷方法
     bool DatabaseManager::tableExists(const QString &tableName) {
-        QStringList tables = m_database.tables();
-        return tables.contains(tableName, Qt::CaseInsensitive);
+        return m_database.tables().contains(tableName, Qt::CaseInsensitive);
     }
 
-    // 获取所有表名
     QStringList DatabaseManager::getTableNames() {
         return m_database.tables();
     }
 
-    // 获取表结构
+
     QSqlRecord DatabaseManager::getTableStructure(const QString &tableName) {
         return m_database.record(tableName);
     }
 
-    // 批量执行查询
+    // 批量执行
     bool DatabaseManager::executeBatch(const QStringList &queries) {
-        if (!beginTransaction()) {
-            return false;
-        }
-
+        if (!beginTransaction()) return false;
         for (const QString &queryString: queries) {
             if (!executeNonQuery(queryString)) {
                 rollbackTransaction();
                 return false;
             }
         }
-
         return commitTransaction();
     }
 
-    // 处理查询结果（回调方式）
+    // 回调方式处理查询结果
     void DatabaseManager::processQueryResults(const QString &queryString,
                                               std::function<void(const QSqlRecord &)> processor) {
+        // 这个方法是生命周期安全的，因为它不向外暴露QSqlQuery对象
         QSqlQuery query = executeQuery(queryString);
-
         if (m_lastError.isEmpty()) {
             while (query.next()) {
                 processor(query.record());
             }
         }
     }
-} // service
+
+    // 移除查询跟踪功能的实现，因为它们不再需要
+    void DatabaseManager::registerQuery(QSqlQuery *query) {
+        // 空实现，保持接口兼容性
+        Q_UNUSED(query)
+    }
+
+    void DatabaseManager::unregisterQuery(QSqlQuery *query) {
+        // 空实现，保持接口兼容性
+        Q_UNUSED(query)
+    }
+
+    void DatabaseManager::clearAllQueries() {
+        // 空实现，保持接口兼容性
+    }
+}

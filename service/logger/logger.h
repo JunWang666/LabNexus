@@ -11,6 +11,7 @@
 #include <mutex>
 #include <iostream>
 #include <memory>
+#include <functional>
 #include <QString>
 
 namespace service {
@@ -22,6 +23,9 @@ namespace service {
         DATA
     };
 
+    // 日志过滤器类型定义
+    using LogFilter = std::function<bool(const std::string& message, LogLevel level)>;
+
     class logger {
     public:
         static logger &instance();
@@ -31,6 +35,13 @@ namespace service {
         void setLogFile(const std::string &filename);
         void setDataLogFile(const std::string &filename);
         void enableConsole(bool enable);
+
+        // 过滤器相关方法
+        void setFilter(const LogFilter& filter);
+        void clearFilter();
+        void addKeywordFilter(const std::string& keyword, bool exclude = false);
+        void addRegexFilter(const std::string& pattern, bool exclude = false);
+        void clearKeywordFilters();
 
         logger &operator<<(LogLevel level);
 
@@ -42,7 +53,6 @@ namespace service {
 
         logger &operator<<(std::ostream & (*manip)(std::ostream &));
 
-        // Specialized template for QString
         logger &operator<<(const QString &msg) {
             buffer_ << msg.toStdString();
             return *this;
@@ -60,6 +70,7 @@ namespace service {
         logger &operator=(const logger &) = delete;
 
         void write(const std::string &msg, LogLevel level);
+        bool shouldLog(const std::string &msg, LogLevel level);
 
         std::ostringstream buffer_;
         LogLevel currentLevel_;
@@ -68,6 +79,9 @@ namespace service {
         std::ofstream dataFile_;
         bool console_;
         std::mutex mtx_;
+        LogFilter filter_;
+        std::vector<std::string> includeKeywords_;
+        std::vector<std::string> excludeKeywords_;
     };
 
     class LogStream {

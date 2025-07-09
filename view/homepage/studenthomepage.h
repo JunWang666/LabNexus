@@ -5,8 +5,7 @@
 #ifndef STUDENTHOMEPAGE_H
 #define STUDENTHOMEPAGE_H
 
-#include <QWidget>
-#include <QString>
+#include "pch.h"
 
 #include "view/bookingService/rent.h"
 
@@ -35,16 +34,19 @@ namespace view::homepage {
         void on_editProfileButton_clicked(); // 修改个人信息
         void on_logoutButton_clicked(); // 退出登录
         void on_messageButton_clicked(); // 消息
-
+        void on_Button_clicked();
+        void on_Button2_clicked();
     private:
         Ui::studentHomepage *ui;
         QString S_name; // 学生姓名
         QString S_ID; // 学生ID
-
         void setupUI(); // 初始化界面
-
     private:
         view::Order::Rent *rent;
+        QPoint mouseOffset;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
     };
 } // view::homepage
 

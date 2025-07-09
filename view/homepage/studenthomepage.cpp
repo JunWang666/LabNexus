@@ -4,18 +4,25 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_studentHomepage.h" resolved
 
+#include "pch.h"
 #include "studenthomepage.h"
 #include "ui_studentHomepage.h"
 #include "../loginPage/loginpage.h"
 #include "service/logger/logger.h"
 #include <QMessageBox>
+#include <QPropertyAnimation>
+#include <QMouseEvent>
 
 namespace view::homepage {
     studentHomepage::studentHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),
         ui(new Ui::studentHomepage), S_name(name), S_ID(ID) {
         ui->setupUi(this);
+        ui->frame_3->hide();
+        ui->frame_4->hide();
         setupUI();
         rent = new view::Order::Rent(name,ID,this);
+        this->setWindowFlag(Qt::FramelessWindowHint);
+        this->setAttribute(Qt::WA_TranslucentBackground);
     }
 
     studentHomepage::~studentHomepage() {
@@ -30,9 +37,7 @@ namespace view::homepage {
             .arg(S_name));
 
         // 设置公告文本框为只读
-        ui->announcementTextEdit->setReadOnly(true);
-        ui->announcementTextEdit->setText(
-            "欢迎使用实验室设备管理系统！\n作为学生用户，您可以：\n1. 申请借用实验设备\n2. 归还已借用的设备\n3. 查看借用历史记录\n4. 报修设备故障\n5. 修改个人信息\n\n请注意：设备借用需要教师审批。");
+
 
         service::log() << "学生主页初始化完成 - 用户: " << S_name << " (ID: " << S_ID << ")";
     }
@@ -111,4 +116,33 @@ namespace view::homepage {
                                  QString("消息中心功能开发中...\n用户: %1\nID: %2\n\n在这里您可以查看系统通知、审批结果等消息。").arg(S_name).arg(
                                      S_ID));
     }
+    void studentHomepage::on_Button_clicked()
+    {
+        ui->frame_3->show();
+        ui->frame_4->hide();
+    }
+    void studentHomepage::on_Button2_clicked()
+    {
+        ui->frame_3->hide();
+        ui->frame_4->show();
+    }
+    void studentHomepage::mousePressEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton)
+            mouseOffset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+    }
+
+    void studentHomepage::mouseMoveEvent(QMouseEvent *event)
+    {
+        if (event->buttons() & Qt::LeftButton)
+            move(event->globalPosition().toPoint() - mouseOffset);
+    }
+
+    void studentHomepage::mouseReleaseEvent(QMouseEvent *event)
+    {
+        Q_UNUSED(event);
+    }
+
+
+
 } // view::homepage

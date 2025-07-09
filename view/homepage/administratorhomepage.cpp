@@ -4,11 +4,13 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_administratorHomepage.h" resolved
 
+#include "pch.h"
 #include "administratorhomepage.h"
 #include "ui_administratorHomepage.h"
 #include "../loginPage/loginpage.h"
 #include "service/logger/logger.h"
 #include <QMessageBox>
+#include <QMouseEvent>
 
 namespace view::homepage {
     administratorHomepage::administratorHomepage(const QString &name, const QString &ID,
@@ -17,6 +19,9 @@ namespace view::homepage {
         ui->setupUi(this);
         setupUI();
         orderCheck = new Order::ManagerCheck(this);
+        this->setWindowFlag(Qt::FramelessWindowHint);
+        this->setAttribute(Qt::WA_TranslucentBackground);
+
     }
 
     administratorHomepage::~administratorHomepage() {
@@ -31,9 +36,7 @@ namespace view::homepage {
             .arg(A_name));
 
         // 设置公告文本框为只读
-        ui->announcementTextEdit->setReadOnly(true);
-        ui->announcementTextEdit->setText(
-            "欢迎使用实验室设备管理系统！\n作为管理员用户，您拥有最高权限，可以：\n\n1. 管理所有实验设备的信息和状态\n2. 审批所有用户的借用申请\n3. 管理用户账户和权限\n4. 进行系统配置和维护\n5. 查看系统运行状态和日志\n6. 修改个人信息\n\n请谨慎使用管理员权限，确保系统安全运行。");
+
 
         service::log() << "管理员主页初始化完成 - 用户: " << A_name << " (ID: " << A_ID << ")";
     }
@@ -119,4 +122,32 @@ namespace view::homepage {
                                      "消息中心功能开发中...\n用户: %1\nID: %2\n\n在这里您可以：\n• 查看系统通知和警告\n• 管理公告信息\n• 处理用户反馈\n• 发送系统消息")
                                  .arg(A_name).arg(A_ID));
     }
+    void administratorHomepage::on_Button_clicked()
+    {
+        ui->frame_3->show();
+        ui->frame_4->hide();
+    }
+    void administratorHomepage::on_Button2_clicked()
+    {
+        ui->frame_3->hide();
+        ui->frame_4->show();
+    }
+    void administratorHomepage::mousePressEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton)
+            mouseOffset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+    }
+
+    void administratorHomepage::mouseMoveEvent(QMouseEvent *event)
+    {
+        if (event->buttons() & Qt::LeftButton)
+            move(event->globalPosition().toPoint() - mouseOffset);
+    }
+
+    void administratorHomepage::mouseReleaseEvent(QMouseEvent *event)
+    {
+        Q_UNUSED(event);
+    }
+
+
 } // view::homepage

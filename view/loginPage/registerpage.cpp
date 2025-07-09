@@ -4,12 +4,14 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_registerPage.h" resolved
 
+#include "pch.h"
 #include "registerpage.h"
 #include "ui_registerPage.h"
 #include "module/data/data_UserControl.h"
 #include "service/logger/logger.h"
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QMouseEvent>
 
 namespace view::login {
 registerPage::registerPage(QWidget *parent) :
@@ -22,7 +24,11 @@ registerPage::registerPage(QWidget *parent) :
     
     // 初始化身份为0（未选择）
     identity = 0;
-    
+
+
+    this->setWindowFlag(Qt::FramelessWindowHint);
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    ui->passwordRequirementLabel->setText("密码必须是8~16位且必须包含数字，大小写字母");
     // 连接信号槽
     connect(ui->submitButton, &QPushButton::clicked, this, &registerPage::on_submitButton_clicked);
     connect(ui->studentRadioButton, &QRadioButton::clicked, this, &registerPage::on_studentRadioButton_clicked);
@@ -61,13 +67,13 @@ void registerPage::on_submitButton_clicked() {
         ui->confirmPasswordLineEdit->text().isEmpty() || 
         ui->usernameLineEdit->text().isEmpty() || 
         identity == 0) {
-        QMessageBox::warning(this, "警告", "请填写完整信息");
+        ui->passwordRequirementLabel->setText("请填写完整信息");
         return;
     }
     
     // 检查密码是否一致
     if (ui->passwordLineEdit->text() != ui->confirmPasswordLineEdit->text()) {
-        QMessageBox::warning(this, "错误", "密码输入不一致");
+        ui->passwordRequirementLabel->setText("密码输入不一致");
         return;
     }
     
@@ -75,7 +81,7 @@ void registerPage::on_submitButton_clicked() {
     
     // 验证密码强度
     if (!isPasswordValid(password)) {
-        QMessageBox::warning(this, "密码强度不足", "密码必须是8~16位且必须包含数字，大小写字母");
+        ui->passwordRequirementLabel->setText("密码必须是8~16位且必须包含数字，大小写字母");
         return;
     }
     
@@ -96,11 +102,8 @@ void registerPage::on_submitButton_clicked() {
     
     if (result) {
         service::log() << "新用户注册成功: " << ID << " (" << name << ") - " << userGroup;
-        QMessageBox::information(this, "注册成功", 
-            QString("申请成功！\n用户ID: %1\n用户名: %2\n身份: %3\n\n请等待管理员审核。")
-            .arg(ID)
-            .arg(name)
-            .arg(identity == 1 ? "学生" : "老师"));
+        ui->passwordRequirementLabel->setText("注册成功！");
+        _sleep(1000);
         this->close();
     } else {
         QString errorMsg;
@@ -119,7 +122,7 @@ void registerPage::on_submitButton_clicked() {
                 break;
         }
         service::log() << "用户注册失败: " << ID << " - " << errorMsg;
-        QMessageBox::warning(this, "注册失败", errorMsg);
+        ui->passwordRequirementLabel->setText("注册失败！"+errorMsg);
     }
 }
 
@@ -129,6 +132,28 @@ void registerPage::on_studentRadioButton_clicked() {
 
 void registerPage::on_teacherRadioButton_clicked() {
     identity = 2;
+}
+void registerPage::on_pushButton_cancel_clicked()
+{
+    this->close();
+    delete this;
+}
+
+void registerPage::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+        mouseOffset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+}
+
+void registerPage::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton)
+        move(event->globalPosition().toPoint() - mouseOffset);
+}
+
+void registerPage::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
 }
 
 } // view::login

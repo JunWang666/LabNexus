@@ -5,7 +5,7 @@
 #ifndef RENT_H
 #define RENT_H
 
-#include <QWidget>
+#include "pch.h"
 
 #include "apply.h"
 #include "sendrent.h"
