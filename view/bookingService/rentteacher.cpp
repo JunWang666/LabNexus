@@ -14,11 +14,14 @@ namespace view::Order {
 RentTeacher::RentTeacher(QWidget *parent) :
     QWidget(parent), ui(new Ui::RentTeacher) {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose,false);
     setUpModel_device();
     setUpModel_request();
     loadData();
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
+    ui->pageListWidget->addItem("报修");
+    ui->pageListWidget->addItem("归还");
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
         if (row > 0 && row < ui->pageListWidget->count()) {
@@ -37,6 +40,7 @@ RentTeacher::RentTeacher(const QString &name, const QString &id, QWidget *parent
     loadData();
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
+    ui->pageListWidget->addItem("报修");
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
         if (row > 0 && row < ui->pageListWidget->count()) {
@@ -54,7 +58,26 @@ RentTeacher::~RentTeacher() {
 void RentTeacher::loadData() {
     //调用模型函数，抓取数据
     modelDevice->fetchData();
+    //只显示可用
+    deviceFilterProxyMdel->setStatusColumn(dataModel::EquipmentDataModel::Col_Status);
+    deviceFilterProxyMdel->setStatusFilter("可用");
+
     modelRequest->fetchData();
+    //只显示学生
+    requestFilterProxyMdel->setGroupColunm(dataModel::BookingDataModel::Col_Count);
+    requestFilterProxyMdel->setGroupFilter("Student");
+
+    modelRepair->fetchData();
+    //只显示可用
+    repairFilterProxyMdel->setStatusColumn(dataModel::EquipmentDataModel::Col_Status);
+    repairFilterProxyMdel->setStatusFilter("可用");
+
+    modelReturn->fetchData();
+    //显示自己和借出
+    returnFilterProxyMdel->setStatusColumn(dataModel::EquipmentDataModel::Col_Status);
+    returnFilterProxyMdel->setStatusFilter("借出");
+    returnFilterProxyMdel->setUserIdColumn(dataModel::EquipmentDataModel::Col_RentId);
+    returnFilterProxyMdel->setUserIdFilter(id.toInt());
 }
 
 void RentTeacher::setUpModel_device() {
@@ -63,12 +86,10 @@ void RentTeacher::setUpModel_device() {
     deviceFilterProxyMdel->setSourceModel(modelDevice);
     //设置模型
     ui->sendTableView->setModel(deviceFilterProxyMdel);
-    //隐藏ID和列数
+    //隐藏ID和列数和借用人ID
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
-    deviceFilterProxyMdel->setStatusColumn(dataModel::EquipmentDataModel::Col_Status);
-    deviceFilterProxyMdel->setStatusFilter("可用");
-
+    ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
 }
 
 void RentTeacher::setUpModel_request() {
@@ -87,14 +108,40 @@ void RentTeacher::setUpModel_request() {
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverID);
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_ApprovalDate);
-    //只显示学生
-    requestFilterProxyMdel->setGroupColunm(dataModel::BookingDataModel::Col_Count);
-    requestFilterProxyMdel->setGroupFilter("Student");
+}
+
+void RentTeacher::setUpModel_repair() {
+    modelRepair = new dataModel:: EquipmentDataModel(this);
+    repairFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
+    repairFilterProxyMdel->setSourceModel(modelRepair);
+    //设置模型
+    ui->repairTableView->setModel(repairFilterProxyMdel);
+    //设置隐藏列
+    ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
+    ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
+    ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+}
+
+void RentTeacher::setUpModel_return() {
+    modelReturn = new dataModel::EquipmentDataModel(this);
+    repairFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
+    repairFilterProxyMdel->setSourceModel(modelReturn);
+    //设置模型
+    ui->returnTableView->setModel(repairFilterProxyMdel);
+    //设置隐藏列
+    ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
+    ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+
 }
 
 void RentTeacher::setIndex(int row) {
-    ui->pageListWidget->setCurrentRow(row);
-    ui->stackedWidget->setCurrentIndex(row);
+        this->show();
+        ui->pageListWidget->setCurrentRow(row);
+        ui->stackedWidget->setCurrentIndex(row);
+}
+
+
+
 }
 
 // void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editable) {
