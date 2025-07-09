@@ -35,6 +35,7 @@ namespace data::Equipment {
     };
 
     QList<fullEquipmentRecord> loadFullEquipmentRecords();
+    bool updateEquipmentOnReturn(int id);
     /*************/
 
 

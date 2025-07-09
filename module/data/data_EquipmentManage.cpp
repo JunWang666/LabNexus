@@ -78,7 +78,23 @@ namespace data::Equipment {
         }
         return records;
     }
-        namespace EquipmentClass {
+
+    bool updateEquipmentOnReturn(int id) {
+        service::DatabaseManager db("./equipment.db");
+        QString queryString = R"(
+        UPDATE equipment_instance
+        SET status = ?, rentId = ?
+        WHERE Id = ?)";
+        QVariantList parmas;
+        parmas << "可用" << "" << id;
+        bool success = db.executePreparedNonQuery(queryString, parmas);
+        if (!success) {
+            log(LogLevel::ERR) << "归还设备失败:" << db.getLastError();
+        }
+        return success;
+    }
+
+    namespace EquipmentClass {
             void createEquipmentClassTable() {
                 service::DatabaseManager db("./equipment.db");
                 if (!db.tableExists("equipment_class")) {
@@ -109,6 +125,7 @@ namespace data::Equipment {
                         name TEXT NOT NULL,
                         class_id INTEGER NOT NULL,
                         status TEXT NOT NULL DEFAULT '可用',
+                        rentId INTEGER
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
                     )
