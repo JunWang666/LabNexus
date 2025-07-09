@@ -24,7 +24,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QListWidget" name="listWidget">
+       <widget class="QListWidget" name="pageListWidget">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -177,7 +177,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
-              <widget class="QTableView" name="tableView"/>
+              <widget class="QTableView" name="returnTableView"/>
              </item>
              <item>
               <widget class="QFrame" name="frame_7">

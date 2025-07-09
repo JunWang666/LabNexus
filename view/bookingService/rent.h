@@ -30,6 +30,7 @@ public:
     ~Rent() override;
     void loadData();
     void setUpModel();
+    void setIndex(int row);
     // void setColEditable(QStandardItemModel *model,int col,bool editable);
 public slots:
     void on_btnSend_clicked();

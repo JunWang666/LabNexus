@@ -43,7 +43,7 @@ namespace view::homepage {
         // TODO: 打开设备借用页面
         // auto *borrowPage = new view::booking::booking_home();
         // borrowPage->show();
-        rent->show();
+        rent->setIndex(Order::Rent::Col_Rent);
         // QMessageBox::information(this, "器材借用",
         //                          QString("器材借用功能开发中...\n用户: %1\nID: %2\n\n在这里您可以申请借用实验设备，申请需要等待教师审批。").arg(S_name).arg(
         //                              S_ID));
@@ -53,6 +53,7 @@ namespace view::homepage {
         service::log() << "学生 " << S_name << " 点击了器材归还按钮";
 
         // TODO: 打开设备归还页面
+        rent->setIndex(Order::Rent::Col_Return);
         QMessageBox::information(this, "器材归还",
                                  QString("器材归还功能开发中...\n用户: %1\nID: %2\n\n在这里您可以归还已借用的设备。").arg(S_name).arg(S_ID));
     }
@@ -72,7 +73,7 @@ namespace view::homepage {
         // TODO: 打开设备报修页面
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
-        rent->show();
+        rent->setIndex(Order::Rent::Col_Repair);
         QMessageBox::information(this, "器材报修",
                                  QString("器材报修功能开发中...\n用户: %1\nID: %2\n\n在这里您可以报告设备故障或损坏。").arg(S_name).arg(S_ID));
     }

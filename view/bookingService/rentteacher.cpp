@@ -140,10 +140,6 @@ void RentTeacher::setIndex(int row) {
         ui->stackedWidget->setCurrentIndex(row);
 }
 
-
-
-}
-
 // void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editable) {
 //     if (!model) {
 //         return;
