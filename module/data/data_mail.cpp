@@ -107,7 +107,7 @@ namespace data::mail {
     QList<Mail> getAllMails(int receiverId, int page, int pageSize) {
         service::DatabaseManager db(path);
         QList<Mail> mails;
-
+        log(LogLevel::INFO) << "获取邮件: 接收者ID: " << receiverId << ", 页码: " << page << ", 每页大小: " << pageSize;
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return mails;
@@ -139,6 +139,7 @@ namespace data::mail {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return mails;
         }
+        log(LogLevel::INFO) << "获取未读邮件: 接收者ID: " << receiverId << ", 页码: " << page << ", 每页大小: " << pageSize;
 
         int offset = (page - 1) * pageSize;
         QString selectQuery = R"(

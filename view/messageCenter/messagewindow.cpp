@@ -11,12 +11,14 @@
 #include "module/data/data_UserControl.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include "service/styleHelper/StyleHelper.h"
 
 namespace view::messageCenter {
     MessageWindow::MessageWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MessageWindow) {
         ui->setupUi(this);
         initializeUI();
-        loadMailsFromDatabase(1);
+        service::style::setMica(this);
+        loadMailsFromDatabase(data::UserControl::currentUserId);
     }
 
     MessageWindow::MessageWindow(int userId, QWidget *parent) : QWidget(parent), ui(new Ui::MessageWindow) {

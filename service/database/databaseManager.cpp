@@ -79,6 +79,7 @@ namespace service {
     }
 
     QSqlQuery DatabaseManager::executeQuery(const QString &queryString) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
             return QSqlQuery(m_database);
@@ -90,7 +91,7 @@ namespace service {
         } else {
             m_lastError.clear();
         }
-        return query; // 返回一个副本，生命周期由调用者管理
+        return query;
     }
 
     // 执行非查询语句
@@ -148,6 +149,7 @@ namespace service {
 
     // 执行预处理查询
     QSqlQuery DatabaseManager::executePreparedQuery(const QString &queryString, const QVariantList &parameters) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
             return QSqlQuery(m_database);
