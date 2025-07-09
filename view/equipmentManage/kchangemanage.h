@@ -1,7 +1,7 @@
 #ifndef KCHANGEMANAGE_H
 #define KCHANGEMANAGE_H
 
-#include <QDialog>
+#include "pch.h"
 
 namespace view::equipment {
 QT_BEGIN_NAMESPACE

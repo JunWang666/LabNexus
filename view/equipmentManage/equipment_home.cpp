@@ -20,28 +20,6 @@ namespace view::equipment {
         delete ui;
     }
 
-    void equipment_home::on_toapply_clicked() //预约申请
-    {
-        applysee *dialog = new applysee(this);
-        dialog->show();
-    }
-
-    void equipment_home::on_stuexam_clicked() //老师用，用于学生材料递送
-    {
-        exam *dialog = new exam(this);
-        dialog->show();
-    }
-
-    void equipment_home::on_adfix_clicked() //添加报修
-    {
-        // TODO: 实现添加报修功能
-    }
-
-    void equipment_home::on_zreturn_clicked() //回到主页
-    {
-        this->close();
-    }
-
     void equipment_home::on_zclose_clicked() //关闭应用
     {
         this->close();

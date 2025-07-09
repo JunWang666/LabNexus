@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>view::messageCenter::MessageBlock</class>
+    <widget class="QWidget" name="view::messageCenter::MessageBlock">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>500</width>
+                <height>100</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="minimumSize">
+            <size>
+                <width>0</width>
+                <height>100</height>
+            </size>
+        </property>
+        <property name="maximumSize">
+            <size>
+                <width>16777215</width>
+                <height>100</height>
+            </size>
+        </property>
+        <property name="windowTitle">
+            <string>MessageBlock</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+                <widget class="QFrame" name="frame">
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>300</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>16777215</width>
+                            <height>300</height>
+                        </size>
+                    </property>
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                    <widget class="QLabel" name="titleLabel">
+                        <property name="geometry">
+                            <rect>
+                                <x>50</x>
+                                <y>50</y>
+                                <width>271</width>
+                                <height>21</height>
+                            </rect>
+                        </property>
+                        <property name="text">
+                            <string>titleLabel</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" name="senderLabel">
+                        <property name="geometry">
+                            <rect>
+                                <x>50</x>
+                                <y>20</y>
+                                <width>54</width>
+                                <height>16</height>
+                            </rect>
+                        </property>
+                        <property name="text">
+                            <string>senderLabel</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" name="contentLabel">
+                        <property name="geometry">
+                            <rect>
+                                <x>50</x>
+                                <y>70</y>
+                                <width>91</width>
+                                <height>16</height>
+                            </rect>
+                        </property>
+                        <property name="text">
+                            <string>contentLabel</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" name="timeLabel">
+                        <property name="geometry">
+                            <rect>
+                                <x>170</x>
+                                <y>20</y>
+                                <width>91</width>
+                                <height>16</height>
+                            </rect>
+                        </property>
+                        <property name="text">
+                            <string>timeLabel</string>
+                        </property>
+                    </widget>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

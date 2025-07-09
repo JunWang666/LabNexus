@@ -6,7 +6,7 @@
 
 namespace data::UserControl {
     void dropDB() {
-        QFile dbFile("./user.db");
+        QFile dbFile(path);
         if (dbFile.exists()) {
             if (dbFile.remove()) {
                 log(LogLevel::INFO) << "数据库文件删除成功";
@@ -19,7 +19,7 @@ namespace data::UserControl {
     }
 
     void buildDB() {
-        QFile dbFile("./user.db");
+        QFile dbFile(path);
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
@@ -27,24 +27,25 @@ namespace data::UserControl {
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
+
+            Login::createUserTable();
+            permission::createGroupTable();
+            permission::createUserGroupTable();
+            // 创建用户组
+            if (auto r = permission::createGroup("Student", ""); !r) {
+                log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
+            }
+            if (auto r = permission::createGroup("Teacher", ""); !r) {
+                log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
+            }
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
-        Login::createUserTable();
-        permission::createGroupTable();
-        permission::createUserGroupTable();
-        // 创建用户组
-        if (auto r = permission::createGroup("Student", ""); !r) {
-            log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
-        }
-        if (auto r = permission::createGroup("Teacher", ""); !r) {
-            log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
         }
     }
 
     namespace Login {
         void createUserTable() {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             if (!db.tableExists("users")) {
                 QString createTableQuery = R"(
         CREATE TABLE users (
@@ -61,45 +62,41 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> isUserPasswordValid(const QString &idNumber, const QString &password) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             log(service::LogLevel::INFO) << "开始验证用户密码: " << idNumber;
             QString query = R"(
                     SELECT id, password, status FROM users WHERE id_number = ?
                 )";
-            QSqlQuery q = db.executePreparedQuery(query, {idNumber});
+            auto results = db.executePreparedQueryAndFetchAll(query, {idNumber});
 
-            if (!q.next()) {
-                log(service::LogLevel::INFO) << "登录失败。用户不存在: " << idNumber;
-                q.finish();
-                q.clear();
+            if (results.isEmpty()) {
+                log(service::LogLevel::ERR) << "登录失败。用户不存在: " << idNumber;
                 return std::unexpected(UserControlError::UserNotFound);
             }
 
-            int userId = q.value(0).toInt();
-            QString storedPassword = q.value(1).toString();
-            QString status = q.value(2).toString();
-
-            q.finish();
-            q.clear();
+            const auto& row = results.first();
+            int userId = row["id"].toInt();
+            QString storedPassword = row["password"].toString();
+            QString status = row["status"].toString();
 
             if (status != "AllRight") {
-                log(service::LogLevel::INFO) << "登录失败。用户状态异常: " << status << " for " << idNumber;
-                // 根据需求，可以为不同的状态返回特定的错误
-                // 这里我们暂时只处理密码错误和用户不存在
+                log(service::LogLevel::ERR) << "登录失败。用户状态异常: " << idNumber << " status: " << status;
+                return std::unexpected(UserControlError::UserNotFound);
             }
 
             if (storedPassword != password) {
-                log(service::LogLevel::INFO) << "登录失败。密码错误: " << idNumber;
+                log(service::LogLevel::ERR) << "登录失败。密码错误: " << idNumber;
                 return std::unexpected(UserControlError::IncorrectPassword);
             }
 
             log(service::LogLevel::INFO) << "登录成功。密码验证成功: " << idNumber;
+            currentUserId = userId;
             return userId;
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
                                                            const QString &password) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             if (!db.tableExists("users")) {
                 log(service::LogLevel::ERR) << "用户表不存在";
                 throw std::runtime_error("User table does not exist.");
@@ -152,35 +149,27 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> foundUserIdByIdNumber(const QString &idNumber) {
-            service::DatabaseManager db("./user.db");
-            QString query = R"(
-                SELECT id FROM users WHERE id_number = ?
-            )";
-            QSqlQuery q = db.executePreparedQuery(query, {idNumber});
-
-            if (q.next()) {
-                int userId = q.value(0).toInt();
-                log(service::LogLevel::DATA) << "找到用户ID: " << userId << " 对应学工号: " << idNumber;
-                return userId;
+            service::DatabaseManager db(path);
+            QString query = "SELECT id FROM users WHERE id_number = ?";
+            auto results = db.executePreparedQueryAndFetchAll(query, {idNumber});
+            if (results.isEmpty()) {
+                return std::unexpected(UserControlError::UserNotFound);
             }
-
-            log(service::LogLevel::INFO) << "未找到对应学工号的用户: " << idNumber;
-            return std::unexpected(UserControlError::UserNotFound);
+            return results.first()["id"].toInt();
         }
 
 
         std::expected<bool, UserControlError> deleteUserById(int userId) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             // 检查用户是否存在
             QString checkQuery = R"(
                     SELECT id FROM users WHERE id = ?
                 )";
-            QSqlQuery q = db.executePreparedQuery(checkQuery, {userId});
-            if (!q.next()) {
+            auto results = db.executePreparedQueryAndFetchAll(checkQuery, {userId});
+            if (results.isEmpty()) {
                 log(service::LogLevel::INFO) << "删除失败。用户不存在: " << userId;
                 return std::unexpected(UserControlError::UserNotFound);
             }
-            q.clear();
             // 标记用户在 user_groups 中的关联为 Deleted
             QString updateGroupsStatus = R"(
                     UPDATE user_groups SET status = 'Deleted' WHERE user_id = ?
@@ -199,7 +188,7 @@ namespace data::UserControl {
         }
 
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             QString updateQuery = R"(
                 UPDATE users
                 SET password = ?
@@ -215,7 +204,7 @@ namespace data::UserControl {
 
     namespace permission {
         void createGroupTable() {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             if (!db.tableExists("groups")) {
                 QString createTableQuery = R"(
             CREATE TABLE groups(
@@ -231,7 +220,7 @@ namespace data::UserControl {
         }
 
         void createUserGroupTable() {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             if (!db.tableExists("user_groups")) {
                 QString createUserGroupTableQuery = R"(
             CREATE TABLE user_groups(
@@ -249,7 +238,7 @@ namespace data::UserControl {
 
 
         std::expected<bool, UserControlError> createGroup(const QString &name, const QString &description) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             if (!db.tableExists("groups")) {
                 throw std::runtime_error("Group table does not exist.");
             }
@@ -257,13 +246,11 @@ namespace data::UserControl {
             QString checkGroupQuery = R"(
                 SELECT id FROM groups WHERE name = ?
             )";
-            QSqlQuery q = db.executePreparedQuery(checkGroupQuery, {name});
-            if (q.next()) {
-                q.clear();
+            auto results = db.executePreparedQueryAndFetchAll(checkGroupQuery, {name});
+            if (!results.isEmpty()) {
                 log(service::LogLevel::INFO) << "组已存在: " << name;
                 return std::unexpected(UserControlError::GroupAlreadyExists);
             }
-            q.clear();
 
             QString insertQuery = R"(
                 INSERT INTO groups(name, description, status)
@@ -279,31 +266,28 @@ namespace data::UserControl {
         }
 
         std::expected<bool, UserControlError> addUserToGroup(int userId, const QString &groupName) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
 
             // 检查组是否存在
             QString checkGroupQuery = R"(
                 SELECT id FROM groups WHERE name = ?
             )";
-            QSqlQuery q = db.executePreparedQuery(checkGroupQuery, {groupName});
-            if (!q.next()) {
+            auto groupResults = db.executePreparedQueryAndFetchAll(checkGroupQuery, {groupName});
+            if (groupResults.isEmpty()) {
                 log(service::LogLevel::INFO) << "组不存在: " << groupName;
                 return std::unexpected(UserControlError::GroupNotFound);
             }
-            int groupId = q.value(0).toInt();
-            q.clear();
+            int groupId = groupResults.first()["id"].toInt();
 
             // 检查用户是否已经在该组中
             QString checkUserInGroupQuery = R"(
                 SELECT user_id FROM user_groups WHERE user_id = ? AND group_id = ?
             )";
-            q = db.executePreparedQuery(checkUserInGroupQuery, {userId, groupId});
-            if (q.next()) {
-                q.clear();
+            auto userInGroupResults = db.executePreparedQueryAndFetchAll(checkUserInGroupQuery, {userId, groupId});
+            if (!userInGroupResults.isEmpty()) {
                 log(service::LogLevel::INFO) << "用户 " << userId << " 已经在组 " << groupName << " 中";
                 return std::unexpected(UserControlError::UserAlreadyInGroup);
             }
-            q.clear();
 
             // 将用户添加到组
             QString insertUserGroupQuery = R"(
@@ -320,58 +304,48 @@ namespace data::UserControl {
         }
 
         QString getUserInWhichGroup(int userId) {
-            service::DatabaseManager db("./user.db");
+            service::DatabaseManager db(path);
             QString query = R"(
-                SELECT g.name FROM groups g
-                JOIN user_groups ug ON g.id = ug.group_id
-                WHERE ug.user_id = ?
-            )";
-            QSqlQuery q = db.executePreparedQuery(query, {userId});
-
-            if (q.next()) {
-                QStringList groupNames;
-                do {
-                    groupNames.append(q.value(0).toString());
-                } while (q.next());
-
-                QString groupList = groupNames.join(", ");
-                log(service::LogLevel::DATA) << "用户 " << userId << " 在组: " << groupList;
-                return groupList;
-            } else {
-                log(service::LogLevel::INFO) << "用户 " << userId << " 不在任何组中";
-                return {};
+        SELECT g.name
+        FROM groups g
+        JOIN user_groups ug ON g.id = ug.group_id
+        WHERE ug.user_id = ?
+    )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {userId});
+            QStringList groupNames;
+            for (const auto &row : results) {
+                groupNames.append(row["name"].toString());
             }
+            return groupNames.join(", ");
         }
 
 
         bool isUserInGroup(int userId, const QString &groupName) {
-            // 获取该用户所在的所有组，再检查是否包含目标组
-            QString groupList = getUserInWhichGroup(userId);
-            QStringList groups = groupList.split(", ", Qt::SkipEmptyParts);
-            bool inGroup = groups.contains(groupName);
-            if (inGroup) {
-                log(service::LogLevel::DATA) << "用户 " << userId << " 在组: " << groupName;
-            } else {
-                log(service::LogLevel::INFO) << "用户 " << userId << " 不在组: " << groupName;
+            service::DatabaseManager db(path);
+            QString query = R"(
+        SELECT COUNT(*)
+        FROM user_groups ug
+        JOIN groups g ON ug.group_id = g.id
+        WHERE ug.user_id = ? AND g.name = ?
+    )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {userId, groupName});
+            if (results.isEmpty()) {
+                return false;
             }
-            return inGroup;
+            return results.first()["COUNT(*)"].toInt() > 0;
         }
     }
     namespace UserInfo {
         std::expected<QString,UserInfoError> getUserNameById(int userId) {
-            service::DatabaseManager db("./user.db");
-            QString query = R"(
-                SELECT username FROM users WHERE id = ?
-            )";
-            QSqlQuery q = db.executePreparedQuery(query, {userId});
-            if (q.next()) {
-                QString userName = q.value(0).toString();
-                log(service::LogLevel::DATA) << "用户ID: " << userId << " 的用户名为: " << userName;
-                return userName;
-            } else {
-                log(service::LogLevel::INFO) << "未找到用户ID: " << userId;
+            service::DatabaseManager db(path);
+            QString query = "SELECT username FROM users WHERE id = ?";
+            auto results = db.executePreparedQueryAndFetchAll(query, {userId});
+
+            if (results.isEmpty()) {
                 return std::unexpected(UserInfoError::UserNotFound);
             }
+
+            return results.first()["username"].toString();
         }
 
     }

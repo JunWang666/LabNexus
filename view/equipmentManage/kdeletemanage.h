@@ -1,7 +1,7 @@
 ﻿#ifndef KDELETEMANAGE_H
 #define KDELETEMANAGE_H
 
-#include <QDialog>
+#include "pch.h"
 
 namespace view::equipment {
 QT_BEGIN_NAMESPACE

@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_inventory_home.h" resolved
 
+#include "pch.h"
 #include "inventory_home.h"
 #include "ui_inventory_home.h"
 

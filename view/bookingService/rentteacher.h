@@ -6,10 +6,12 @@
 #define RENTTEACHER_H
 
 #include <QWidget>
+#include <QString>
 #include "apply.h"
 #include "sendrent.h"
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "module/model/EquipmentDataModel.h"
+#include "module/model/BookingDataModel.h"
+#include <QListWidget>
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class RentTeacher; }
@@ -24,7 +26,7 @@ public:
     void loadData();
     void setUpModel_device();
     void setUpModel_request();
-    void setColEditable(QStandardItemModel *model,int col,bool editable);
+    // void setColEditable(QStandardItemModel *model,int col,bool editable);
 public slots:
     void on_btnSend_clicked();
     void on_btnCheck_clicked();
@@ -32,8 +34,8 @@ private:
     Ui::RentTeacher *ui;
     SendRent* sendRent;
     Apply* apply;
-    QStandardItemModel* modelDevice;
-    QStandardItemModel* modelRequest;
+    dataModel::EquipmentDataModel* modelDevice;
+    dataModel::BookingDataModel* modelRequest;
 };
 } // view::Order
 

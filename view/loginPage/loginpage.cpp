@@ -4,6 +4,7 @@
 
 // You may need to build the project (run Qt uic code generator) to get "ui_loginPage.h" resolved
 
+#include "pch.h"
 #include "loginpage.h"
 #include "ui_loginPage.h"
 #include "registerpage.h"
@@ -11,10 +12,6 @@
 #include "../homepage/teacherhomepage.h"
 #include "../homepage/studenthomepage.h"
 #include "../homepage/administratorhomepage.h"
-#include "module/data/data_UserControl.h"
-#include "service/logger/logger.h"
-#include <QMessageBox>
-#include <QString>
 
 namespace view::login {
     loginPage::loginPage(QWidget *parent) : QWidget(parent), ui(new Ui::loginPage) {
