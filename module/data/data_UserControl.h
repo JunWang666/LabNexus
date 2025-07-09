@@ -24,7 +24,9 @@ namespace data::UserControl {
     inline int currentUserId = -1;
 
     void dropDB();
+
     void buildDB();
+
     namespace Login {
         /**
          * @brief 创建用户表。
@@ -93,19 +95,6 @@ namespace data::UserControl {
          * @return 如果密码更新成功，则返回true；如果发生数据库错误，则返回一个包含UserControlError::DatabaseError的std::unexpected对象。
          */
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword);
-    }
-
-    namespace userInfo {
-        /**
-         * @brief 更改指定用户的用户名。
-         *
-         * 该函数通过用户ID查找用户，并将其用户名更新为新的名称。如果更新失败，将抛出一个异常并记录错误。
-         *
-         * @param userId 用户的唯一标识符。
-         * @param newName 新的用户名。
-         * @throws std::runtime_error 如果更新用户名失败，则抛出此异常。
-         */
-        void changeUserName(int userId, const QString &newName);
     }
 
     namespace permission {
@@ -191,10 +180,21 @@ namespace data::UserControl {
         enum class UserInfoError {
             UserNotFound
         };
-        std::expected<QString,UserInfoError> getUserNameById(int userId);
+
+        std::expected<QString, UserInfoError> getUserNameById(int userId);
+
+        /**
+         * @brief 更改指定用户的用户名。
+         *
+         * 该函数通过用户ID查找用户，并将其用户名更新为新的名称。如果更新失败，将抛出一个异常并记录错误。
+         *
+         * @param userId 用户的唯一标识符。
+         * @param newName 新的用户名。
+         * @throws std::runtime_error 如果更新用户名失败，则抛出此异常。
+         */
+        void changeUserName(int userId, const QString &newName);
     }
 }
-
 
 
 #endif //USERCONTROL_H

@@ -43,21 +43,6 @@ namespace data::UserControl {
         }
     }
 
-    namespace userInfo {
-        void changeUserName(int userId, const QString &newName) {
-            service::DatabaseManager db(path);
-            QString updateQuery = R"(
-                UPDATE users
-                SET username = ?
-                WHERE id = ?
-            )";
-            if (!db.executePreparedNonQuery(updateQuery, {newName, userId})) {
-                log(service::LogLevel::ERR) << "更新用户名失败: " << userId;
-                throw std::runtime_error("Failed to update username.");
-            }
-        }
-    }
-
     namespace Login {
         void createUserTable() {
             service::DatabaseManager db(path);
@@ -89,7 +74,7 @@ namespace data::UserControl {
                 return std::unexpected(UserControlError::UserNotFound);
             }
 
-            const auto& row = results.first();
+            const auto &row = results.first();
             int userId = row["id"].toInt();
             QString storedPassword = row["password"].toString();
             QString status = row["status"].toString();
@@ -362,8 +347,9 @@ namespace data::UserControl {
             return results.first()["COUNT(*)"].toInt() > 0;
         }
     }
+
     namespace UserInfo {
-        std::expected<QString,UserInfoError> getUserNameById(int userId) {
+        std::expected<QString, UserInfoError> getUserNameById(int userId) {
             service::DatabaseManager db(path);
             QString query = "SELECT username FROM users WHERE id = ?";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
@@ -375,7 +361,17 @@ namespace data::UserControl {
             return results.first()["username"].toString();
         }
 
+        void changeUserName(int userId, const QString &newName) {
+            service::DatabaseManager db(path);
+            QString updateQuery = R"(
+                UPDATE users
+                SET username = ?
+                WHERE id = ?
+            )";
+            if (!db.executePreparedNonQuery(updateQuery, {newName, userId})) {
+                log(service::LogLevel::ERR) << "更新用户名失败: " << userId;
+                throw std::runtime_error("Failed to update username.");
+            }
+        }
     }
 }
-
-
