@@ -74,7 +74,7 @@ namespace data::UserControl {
                 return std::unexpected(UserControlError::UserNotFound);
             }
 
-            const auto& row = results.first();
+            const auto &row = results.first();
             int userId = row["id"].toInt();
             QString storedPassword = row["password"].toString();
             QString status = row["status"].toString();
@@ -304,19 +304,31 @@ namespace data::UserControl {
         }
 
         QString getUserInWhichGroup(int userId) {
+            auto group = getUserInWhichGroupList(userId);
+            if (group.isEmpty()) {
+                return QString();
+            } else {
+                return group.join(", ");
+            }
+        }
+
+        QStringList getUserInWhichGroupList(int userId) {
             service::DatabaseManager db(path);
             QString query = R"(
-        SELECT g.name
-        FROM groups g
-        JOIN user_groups ug ON g.id = ug.group_id
-        WHERE ug.user_id = ?
-    )";
+                SELECT g.name
+                FROM groups g
+                JOIN user_groups ug ON g.id = ug.group_id
+                WHERE ug.user_id = ?
+            )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
             QStringList groupNames;
-            for (const auto &row : results) {
+            for (const auto &row: results) {
                 groupNames.append(row["name"].toString());
             }
-            return groupNames.join(", ");
+            return groupNames;
+        }
+
+        void deleteUserFromGroup(int userId, const QString &groupName) {
         }
 
 
@@ -335,8 +347,9 @@ namespace data::UserControl {
             return results.first()["COUNT(*)"].toInt() > 0;
         }
     }
+
     namespace UserInfo {
-        std::expected<QString,UserInfoError> getUserNameById(int userId) {
+        std::expected<QString, UserInfoError> getUserNameById(int userId) {
             service::DatabaseManager db(path);
             QString query = "SELECT username FROM users WHERE id = ?";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
@@ -348,7 +361,17 @@ namespace data::UserControl {
             return results.first()["username"].toString();
         }
 
+        void changeUserName(int userId, const QString &newName) {
+            service::DatabaseManager db(path);
+            QString updateQuery = R"(
+                UPDATE users
+                SET username = ?
+                WHERE id = ?
+            )";
+            if (!db.executePreparedNonQuery(updateQuery, {newName, userId})) {
+                log(service::LogLevel::ERR) << "更新用户名失败: " << userId;
+                throw std::runtime_error("Failed to update username.");
+            }
+        }
     }
 }
-
-
