@@ -159,6 +159,25 @@ namespace data::mail {
         return mails;
     }
 
+    Mail getMailById(int mailId) {
+        service::DatabaseManager db(path);
+        if (!db.isConnected()) {
+            log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
+            return Mail();
+        }
+        QString selectQuery = R"(
+            SELECT id, sender_id, receiver_id, subject, content, send_date, status, extra_data
+            FROM mail
+            WHERE id = ?
+        )";
+        auto results = db.executePreparedQueryAndFetchAll(selectQuery, {mailId});
+        if (!results.isEmpty()) {
+            return createMailFromRecord(results.first());
+        }
+        log(service::LogLevel::ERR) << "未找到邮件: ID = " << mailId;
+        return Mail();
+    }
+
     int getMailCount(int receiverId) {
         service::DatabaseManager db(path);
         if (!db.isConnected()) {

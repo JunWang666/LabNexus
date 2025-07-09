@@ -7,6 +7,9 @@
 
 #include "pch.h"
 
+#include "view/bookingService/managercheck.h"
+#include "view/bookingService/rent.h"
+
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
 
@@ -43,6 +46,9 @@ namespace view::homepage {
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;
         void setupUI(); // 初始化界面
+
+    private:
+        view::Order::ManagerCheck* orderCheck;
     };
 } // view::homepage
 

@@ -7,6 +7,8 @@
 
 #include <QWidget>
 #include "module/model/BookingDataModel.h"
+#include "module/model/filterproxymdel.h"
+
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class Apply; }
@@ -17,6 +19,7 @@ Q_OBJECT
 
 public:
     explicit Apply(QWidget *parent = nullptr);
+    explicit Apply(const QString & name,const QString & id,QWidget *parent = nullptr);
     ~Apply() override;
     void loadData();
     void setUpModel();
@@ -25,6 +28,9 @@ public slots:
 private:
     Ui::Apply *ui;
     dataModel::BookingDataModel *model;
+    QString name;
+    QString id;
+    fliterModel::FilterProxyMdel * fliterModel;
 };
 } // view::Order
 
