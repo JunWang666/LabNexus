@@ -8,7 +8,6 @@ class TestEquipmentManage : public QObject {
 Q_OBJECT
 private slots:
     void initTestCase();
-    void cleanupTestCase();
     void testLoadFullEquipmentRecords();
 
 private:
@@ -28,9 +27,6 @@ void TestEquipmentManage::initTestCase() {
     db.executeNonQuery("INSERT INTO equipment_instance (id, name, class_id, status) VALUES (2, 'S-001', 2, 'In Use')");
 }
 
-void TestEquipmentManage::cleanupTestCase() {
-    data::Equipment::dropDB();
-}
 
 void TestEquipmentManage::testLoadFullEquipmentRecords() {
     QList<data::Equipment::fullEquipmentRecord> records = data::Equipment::loadFullEquipmentRecords();

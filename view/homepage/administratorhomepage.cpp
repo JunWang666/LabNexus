@@ -18,8 +18,7 @@ namespace view::homepage {
                                                                     A_name(name), A_ID(ID) {
         ui->setupUi(this);
         setupUI();
-        ui->frame_3->hide();
-        ui->frame_4->hide();
+        orderCheck = new Order::ManagerCheck(this);
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -59,10 +58,11 @@ namespace view::homepage {
         service::log() << "管理员 " << A_name << " 点击了审批按钮";
 
         // TODO: 打开审批页面
-        QMessageBox::information(this, "审批管理",
-                                 QString(
-                                     "审批管理功能开发中...\n用户: %1\nID: %2\n\n在这里您可以：\n• 审批所有用户的借用申请\n• 查看审批历史记录\n• 设置审批流程和规则\n• 批量处理审批事务")
-                                 .arg(A_name).arg(A_ID));
+        orderCheck->show();
+        // QMessageBox::information(this, "审批管理",
+        //                          QString(
+        //                              "审批管理功能开发中...\n用户: %1\nID: %2\n\n在这里您可以：\n• 审批所有用户的借用申请\n• 查看审批历史记录\n• 设置审批流程和规则\n• 批量处理审批事务")
+        //                          .arg(A_name).arg(A_ID));
     }
 
     void administratorHomepage::on_userManageButton_clicked() {

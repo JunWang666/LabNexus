@@ -9,7 +9,7 @@
 #include <QDateTime>
 
 namespace data::mail {
-    inline static QString path = "mail.db";
+    inline QString path = "mail.db";
 
     struct Mail {
         int id;
@@ -88,6 +88,8 @@ namespace data::mail {
      * @return 包含Mail对象的QList，每个对象代表一封未读邮件。
      */
     QList<Mail> getUnreadMails(int receiverId, int page, int pageSize=5);
+
+    Mail getMailById(int mailId);
 
     /**
          * @brief 计算特定接收者的邮件所需的总页数。
