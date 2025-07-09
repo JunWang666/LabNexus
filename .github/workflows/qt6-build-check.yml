@@ -33,11 +33,21 @@ jobs:
         with:
           version: ${{ matrix.qt_ver }}
           arch: ${{ matrix.qt_arch }} # <-- 使用 MSVC 架构
+          cache: true
 
       # 2. 拉取代码 (版本更新)
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      # 缓存 CMake 构建目录
+      - name: Cache CMake build
+        uses: actions/cache@v3
+        with:
+          path: build
+          key: ${{ runner.os }}-build-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}-${{ matrix.msvc_arch }}-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}-${{ matrix.msvc_arch }}-
 
       # 3. 使用 CMake 和 MSVC 编译
       - name: Build with MSVC (CMake)
@@ -54,7 +64,7 @@ jobs:
           cmake -S . -B build -D CMAKE_PREFIX_PATH=%QT_ROOT_DIR%
 
           rem 2. CMake 编译步骤：使用生成的项目文件进行编译
-          rem --config Release 指定编译 Release 版本
+          rem --config Release 指定��译 Release 版本
           cmake --build build --config Release
 
       # 4. 上传构建产物
