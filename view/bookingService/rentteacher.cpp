@@ -121,6 +121,9 @@ void RentTeacher::setUpModel_repair() {
     repairFilterProxyMdel->setSourceModel(modelRepair);
     //设置模型
     ui->repairTableView->setModel(repairFilterProxyMdel);
+    //使用代理类来代理状态栏
+    auto * repairDelegate = new delegateModel::RepairStatusDelegate(this);
+    ui->repairTableView->setItemDelegateForColumn(dataModel::EquipmentDataModel::Col_Status, repairDelegate);
     //设置隐藏列
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);

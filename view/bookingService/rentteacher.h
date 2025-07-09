@@ -14,6 +14,7 @@
 #include <QListWidget>
 #include "module/model/filterproxymdel.h"
 #include "module/model/ApprovalStatusDelegate.h"
+#include "module/model/RepairStatusDelegate.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class RentTeacher; }
