@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>view::messageCenter::MessageDetailPage</class>
+    <widget class="QWidget" name="view::messageCenter::MessageDetailPage">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>554</width>
+                <height>448</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>MessageDetailPage</string>
+        </property>
+        <property name="styleSheet">
+            <string notr="true">/* ---- 整体页面背景 ---- */
+                QWidget#view::messageCenter::MessageDetailPage {
+                background-color: transparent;
+                }
+
+                /* ---- 发件人信息卡片 和 主题信息卡片 ---- */
+                QFrame#frame, QFrame#frame_4 {
+                background-color: rgba(239, 246, 252, 180); /* 半透明淡蓝色背景 */
+                border-radius: 8px; /* 圆角 */
+                border: none; /* 移除边框 */
+                }
+
+                /* ---- 所有标签控件 ---- */
+                /* 确保标签背景透明，并设置统一的文本颜色 */
+                QLabel {
+                background-color: transparent;
+                color: #1F1F1F; /* 深灰色，保证可读性 */
+                /* 移除在 .ui 文件中单独设置的样式，统一管理 */
+                font-family: &quot;Microsoft YaHei UI&quot;;
+                }
+
+                /* ---- 消息正文区域 ---- */
+                QTextBrowser#textBrowser {
+                background-color: transparent; /* 背景透明 */
+                border: none; /* 移除边框 */
+                color: #1F1F1F; /* 设置正文颜色 */
+                font-size: 11pt; /* 设置合适的正文字号 */
+                }
+
+
+                /* ---- 滚动条美化 (适用于 QTextBrowser) ---- */
+                QScrollBar:vertical {
+                border: none;
+                background: transparent;
+                width: 8px;
+                margin: 0px 0px 0px 0px;
+                }
+
+                QScrollBar::handle:vertical {
+                background: #D0D0D0;
+                border-radius: 4px;
+                min-height: 25px;
+                }
+
+                QScrollBar::handle:vertical:hover {
+                background: #A0A0A0;
+                }
+
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+                }
+
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+                }
+            </string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+                <widget class="QFrame" name="frame">
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout">
+                        <item>
+                            <widget class="QLabel" name="SenderName">
+                                <property name="styleSheet">
+                                    <string notr="true">font: 700 14pt &quot;Microsoft YaHei UI&quot;;</string>
+                                </property>
+                                <property name="text">
+                                    <string>SenderName</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLabel" name="SenderGroup">
+                                <property name="styleSheet">
+                                    <string notr="true">font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
+                                </property>
+                                <property name="text">
+                                    <string>SenderGroup</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </widget>
+            </item>
+            <item>
+                <widget class="QFrame" name="frame_4">
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                        <item>
+                            <widget class="QLabel" name="Subject">
+                                <property name="styleSheet">
+                                    <string notr="true">font: 700 12pt &quot;Microsoft YaHei UI&quot;;</string>
+                                </property>
+                                <property name="text">
+                                    <string>Subject</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLabel" name="SendDate">
+                                <property name="styleSheet">
+                                    <string notr="true">font: 9pt &quot;Microsoft YaHei UI&quot;;</string>
+                                </property>
+                                <property name="text">
+                                    <string>SendDate</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>
+                                        Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter
+                                    </set>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </widget>
+            </item>
+            <item>
+                <widget class="QTextBrowser" name="textBrowser"/>
+            </item>
+            <item>
+                <widget class="QFrame" name="frame_3">
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>
