@@ -25,7 +25,7 @@
 #include <QtSql/QSqlRecord>
 #include "service/logger/logger.h"
 #include "service/database/databaseManager.h"
-#include "service/styleHelper/StyleHelper.h"
+#include "service/styleHelper/MicaHelper.h"
 #include "service/MutiWindow/MutiWindow.h"
 #include "module/data/data_UserControl.h"
 #include <QRegularExpression>

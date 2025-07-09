@@ -108,8 +108,13 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messageblock.ui
         view/messageCenter/messageblock.cpp
         view/messageCenter/messageblock.h
-        service/styleHelper/StyleHelper.cpp
-        service/styleHelper/StyleHelper.h
+        service/styleHelper/MicaHelper.cpp
+        service/styleHelper/MicaHelper.h
+        service/MutiWindow/MutiWindow.h
+        service/MutiWindow/MutiWindow.cpp
+        view/messageCenter/messagedetailpage.cpp
+        view/messageCenter/messagedetailpage.h
+        view/messageCenter/messagedetailpage.ui
         service/MutiWindow/MutiWindow.cpp
         service/MutiWindow/MutiWindow.h
         view/messageCenter/messagedetailpage.cpp
