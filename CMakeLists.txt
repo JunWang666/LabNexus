@@ -79,6 +79,10 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.ui
         module/model/filterproxymdel.cpp
         module/model/filterproxymdel.h
+        module/model/ApprovalStatusDelegate.cpp
+        module/model/ApprovalStatusDelegate.h
+        module/model/RepairStatusDelegate.cpp
+        module/model/RepairStatusDelegate.h
 )
 target_link_libraries(LabNexus
         Qt::Core
