@@ -20,6 +20,11 @@ class Rent : public QWidget {
 Q_OBJECT
 
 public:
+    enum Column {
+        Col_Rent,
+        Col_Repair,
+        Col_Return
+    };
     explicit Rent(QWidget *parent = nullptr);
     explicit Rent(const QString &name,const QString&id,QWidget *parent = nullptr);
     ~Rent() override;
@@ -33,8 +38,12 @@ private:
     Ui::Rent *ui;
     SendRent* sendRent;
     Apply* checkApply;
-    dataModel::EquipmentDataModel* model;
-    fliterModel::FilterProxyMdel* proxyModel;
+    dataModel::EquipmentDataModel* modelRent;
+    dataModel::EquipmentDataModel* modelRepair;
+    dataModel::EquipmentDataModel* modelReturn;
+    fliterModel::FilterProxyMdel* rentFilterProxyMdel;
+    fliterModel::FilterProxyMdel* repairFilterProxyMdel;
+    fliterModel::FilterProxyMdel* returnFilterProxyMdel;
     QString name;
     QString id;
 };

@@ -31,6 +31,9 @@ Apply::~Apply() {
 void Apply::loadData() {
     //抓取数据
     model->fetchData();
+    //仅显示自己
+    fliterModel->setUserIdColumn(dataModel::BookingDataModel::Col_UserId);
+    fliterModel->setUserIdFilter(id.toInt());
 }
 
 void Apply::setUpModel() {
@@ -50,9 +53,6 @@ void Apply::setUpModel() {
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
     //设置不可更改
     ui->applyTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //仅显示自己
-    fliterModel->setUserIdColumn(dataModel::BookingDataModel::Col_UserId);
-    fliterModel->setUserIdFilter(id.toInt());
 }
 
 void Apply::on_btnClose_clicked()
