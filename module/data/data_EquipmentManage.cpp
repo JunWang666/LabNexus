@@ -49,6 +49,7 @@ namespace data::Equipment {
                 i.id,
                 i.name,
                 i.status,
+                i.rentId,
                 i.created_at,
                 i.class_id,
                 c.name AS type_name
@@ -69,6 +70,7 @@ namespace data::Equipment {
             rec.id = query.value("id").toInt();
             rec.name = query.value("name").toString();
             rec.status = query.value("status").toString();
+            rec.rentId = query.value("rentId").toInt();
             rec.inDate = query.value("created_at").toDateTime();
             rec.class_id = query.value("class_id").toInt();
             rec.type = query.value("type_name").toString();
