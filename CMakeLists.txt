@@ -90,6 +90,10 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
+        assets/style/fluentDesign.qss
+        assets/style/style.qrc
+        assets/style/style_res.qrc
+        assets/style/blurredTranslucent.h
         module/data/data_mail.h
         module/data/data_mail.cpp
         view/messageCenter/messagewindow.ui
