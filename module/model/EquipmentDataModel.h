@@ -16,7 +16,6 @@ class EquipmentDataModel : public QAbstractTableModel {
             Col_ID,
             Col_Name,
             Col_Type,
-            Col_RentId,
             Col_Status,
             Col_InDate,
             Col_Count // 列的总数

@@ -51,7 +51,6 @@ namespace data::Equipment {
                 i.id,
                 i.name,
                 i.status,
-                i.rentId,
                 i.created_at,
                 i.class_id,
                 c.name AS type_name
@@ -67,7 +66,6 @@ namespace data::Equipment {
             rec.id = row["id"].toInt();
             rec.name = row["name"].toString();
             rec.status = row["status"].toString();
-            rec.rentId = row["rentId"].toInt();
             rec.inDate = row["created_at"].toDateTime();
             rec.class_id = row["class_id"].toInt();
             rec.type = row["type_name"].toString();
@@ -75,23 +73,7 @@ namespace data::Equipment {
         }
         return records;
     }
-
-    bool updateEquipmentOnReturn(int id) {
-        service::DatabaseManager db("./equipment.db");
-        QString queryString = R"(
-        UPDATE equipment_instance
-        SET status = ?, rentId = ?
-        WHERE Id = ?)";
-        QVariantList parmas;
-        parmas << "可用" << "" << id;
-        bool success = db.executePreparedNonQuery(queryString, parmas);
-        if (!success) {
-            log(LogLevel::ERR) << "归还设备失败:" << db.getLastError();
-        }
-        return success;
-    }
-
-    namespace EquipmentClass {
+        namespace EquipmentClass {
             void createEquipmentClassTable() {
                 service::DatabaseManager db(path);
                 if (!db.tableExists("equipment_class")) {
@@ -122,7 +104,6 @@ namespace data::Equipment {
                         name TEXT NOT NULL,
                         class_id INTEGER NOT NULL,
                         status TEXT NOT NULL DEFAULT '可用',
-                        rentId INTEGER,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
                     )

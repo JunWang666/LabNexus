@@ -10,7 +10,7 @@
 #include <QDateTime>
 #include <QList>
 namespace data::Equipment {
-    inline QString path = "./equipment.db";
+    inline static QString path = "./equipment.db";
 
     /**
      * @brief 删除设备管理数据库。
@@ -33,12 +33,10 @@ namespace data::Equipment {
         QString name;
         int class_id;
         QDateTime inDate;
-        int rentId;
         QString status;
     };
 
     QList<fullEquipmentRecord> loadFullEquipmentRecords();
-    bool updateEquipmentOnReturn(int id);
     /*************/
 
 
