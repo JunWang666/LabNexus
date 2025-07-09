@@ -57,10 +57,6 @@ namespace view::messageCenter {
 
     private:
         Ui::MessageBlock *ui;
-        QString m_messageId;
-
-    public slots:
-        void on_frame_clicked();
     };
 } // view::MessageCenter
 

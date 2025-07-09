@@ -61,12 +61,7 @@ namespace view::messageCenter {
             MessageData data;
             data.id = QString::number(mail.id);
             data.title = mail.subject;
-            auto senderOpt = data::UserControl::UserInfo::getUserNameById(mail.sender_id);
-            if (senderOpt.has_value()) {
-                data.sender = senderOpt.value();
-            } else {
-                data.sender = QStringLiteral("未知发件人：") + QString::number(mail.sender_id);
-            }
+            data.sender = QString::number(mail.sender_id);
             data.content = mail.content;
             data.timestamp = mail.send_date.toString("yyyy-MM-dd hh:mm");
 

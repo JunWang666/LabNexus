@@ -89,12 +89,6 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
-        module/model/filterproxymdel.cpp
-        module/model/filterproxymdel.h
-        module/model/ApprovalStatusDelegate.cpp
-        module/model/ApprovalStatusDelegate.h
-        module/model/RepairStatusDelegate.cpp
-        module/model/RepairStatusDelegate.h
         view/loginPage/style.qrc
         assets/style/fluentDesign.qss
         assets/style/style.qrc
@@ -110,11 +104,6 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messageblock.h
         service/styleHelper/StyleHelper.cpp
         service/styleHelper/StyleHelper.h
-        service/MutiWindow/MutiWindow.cpp
-        service/MutiWindow/MutiWindow.h
-        view/messageCenter/messagedetailpage.cpp
-        view/messageCenter/messagedetailpage.h
-        view/messageCenter/messagedetailpage.ui
 )
 target_link_libraries(LabNexus
         Qt::Core

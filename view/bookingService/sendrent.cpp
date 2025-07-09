@@ -8,12 +8,11 @@
 #include "ui_SendRent.h"
 
 namespace view::Order {
-SendRent::SendRent(const QString &name,const QString & id,QWidget *parent) :
+SendRent::SendRent(QWidget *parent) :
     QDialog(parent), ui(new Ui::SendRent) {
     ui->setupUi(this);
-    this->setAttribute(Qt::WA_DeleteOnClose,false);
-    ui->nameLineEdit->setText(name);//设置姓名
-    ui->LineEditNo->setText(id);//设置学号
+    ui->nameLineEdit->setText("");//设置姓名
+    ui->LineEditNo->setText("");//设置学号
     ui->nameLineEdit->setReadOnly(true);//设置只读
     ui->LineEditNo->setReadOnly(true);//设置呢只读
     //均设置为当前时间
@@ -21,16 +20,16 @@ SendRent::SendRent(const QString &name,const QString & id,QWidget *parent) :
     ui->returnDateTimeEdit->setDateTime(QDateTime::currentDateTime());
 }
 
-SendRent::SendRent(const QString &name,const QString & id,const QString& devName,QWidget *parent) :
+SendRent::SendRent(const QString &name,QWidget *parent) :
     QDialog(parent)
     ,ui(new Ui::SendRent) {
     ui->setupUi(this);
-    ui->nameLineEdit->setText(name);//设置姓名
-    ui->LineEditNo->setText(id);//设置学号
+    ui->nameLineEdit->setText("");//设置姓名
+    ui->LineEditNo->setText("");//设置学号
     ui->nameLineEdit->setReadOnly(true);//设置只读
     ui->LineEditNo->setReadOnly(true);//设置呢只读
     //点击table后默认设置设备且不可更改
-    ui->deviceComboBpx->setCurrentText(devName);
+    ui->deviceComboBpx->setCurrentText(name);
     ui->deviceComboBpx->setEnabled(true);
     //均设置为当前时间
     ui->rentDateTimeEdit->setDateTime(QDateTime::currentDateTime());

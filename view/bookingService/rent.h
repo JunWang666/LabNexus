@@ -10,8 +10,6 @@
 #include "apply.h"
 #include "sendrent.h"
 #include "module/model/EquipmentDataModel.h"
-#include "module/model/filterproxymdel.h"
-#include "module/model/RepairStatusDelegate.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class Rent; }
@@ -21,34 +19,19 @@ class Rent : public QWidget {
 Q_OBJECT
 
 public:
-    enum Column {
-        Col_Rent,
-        Col_Repair,
-        Col_Return
-    };
     explicit Rent(QWidget *parent = nullptr);
-    explicit Rent(const QString &name,const QString&id,QWidget *parent = nullptr);
     ~Rent() override;
     void loadData();
     void setUpModel();
-    void setIndex(int row);
     // void setColEditable(QStandardItemModel *model,int col,bool editable);
 public slots:
     void on_btnSend_clicked();
     void on_btnCheck_clicked();
-    void on_btnReturn_clicked();
 private:
     Ui::Rent *ui;
     SendRent* sendRent;
     Apply* checkApply;
-    dataModel::EquipmentDataModel* modelRent;
-    dataModel::EquipmentDataModel* modelRepair;
-    dataModel::EquipmentDataModel* modelReturn;
-    fliterModel::FilterProxyMdel* rentFilterProxyMdel;
-    fliterModel::FilterProxyMdel* repairFilterProxyMdel;
-    fliterModel::FilterProxyMdel* returnFilterProxyMdel;
-    QString name;
-    QString id;
+    dataModel::EquipmentDataModel* model;
 };
 } // view::Order
 
