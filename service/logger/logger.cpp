@@ -3,6 +3,7 @@
 //
 
 #include "logger.h"
+#include <regex>
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <io.h>
@@ -45,6 +46,56 @@ namespace service {
         console_ = enable;
     }
 
+    // 过滤器相关方法实现
+    void logger::setFilter(const LogFilter& filter) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        filter_ = filter;
+    }
+
+    void logger::clearFilter() {
+        std::lock_guard<std::mutex> lock(mtx_);
+        filter_ = nullptr;
+    }
+
+    void logger::addKeywordFilter(const std::string& keyword, bool exclude) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        if (exclude) {
+            excludeKeywords_.push_back(keyword);
+        } else {
+            includeKeywords_.push_back(keyword);
+        }
+    }
+
+    void logger::addRegexFilter(const std::string& pattern, bool exclude) {
+        std::lock_guard<std::mutex> lock(mtx_);
+        try {
+            std::regex regexPattern(pattern);
+            LogFilter regexFilter = [pattern, exclude](const std::string& msg, LogLevel level) -> bool {
+                std::regex regex(pattern);
+                bool matches = std::regex_search(msg, regex);
+                return exclude ? !matches : matches;
+            };
+
+            if (filter_) {
+                // 如果已经有过滤器，组合使用
+                LogFilter oldFilter = filter_;
+                filter_ = [oldFilter, regexFilter](const std::string& msg, LogLevel level) -> bool {
+                    return oldFilter(msg, level) && regexFilter(msg, level);
+                };
+            } else {
+                filter_ = regexFilter;
+            }
+        } catch (const std::regex_error& e) {
+            // 忽略无效的正则表达式
+        }
+    }
+
+    void logger::clearKeywordFilters() {
+        std::lock_guard<std::mutex> lock(mtx_);
+        includeKeywords_.clear();
+        excludeKeywords_.clear();
+    }
+
     logger &logger::operator<<(LogLevel level) {
         currentLevel_ = level;
         return *this;
@@ -66,9 +117,42 @@ namespace service {
             buffer_.clear();
             return;
         }
-        write(buffer_.str(), currentLevel_);
+
+        std::string message = buffer_.str();
+        if (shouldLog(message, currentLevel_)) {
+            write(message, currentLevel_);
+        }
+
         buffer_.str("");
         buffer_.clear();
+    }
+
+    bool logger::shouldLog(const std::string &msg, LogLevel level) {
+        // 应用自定义过滤器
+        if (filter_ && !filter_(msg, level)) {
+            return false;
+        }
+
+        // 应用关键词过滤器
+        if (!includeKeywords_.empty()) {
+            bool found = false;
+            for (const auto& keyword : includeKeywords_) {
+                if (msg.find(keyword) != std::string::npos) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return false;
+        }
+
+        // 应用排除关键词过滤器
+        for (const auto& keyword : excludeKeywords_) {
+            if (msg.find(keyword) != std::string::npos) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void logger::write(const std::string &msg, LogLevel level) {
