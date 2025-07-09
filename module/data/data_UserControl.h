@@ -95,6 +95,19 @@ namespace data::UserControl {
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword);
     }
 
+    namespace userInfo {
+        /**
+         * @brief 更改指定用户的用户名。
+         *
+         * 该函数通过用户ID查找用户，并将其用户名更新为新的名称。如果更新失败，将抛出一个异常并记录错误。
+         *
+         * @param userId 用户的唯一标识符。
+         * @param newName 新的用户名。
+         * @throws std::runtime_error 如果更新用户名失败，则抛出此异常。
+         */
+        void changeUserName(int userId, const QString &newName);
+    }
+
     namespace permission {
         /**
          * @brief 创建用户组表。
@@ -139,6 +152,28 @@ namespace data::UserControl {
          * @return QString 包含用户所属组名的字符串，多个组名之间用逗号分隔；如果用户不属于任何组，则返回空字符串。
          */
         QString getUserInWhichGroup(int userId);
+
+        /**
+         * @brief 获取指定用户所属的所有组名列表。
+         *
+         * 该函数通过查询数据库，获取给定用户ID所属的所有组，并将这些组名以QVector<QString>的形式返回。如果用户不属于任何组，则返回一个空的QVector。
+         *
+         * @param userId 用户ID
+         * @return QVector<QString> 包含用户所属组名的字符串向量；如果用户不属于任何组，则返回一个空的QVector。
+         */
+        QStringList getUserInWhichGroupList(int userId);
+
+        /**
+         * @brief 从指定组中删除用户。
+         *
+         * 此函数尝试将给定的用户ID从指定的组名中移除。如果操作成功，则用户不再属于该组。
+         * 如果提供的用户ID或组名无效，或者数据库操作失败，将返回相应的错误。
+         *
+         * @param userId 要从组中删除的用户的ID
+         * @param groupName 用户所属的组名
+         * @return std::expected<bool, UserControlError> 成功时为true，失败时包含错误类型。
+         */
+        void deleteUserFromGroup(int userId, const QString &groupName);
 
         /**
          * @brief 检查用户是否属于指定的组。

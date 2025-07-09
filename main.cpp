@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     }
 
     data::UserControl::currentUserId = 2;
-    view::messageCenter::MessageWindow b;
+    view::login::loginPage b;
 
 #ifdef Q_OS_WIN
       // 从窗口实例 b 获取句柄，而不是用 this

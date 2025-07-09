@@ -43,6 +43,21 @@ namespace data::UserControl {
         }
     }
 
+    namespace userInfo {
+        void changeUserName(int userId, const QString &newName) {
+            service::DatabaseManager db(path);
+            QString updateQuery = R"(
+                UPDATE users
+                SET username = ?
+                WHERE id = ?
+            )";
+            if (!db.executePreparedNonQuery(updateQuery, {newName, userId})) {
+                log(service::LogLevel::ERR) << "更新用户名失败: " << userId;
+                throw std::runtime_error("Failed to update username.");
+            }
+        }
+    }
+
     namespace Login {
         void createUserTable() {
             service::DatabaseManager db(path);
@@ -304,19 +319,31 @@ namespace data::UserControl {
         }
 
         QString getUserInWhichGroup(int userId) {
+            auto group = getUserInWhichGroupList(userId);
+            if (group.isEmpty()) {
+                return QString();
+            } else {
+                return group.join(", ");
+            }
+        }
+
+        QStringList getUserInWhichGroupList(int userId) {
             service::DatabaseManager db(path);
             QString query = R"(
-        SELECT g.name
-        FROM groups g
-        JOIN user_groups ug ON g.id = ug.group_id
-        WHERE ug.user_id = ?
-    )";
+                SELECT g.name
+                FROM groups g
+                JOIN user_groups ug ON g.id = ug.group_id
+                WHERE ug.user_id = ?
+            )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
             QStringList groupNames;
-            for (const auto &row : results) {
+            for (const auto &row: results) {
                 groupNames.append(row["name"].toString());
             }
-            return groupNames.join(", ");
+            return groupNames;
+        }
+
+        void deleteUserFromGroup(int userId, const QString &groupName) {
         }
 
 

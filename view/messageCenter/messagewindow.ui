@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>484</height>
+       <width>400</width>
+       <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,6 +73,18 @@
     QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
     }
+
+       #label_Title{
+       background-color: rgba(255, 255, 255, 0);
+       border: none;
+
+       font: 700 20pt &quot;Microsoft YaHei UI&quot;;
+       }
+
+       #label_num{
+       font: 700 16pt &quot;Segoe UI Variable&quot;;
+       }
+
    </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -80,8 +92,9 @@
     <widget class="QLabel" name="label_Title">
      <property name="font">
       <font>
-       <family>Segoe UI Variable</family>
+          <family>Microsoft YaHei UI</family>
        <pointsize>20</pointsize>
+          <italic>false</italic>
        <bold>true</bold>
       </font>
      </property>
@@ -109,11 +122,12 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QLabel" name="label">
+             <widget class="QLabel" name="label_num">
            <property name="font">
             <font>
-             <family>Segoe UI</family>
-             <pointsize>24</pointsize>
+                <family>Segoe UI Variable</family>
+                <pointsize>16</pointsize>
+                <italic>false</italic>
              <bold>true</bold>
             </font>
            </property>
@@ -155,8 +169,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>376</width>
-        <height>311</height>
+           <width>382</width>
+           <height>340</height>
        </rect>
       </property>
      </widget>
