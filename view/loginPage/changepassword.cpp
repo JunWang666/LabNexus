@@ -9,7 +9,7 @@
 #include "service/logger/logger.h"
 #include <QMessageBox>
 #include <QDebug>
-
+#include <QMouseEvent>
 namespace view::loginPage {
     changePassword::changePassword(QWidget *parent) : QWidget(parent), ui(new Ui::changePassword) {
         ui->setupUi(this);
@@ -23,6 +23,17 @@ namespace view::loginPage {
 
         // 连接信号槽
         setupConnections();
+
+        ui->lineEdit->setText("用户ID不能为空");
+        ui->lineEdit_2->setText("用户名不能为空");
+        ui->lineEdit_3->setText("用户不存在或密码错误");
+        ui->lineEdit->hide();
+        ui->lineEdit_2->hide();
+        ui->lineEdit_3->hide();
+        ui->passwordHintLabel->setText("密码必须是8~16位且必须包含数字，大小写字母");
+
+        this->setWindowFlag(Qt::FramelessWindowHint);
+        this->setAttribute(Qt::WA_TranslucentBackground);
 
         // 记录日志
         service::log() << "修改密码页面已打开";
@@ -40,11 +51,7 @@ namespace view::loginPage {
         ui->lineEdit_confirmPassword->setEchoMode(QLineEdit::Password);
 
         // 设置占位符文本
-        ui->lineEdit_userId->setPlaceholderText("请输入用户ID");
-        ui->lineEdit_userName->setPlaceholderText("请输入用户姓名");
-        ui->lineEdit_oldPassword->setPlaceholderText("请输入旧密码");
-        ui->lineEdit_newPassword->setPlaceholderText("请输入新密码(8-16位，包含大小写字母和数字)");
-        ui->lineEdit_confirmPassword->setPlaceholderText("请再次输入新密码");
+
     }
 
     void changePassword::setupConnections() {
@@ -109,7 +116,11 @@ namespace view::loginPage {
     }
 
     void changePassword::onConfirmChangePassword() {
-        // 获取输入内容
+
+        ui->lineEdit->hide();
+        ui->lineEdit_2->hide();
+        ui->lineEdit_3->hide();
+        ui->passwordHintLabel->setText("");
         userId = ui->lineEdit_userId->text().trimmed();
         userName = ui->lineEdit_userName->text().trimmed();
         prePassword = ui->lineEdit_oldPassword->text();
@@ -119,28 +130,30 @@ namespace view::loginPage {
         // 检查是否填写完整
         if (userId.isEmpty() || userName.isEmpty() || prePassword.isEmpty() ||
             newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            QMessageBox::warning(this, "输入错误", "请填写完整信息");
+            ui->passwordHintLabel->setText("信息填写不完整");
+            if(userId.isEmpty()) ui->lineEdit->show();
+            if(userName.isEmpty()) ui->lineEdit_2->show();
             service::log() << "修改密码失败：信息不完整，用户ID: " << userId;
             return;
         }
 
         // 检查两次密码输入是否一致
         if (newPassword != confirmPassword) {
-            QMessageBox::warning(this, "输入错误", "两次密码输入不一致");
+            ui->passwordHintLabel->setText("两次密码输入不一致");
             service::log() << "修改密码失败：两次密码输入不一致，用户ID: " << userId;
             return;
         }
 
         // 检查新密码格式
         if (!isPasswordValid(newPassword)) {
-            QMessageBox::warning(this, "密码格式错误", "新密码必须是8~16位且必须包含数字、大小写字母");
+            ui->passwordHintLabel->setText("密码必须是8~16位且必须包含数字，大小写字母");
             service::log() << "修改密码失败：新密码格式不符合要求，用户ID: " << userId;
             return;
         }
 
         // 验证用户凭据
         if (!validateUserCredentials(userId, userName, prePassword)) {
-            QMessageBox::warning(this, "验证失败", "用户ID、姓名或旧密码错误");
+            ui->lineEdit_3->show();
             service::log() << "修改密码失败：用户凭据验证失败，用户ID: " << userId << " 姓名: " << userName;
             return;
         }
@@ -154,7 +167,7 @@ namespace view::loginPage {
             emit backToLogin();
             this->close();
         } else {
-            QMessageBox::critical(this, "修改失败", "密码修改失败，请稍后重试");
+            ui->passwordHintLabel->setText("密码修改失败，请稍后重试");
             service::log() << "密码修改失败：数据库更新失败，用户ID: " << userId;
         }
     }
@@ -165,5 +178,22 @@ namespace view::loginPage {
         // 发送信号返回登录页面
         emit backToLogin();
         this->close();
+    }
+
+    void changePassword::mousePressEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton)
+            mouseOffset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+    }
+
+    void changePassword::mouseMoveEvent(QMouseEvent *event)
+    {
+        if (event->buttons() & Qt::LeftButton)
+            move(event->globalPosition().toPoint() - mouseOffset);
+    }
+
+    void changePassword::mouseReleaseEvent(QMouseEvent *event)
+    {
+        Q_UNUSED(event);
     }
 } // view::loginPage
