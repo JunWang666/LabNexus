@@ -11,6 +11,9 @@ namespace view::Order {
 ManagerCheck::ManagerCheck(QWidget *parent) :
     QWidget(parent), ui(new Ui::ManagerCheck) {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose,false);
+    setUpModel();
+    loadData();
 }
 
 ManagerCheck::~ManagerCheck() {
@@ -28,6 +31,10 @@ void ManagerCheck::setUpModel() {
     fliterModel->setSourceModel(model);
     //设置模型
     ui->CheckTableView->setModel(fliterModel);
+
+    //为申请状态列设置代理
+    auto * approvalDelegate = new delegateModel::ApprovalStatusDelegate(this);
+    ui->CheckTableView->setItemDelegateForColumn(dataModel::BookingDataModel::Col_ApprovalStatus,approvalDelegate);
     //隐藏某些列
     ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
     ui->CheckTableView->hideColumn(dataModel::BookingDataModel::Col_UserGroup);

@@ -41,6 +41,7 @@ RentTeacher::RentTeacher(const QString &name, const QString &id, QWidget *parent
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
     ui->pageListWidget->addItem("报修");
+    ui->pageListWidget->addItem("归还");
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
         if (row > 0 && row < ui->pageListWidget->count()) {
@@ -98,6 +99,10 @@ void RentTeacher::setUpModel_request() {
     requestFilterProxyMdel->setSourceModel(modelRequest);
     //设置模型
     ui->examTableView->setModel(requestFilterProxyMdel);
+    //使用代理类来代理状态栏
+    auto * approvalDelegate = new delegateModel::ApprovalStatusDelegate(this);
+    ui->examTableView->setItemDelegateForColumn(dataModel::BookingDataModel::Col_ApprovalStatus, approvalDelegate);
+
     //设置隐藏列
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_Id);
     ui->examTableView->hideColumn(dataModel::BookingDataModel::Col_Count);
@@ -164,13 +169,13 @@ void RentTeacher::on_btnSend_clicked()
         QModelIndex nameIndex = modelDevice->index(index, dataModel::EquipmentDataModel::Col_Name);
         QString status = modelDevice->data(statusIndex).toString();
         if (status == "可用"){
-            QString name = modelDevice->data(nameIndex).toString();
+            QString devName = modelDevice->data(nameIndex).toString();
             sendRent = new SendRent(name, id,this);
             sendRent->show();
         }
     }
     else {
-        sendRent = new SendRent(this);
+        sendRent = new SendRent(name,id,this);
         sendRent->show();
     }
 }

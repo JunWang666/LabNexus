@@ -12,6 +12,7 @@ namespace view::Order {
 Apply::Apply(QWidget *parent) :
     QWidget(parent), ui(new Ui::Apply) {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose,false);
     setUpModel();
     loadData();
 }
@@ -19,6 +20,7 @@ Apply::Apply(QWidget *parent) :
 Apply::Apply(const QString &name, const QString &id, QWidget *parent):
     QWidget(parent), ui(new Ui::Apply),name(name),id(id){
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose,false);
     setUpModel();
     loadData();
 

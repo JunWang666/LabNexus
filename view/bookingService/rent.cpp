@@ -139,13 +139,13 @@ void Rent::on_btnSend_clicked()
         QModelIndex nameIndex = modelRent->index(index, dataModel::EquipmentDataModel::Col_Name);//获取名称索引
         QString status = modelRent->data(statusIndex).toString();
         if (status == "可用") {
-            QString name = modelRent->data(nameIndex).toString();
-            sendRent = new SendRent(name,id,this);
+            QString devName = modelRent->data(nameIndex).toString();
+            sendRent = new SendRent(name,id,devName,this);
             sendRent->show();
         }
     }
     else {
-        sendRent = new SendRent(this);
+        sendRent = new SendRent(name,id,this);
         sendRent->show();
     }
 
