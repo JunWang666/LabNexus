@@ -104,6 +104,11 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messageblock.h
         service/styleHelper/StyleHelper.cpp
         service/styleHelper/StyleHelper.h
+        service/MutiWindow/MutiWindow.cpp
+        service/MutiWindow/MutiWindow.h
+        view/messageCenter/messagedetailpage.cpp
+        view/messageCenter/messagedetailpage.h
+        view/messageCenter/messagedetailpage.ui
 )
 target_link_libraries(LabNexus
         Qt::Core

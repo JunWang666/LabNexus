@@ -89,6 +89,8 @@ namespace data::mail {
      */
     QList<Mail> getUnreadMails(int receiverId, int page, int pageSize=5);
 
+    Mail getMailById(int mailId);
+
     /**
          * @brief 计算特定接收者的邮件所需的总页数。
          *
