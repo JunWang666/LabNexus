@@ -33,10 +33,12 @@ namespace data::Equipment {
         QString name;
         int class_id;
         QDateTime inDate;
+        int rentId;
         QString status;
     };
 
     QList<fullEquipmentRecord> loadFullEquipmentRecords();
+    bool updateEquipmentOnReturn(int id);
     /*************/
 
 

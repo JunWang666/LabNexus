@@ -7,6 +7,8 @@
 
 #include "pch.h"
 
+#include "view/bookingService/rent.h"
+
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
 
@@ -39,6 +41,8 @@ namespace view::homepage {
         QString S_name; // 学生姓名
         QString S_ID; // 学生ID
         void setupUI(); // 初始化界面
+    private:
+        view::Order::Rent *rent;
         QPoint mouseOffset;
         void mousePressEvent(QMouseEvent *event) override;
         void mouseMoveEvent(QMouseEvent *event) override;
