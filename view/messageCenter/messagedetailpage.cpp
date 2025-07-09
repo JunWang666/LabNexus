@@ -13,15 +13,16 @@ namespace view::messageCenter {
         ui->setupUi(this);
     }
 
-    MessageDetailPage::MessageDetailPage(int messageId,QWidget *parent) : QWidget(parent), ui(new Ui::MessageDetailPage) {
+    MessageDetailPage::MessageDetailPage(int messageId, QWidget *parent) : QWidget(parent),
+                                                                           ui(new Ui::MessageDetailPage) {
         ui->setupUi(this);
         auto mailData = data::mail::getMailById(messageId);
         ui->Subject->setText(mailData.subject);
         auto sender = data::UserControl::UserInfo::getUserNameById(mailData.sender_id);
         if (sender.has_value()) {
             ui->SenderName->setText(sender.value());
-        }else {
-            ui->SenderName->setText("未知发件人："+QString::number(mailData.sender_id));
+        } else {
+            ui->SenderName->setText("未知发件人：" + QString::number(mailData.sender_id));
         }
         auto senderGroup = data::UserControl::permission::getUserInWhichGroup(mailData.sender_id);
         ui->SenderGroup->setText(senderGroup);

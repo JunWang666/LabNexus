@@ -8,21 +8,27 @@
 #include <QWidget>
 
 namespace view::messageCenter {
-QT_BEGIN_NAMESPACE
-namespace Ui { class MessageDetailPage; }
-QT_END_NAMESPACE
+    QT_BEGIN_NAMESPACE
 
-class MessageDetailPage : public QWidget {
-Q_OBJECT
+    namespace Ui {
+        class MessageDetailPage;
+    }
 
-public:
-    explicit MessageDetailPage(QWidget *parent = nullptr);
-    explicit MessageDetailPage(int messageId, QWidget *parent = nullptr);
-    ~MessageDetailPage() override;
+    QT_END_NAMESPACE
 
-private:
-    Ui::MessageDetailPage *ui;
-};
+    class MessageDetailPage : public QWidget {
+        Q_OBJECT
+
+    public:
+        explicit MessageDetailPage(QWidget *parent = nullptr);
+
+        explicit MessageDetailPage(int messageId, QWidget *parent = nullptr);
+
+        ~MessageDetailPage() override;
+
+    private:
+        Ui::MessageDetailPage *ui;
+    };
 } // view::messageCenter
 
 #endif //MESSAGEDETAILPAGE_H
