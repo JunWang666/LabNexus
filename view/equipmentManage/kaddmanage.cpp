@@ -104,11 +104,11 @@ void kaddmanage::on_addButton_clicked() {
         // 步骤2：插入新记录（使用数据库自增id，不手动指定）
         QString insertQuery = QString(R"(
             INSERT INTO equipment_instance (
-                 id, name, status,created_at,class_id
+                 name, status,created_at,class_id
             ) VALUES (
-                '%1', '%2', %3, '%4','%5'
+                '%1', '%2', '%3' , %4
             )
-        )").arg(batchNumber.toInt()).arg(instrumentName).arg(statuss).arg(dateStr).arg(classId);              // 设备状态（下拉框选择）
+        )").arg(instrumentName).arg(statuss).arg(dateStr).arg(classId);              // 设备状态（下拉框选择）
 
 
         if (db.executeNonQuery(insertQuery)) {
