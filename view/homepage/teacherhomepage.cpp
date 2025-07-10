@@ -17,13 +17,16 @@ namespace view::homepage {
         ui(new Ui::teacherHomepage), T_name(name), T_ID(ID) {
         ui->setupUi(this);
         setupUI();
-        rentTeacher = new view::Order::RentTeacher(name,ID,this);
+        ui->frame_3->hide();
+        ui->frame_4->hide();
+        rentTeacher = nullptr;
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
     }
 
     teacherHomepage::~teacherHomepage() {
         delete ui;
+        delete rentTeacher;
     }
 
     void teacherHomepage::setupUI() {
@@ -45,6 +48,9 @@ namespace view::homepage {
         // TODO: 打开设备借用页面
         // auto *borrowPage = new view::booking::booking_home();
         // borrowPage->show();
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
         rentTeacher->setIndex(Order::RentTeacher::Col_Rent);
         // QMessageBox::information(this, "器材借用",
         //                          QString("器材借用功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
@@ -54,6 +60,9 @@ namespace view::homepage {
         service::log() << "教师 " << T_name << " 点击了器材归还按钮";
 
         // TODO: 打开设备归还页面
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
         rentTeacher->setIndex(Order::RentTeacher::Col_Return);
         // QMessageBox::information(this, "器材归还",
         //                          QString("器材归还功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
@@ -63,6 +72,9 @@ namespace view::homepage {
         service::log() << "教师 " << T_name << " 点击了借用日志按钮";
 
         // TODO: 打开借用历史页面
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
         rentTeacher->on_btnCheck_clicked();
         // QMessageBox::information(this, "我的借用日志",
         //                          QString("借用日志功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
@@ -74,6 +86,9 @@ namespace view::homepage {
         // TODO: 打开设备报修页面
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
         rentTeacher->setIndex(Order::RentTeacher::Col_Repair);
         // QMessageBox::information(this, "器材报修",
         //                          QString("器材报修功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
@@ -91,6 +106,9 @@ namespace view::homepage {
         service::log() << "教师 " << T_name << " 点击了审批按钮";
 
         // TODO: 打开审批页面，显示待审批的学生借用申请
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
         rentTeacher->setIndex(Order::RentTeacher::Col_Check);
         // QMessageBox::information(this, "审批",
         //                          QString("审批功能开发中...\n用户: %1\nID: %2\n\n在这里您可以审批学生的设备借用申请。").arg(T_name).arg(T_ID));

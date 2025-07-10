@@ -295,56 +295,7 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnCheck</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::RentTeacher</receiver>
-   <slot>on_btnCheck_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>522</x>
-     <y>434</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>237</x>
-     <y>536</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnSend</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::RentTeacher</receiver>
-   <slot>on_btnSend_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>340</x>
-     <y>434</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>123</x>
-     <y>540</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnReturn</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::RentTeacher</receiver>
-   <slot>on_btnReturn_cliccked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>376</x>
-     <y>434</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>373</x>
-     <y>609</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>on_btnSend_clicked()</slot>
   <slot>on_btnCheck_clicked()</slot>

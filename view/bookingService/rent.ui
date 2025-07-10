@@ -36,7 +36,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="sendPage">
          <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -237,56 +237,7 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnSend</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::Rent</receiver>
-   <slot>on_btnSend_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>345</x>
-     <y>472</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>250</x>
-     <y>533</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnCheck</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::Rent</receiver>
-   <slot>on_btnCheck_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>542</x>
-     <y>472</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>455</x>
-     <y>552</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnReturn</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::Rent</receiver>
-   <slot>on_btnReturn_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>395</x>
-     <y>465</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>401</x>
-     <y>646</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>on_btnSend_clicked()</slot>
   <slot>on_btnCheck_clicked()</slot>

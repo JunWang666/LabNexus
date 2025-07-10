@@ -23,12 +23,12 @@ Rent::Rent(QWidget *parent) :
     loadData();
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
-        if (row > 0 && row < ui->pageListWidget->count()) {
+        if (row >= 0 && row < ui->pageListWidget->count()) {
             ui->stackedWidget->setCurrentIndex(row);
         }
     });
-    ui->pageListWidget->setCurrentRow(0);
-    ui->stackedWidget->setCurrentIndex(0);
+    // ui->pageListWidget->setCurrentRow(0);
+    // ui->stackedWidget->setCurrentIndex(0);
 }
 
 Rent::Rent(const QString &name,const QString &id, QWidget *parent):
@@ -42,12 +42,12 @@ Rent::Rent(const QString &name,const QString &id, QWidget *parent):
     loadData();
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
-        if (row > 0 && row < ui->pageListWidget->count()) {
+        if (row >= 0 && row < ui->pageListWidget->count()) {
             ui->stackedWidget->setCurrentIndex(row);
         }
     });
-    ui->pageListWidget->setCurrentRow(0);
-    ui->stackedWidget->setCurrentIndex(0);
+    // ui->pageListWidget->setCurrentRow(0);
+    // ui->stackedWidget->setCurrentIndex(0);
 }
 
 
@@ -89,13 +89,14 @@ void Rent::setUpModel()
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
+    ui->stuRentTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     //初始化模型
     modelRepair = new dataModel::EquipmentDataModel(this);
     repairFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
     repairFilterProxyMdel->setSourceModel(modelRepair);
     //给视图指定模型
-    ui->repairTableView->setModel(modelRepair);
+    ui->repairTableView->setModel(repairFilterProxyMdel);
 
     //使用代理类来代理状态栏
     auto * repairDelegate = new delegateModel::RepairStatusDelegate(this);
@@ -117,9 +118,9 @@ void Rent::setUpModel()
 }
 
 void Rent::setIndex(int row) {
-    this->show();
     ui->pageListWidget->setCurrentRow(row);
     ui->stackedWidget->setCurrentIndex(row);
+    this->show();
 }
 
 // void Rent::setColEditable(QStandardItemModel *model, int col, bool editable) {
@@ -141,14 +142,15 @@ void Rent::on_btnSend_clicked()
     //初始化选择模型
     QItemSelectionModel *selectionModel = ui->stuRentTableView->selectionModel();
     if (selectionModel->hasSelection()) {//如果有被选择的单元格则获取它的index
-        QModelIndexList  indexes = selectionModel->selectedRows();
-        int index = indexes.at(0).row();//转换为行号
-        QModelIndex statusIndex = modelRent->index(index, dataModel::EquipmentDataModel::Col_Status);//获取状态索引
-        QModelIndex nameIndex = modelRent->index(index, dataModel::EquipmentDataModel::Col_Name);//获取名称索引
+        QModelIndexList  indexes = selectionModel->selectedIndexes();
+        QModelIndex proxyIndex = indexes.first();
+        QModelIndex index = rentFilterProxyMdel->mapToSource(proxyIndex);
+        QModelIndex statusIndex = modelRent->index(index.row(), dataModel::EquipmentDataModel::Col_Status);//获取状态索引
+        QModelIndex typeIndex = modelRent->index(index.row(), dataModel::EquipmentDataModel::Col_Type);//获取名称索引
         QString status = modelRent->data(statusIndex).toString();
         if (status == "可用") {
-            QString devName = modelRent->data(nameIndex).toString();
-            sendRent = new SendRent(name,id,devName,this);
+            QString devType = modelRent->data(typeIndex).toString();
+            sendRent = new SendRent(name,id,devType,this);
             sendRent->show();
         }
     }
@@ -169,9 +171,10 @@ void Rent::on_btnCheck_clicked()
 void Rent::on_btnReturn_clicked() {
     QItemSelectionModel *selectionModel = ui->returnTableView->selectionModel();
     if (selectionModel->hasSelection()) {
-        QModelIndexList  indexes = selectionModel->selectedRows();
-        int index = indexes.at(0).row();
-        QModelIndex idIndex = modelReturn->index(index, dataModel::EquipmentDataModel::Col_ID);
+        QModelIndexList  indexes = selectionModel->selectedIndexes();
+        QModelIndex proxyIndex = indexes.first();
+        QModelIndex index  = returnFilterProxyMdel->mapToSource(proxyIndex);
+        QModelIndex idIndex = modelReturn->index(index.row(), dataModel::EquipmentDataModel::Col_ID);
         int id = modelReturn->data(idIndex).toInt();
         if (data::Equipment::updateEquipmentOnReturn(id)) {
             loadData();
