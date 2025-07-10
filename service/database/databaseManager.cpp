@@ -10,8 +10,18 @@
 #include <QCoreApplication>
 
 namespace service {
-    DatabaseManager::DatabaseManager(const QString &databasePath)
+    DatabaseManager::DatabaseManager(const QString &databasePath,
+                                     const QString &driverName,
+                                     const QString &hostName,
+                                     quint16 port,
+                                     const QString &userName,
+                                     const QString &password)
         : m_databasePath(databasePath)
+          , m_driverName(driverName)
+          , m_hostName(hostName)
+          , m_port(port)
+          , m_userName(userName)
+          , m_password(password)
           , m_connected(false) {
         initialize();
         if (!setupAndConnect()) {
@@ -54,21 +64,29 @@ namespace service {
     }
 
     bool DatabaseManager::setupAndConnect() {
-        if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
-            m_lastError = "SQLite driver is not available";
+        if (!QSqlDatabase::isDriverAvailable(m_driverName)) {
+            m_lastError = QString("%1 driver is not available").arg(m_driverName);
             return false;
         }
 
-        m_database = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
+        m_database = QSqlDatabase::addDatabase(m_driverName, m_connectionName);
 
-        QFileInfo fileInfo(m_databasePath);
-        QDir dir = fileInfo.absoluteDir();
-        if (!dir.exists() && !dir.mkpath(".")) {
-            m_lastError = QString("Failed to create directory: %1").arg(dir.absolutePath());
-            return false;
+        if (m_driverName == QLatin1String("QSQLITE")) {
+            QFileInfo fileInfo(m_databasePath);
+            QDir dir = fileInfo.absoluteDir();
+            if (!dir.exists() && !dir.mkpath(".")) {
+                m_lastError = QString("Failed to create directory: %1").arg(dir.absolutePath());
+                return false;
+            }
+            m_database.setDatabaseName(m_databasePath);
+        } else {
+            // other SQL databases: m_databasePath as database name
+            m_database.setHostName(m_hostName);
+            if (m_port) m_database.setPort(m_port);
+            m_database.setUserName(m_userName);
+            m_database.setPassword(m_password);
+            m_database.setDatabaseName(m_databasePath);
         }
-
-        m_database.setDatabaseName(m_databasePath);
 
         if (!m_database.open()) {
             m_lastError = m_database.lastError().text();
