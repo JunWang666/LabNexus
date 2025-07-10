@@ -39,6 +39,8 @@ namespace data::Equipment {
 
     QList<fullEquipmentRecord> loadFullEquipmentRecords();
     bool updateEquipmentOnReturn(int id);
+    bool updateEquipmentOnRepair(int id,const QString & status);
+    QStringList getEquipmentOnStatus(const QString & status);
     /*************/
 
 
