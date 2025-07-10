@@ -41,7 +41,7 @@ namespace view::messageCenter {
     void MessageBlock::init(const MessageData &messageData) {
         ui->titleLabel->setText(messageData.title);
         ui->senderLabel->setText(messageData.sender);
-        ui->contentLabel->setText(messageData.content);
+        ui->contentLabel->setText(messageData.content.split('\n').first());
         ui->timeLabel->setText(messageData.timestamp);
     }
 
