@@ -18,23 +18,37 @@ namespace view::messageCenter {
 
     public:
         explicit MessageWindow(QWidget *parent = nullptr);
-
         explicit MessageWindow(int userId, QWidget *parent = nullptr);
-
         ~MessageWindow() override;
 
     private:
         void initializeUI();
-
-        /**
-         * 从数据库加载邮件数据并显示在消息窗口中。
-         *
-         * @param userId 用户ID，用于查询该用户的邮件
-         * @param page 分页参数，默认为1，表示从第一页开始加载邮件
-         */
         void loadMailsFromDatabase(int userId, int page = 1);
 
+        /**
+         * @brief 根据当前页码和总邮件数更新分页控件（按钮可用性、页码标签）的状态。
+         */
+        void updatePaginationControls();
+
+    private slots:
+        /**
+         * @brief “上一页”按钮的槽函数
+         */
+        void on_prevButton_clicked();
+
+        /**
+         * @brief “下一页”按钮的槽函数
+         */
+        void on_nextButton_clicked();
+
+
+    private:
         Ui::MessageWindow *ui;
+
+        int m_currentUserId;
+        int m_currentPage;
+        int m_totalMails;
+        const int m_mailsPerPage = 10;
     };
 }
 

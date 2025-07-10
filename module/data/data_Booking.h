@@ -10,8 +10,9 @@
 #include <QString>
 #include <QVariant>
 #include "module/data/data_EquipmentManage.h"
+
 namespace data::Booking {
-    inline  QString path = "./booking.db";
+    inline QString path = "./booking.db";
 
     /**
      * @brief 删除预订数据库。
@@ -37,6 +38,7 @@ namespace data::Booking {
 
     /********************/
     bool createBookingARecord(QString typeName);
+
     /********************/
 
     /**
@@ -81,7 +83,7 @@ namespace data::Booking {
     /**
      * @brief 创建一个完整的预订记录
      */
-    bool createFullBookingRecord(int bookingId, int userId, const QDateTime &createDate,
+    bool createFullBookingRecord(int userId, const QDateTime &createDate,
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId);

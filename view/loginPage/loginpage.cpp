@@ -72,6 +72,7 @@ namespace view::login {
 
         int userId = confirm_user(ID, password);
         data::UserControl::currentUserId = userId;
+        bot::InventoryAlert::sendAlert();
         auto userGroup = data::UserControl::permission::getUserInWhichGroupIdList(userId);
         if (userId > 0 && !userGroup.isEmpty()) {
             if (userGroup.contains(1)) {

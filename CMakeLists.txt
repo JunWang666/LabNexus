@@ -120,6 +120,10 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messagedetailpage.cpp
         view/messageCenter/messagedetailpage.h
         view/messageCenter/messagedetailpage.ui
+        module/scanner/InventoryAlert.cpp
+        module/scanner/InventoryAlert.h
+        service/taskManager/timerTaskManager.cpp
+        service/taskManager/timerTaskManager.h
 )
 target_link_libraries(LabNexus
         Qt::Core

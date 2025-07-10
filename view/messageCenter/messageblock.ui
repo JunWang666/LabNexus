@@ -84,7 +84,7 @@
                                             <widget class="QLabel" name="senderLabel">
                                                 <property name="font">
                                                     <font>
-                                                        <family>Segoe UI Variable</family>
+                                                        <family>Microsoft YaHei UI</family>
                                                         <pointsize>14</pointsize>
                                                         <bold>true</bold>
                                                     </font>
@@ -98,12 +98,17 @@
                                             <widget class="QLabel" name="timeLabel">
                                                 <property name="font">
                                                     <font>
-                                                        <family>Segoe UI Variable</family>
+                                                        <family>Microsoft YaHei UI</family>
                                                         <pointsize>9</pointsize>
                                                     </font>
                                                 </property>
                                                 <property name="text">
                                                     <string>timeLabel</string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>
+                                                        Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter
+                                                    </set>
                                                 </property>
                                             </widget>
                                         </item>
@@ -113,7 +118,7 @@
                                     <widget class="QLabel" name="titleLabel">
                                         <property name="font">
                                             <font>
-                                                <family>Segoe UI Variable</family>
+                                                <family>Microsoft YaHei UI</family>
                                                 <pointsize>12</pointsize>
                                                 <bold>true</bold>
                                             </font>
@@ -127,7 +132,7 @@
                                     <widget class="QLabel" name="contentLabel">
                                         <property name="font">
                                             <font>
-                                                <family>Segoe UI Variable</family>
+                                                <family>Microsoft YaHei UI</family>
                                             </font>
                                         </property>
                                         <property name="text">
