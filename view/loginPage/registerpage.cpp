@@ -128,10 +128,14 @@ void registerPage::on_submitButton_clicked() {
 
 void registerPage::on_studentRadioButton_clicked() {
     identity = 1;
+    ui->studentRadioButton->setStyleSheet("color:red");
+    ui->teacherRadioButton->setStyleSheet("color:white");
 }
 
 void registerPage::on_teacherRadioButton_clicked() {
     identity = 2;
+    ui->studentRadioButton->setStyleSheet("color:white");
+    ui->teacherRadioButton->setStyleSheet("color:red");
 }
 void registerPage::on_pushButton_cancel_clicked()
 {
