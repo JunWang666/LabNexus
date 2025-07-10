@@ -48,7 +48,7 @@ namespace data::UserControl {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
         QStringList builtInGroupNames = {"Student", "Teacher", "Admin", "System"};
-        for (const auto &groupName : builtInGroupNames) {
+        for (const auto &groupName: builtInGroupNames) {
             auto ids = permission::searchGroupIdByName(groupName);
             if (!ids.isEmpty()) {
                 builtInGroupIds.insert(groupName, ids.first());
