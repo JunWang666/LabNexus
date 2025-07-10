@@ -95,6 +95,7 @@ void RentTeacher::setUpModel_device() {
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
     ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
+    ui->sendTableView->hideColumn(dataModel::EquipmentDataModel::Col_ClassId);
 }
 
 void RentTeacher::setUpModel_request() {
@@ -132,6 +133,7 @@ void RentTeacher::setUpModel_repair() {
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+    ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_ClassId);
 }
 
 void RentTeacher::setUpModel_return() {
@@ -143,7 +145,7 @@ void RentTeacher::setUpModel_return() {
     //设置隐藏列
     ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
-
+    ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_ClassId);
 }
 
 void RentTeacher::setIndex(int row) {
@@ -174,11 +176,15 @@ void RentTeacher::on_btnSend_clicked()
         QModelIndex proxyIndex = indexes.first();
         QModelIndex index = deviceFilterProxyMdel->mapToSource(proxyIndex);
         QModelIndex statusIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_Status);
-        QModelIndex typeIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_Type);
+        QModelIndex devIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_Name);
+        QModelIndex equipmentIdIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_ID);
+        QModelIndex equipmentClassIDIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_ClassId);
         QString status = modelDevice->data(statusIndex).toString();
         if (status == "可用"){
-            QString devType = modelDevice->data(typeIndex).toString();
-            sendRent = new SendRent(name, id,devType,this);
+            QString devName = modelDevice->data(devIndex).toString();
+            int equipmentId = modelDevice->data(equipmentIdIndex).toInt();
+            int equipmentClassId = modelDevice->data(equipmentClassIDIndex).toInt();
+            sendRent = new SendRent(name, id,devName,equipmentId,equipmentClassId,this);
             sendRent->show();
         }
     }
@@ -190,7 +196,7 @@ void RentTeacher::on_btnSend_clicked()
 
 void RentTeacher::on_btnCheck_clicked()
 {
-    apply = new Apply(this);
+    apply = new Apply();
     apply->show();
 }
 
