@@ -13,6 +13,7 @@
 #include <QPropertyAnimation>
 #include <QMouseEvent>
 #include "view/loginPage/changepassword.h"
+#include "view/messageCenter/messagewindow.h"
 
 namespace view::homepage {
     studentHomepage::studentHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),
@@ -103,7 +104,9 @@ namespace view::homepage {
     void studentHomepage::on_messageButton_clicked() {
         service::log() << "学生 " << S_name << " 点击了消息按钮";
 
-        // TODO: 打开消息中心页面
+        view::messageCenter::MessageWindow *messageWindow = new view::messageCenter::MessageWindow();
+        service::MutiWindow::manager().addWindow(messageWindow);
+        messageWindow->show();
 
     }
     void studentHomepage::on_Button_clicked()

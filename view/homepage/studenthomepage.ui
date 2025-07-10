@@ -1,334 +1,341 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>view::homepage::studentHomepage</class>
- <widget class="QWidget" name="view::homepage::studentHomepage">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>1238</width>
-    <height>901</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>学生主页 - 实验室设备管理系统</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">*{
-	background-color: rgb(255, 255, 255);
-}
+    <class>view::homepage::studentHomepage</class>
+    <widget class="QWidget" name="view::homepage::studentHomepage">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>1238</width>
+                <height>901</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>学生主页 - 实验室设备管理系统</string>
+        </property>
+        <property name="styleSheet">
+            <string notr="true">*{
+                background-color: rgb(255, 255, 255);
+                }
 
-QFrame#frame{
-border-radius:30px;
-	background-image: url(:/User_Page.jpg);
-border-repeat: no-repeat;
-    border-position: center;
+                QFrame#frame{
+                border-radius:30px;
+                background-image: url(:/User_Page.jpg);
+                border-repeat: no-repeat;
+                border-position: center;
 
-}
+                }
 
-#frame_2{
-	background-color: rgba(89, 89, 89, 40);
-border-radius:20px;
-}
+                #frame_2{
+                background-color: rgba(89, 89, 89, 40);
+                border-radius:20px;
+                }
 
-#welcomeLabel{
-	background-color: rgba(255, 255, 255, 0);
-border-bottom:1px solid rgba(255, 255, 255, 180);
-}
-QPushButton#messageButton{
-	background-color: rgba(255, 255, 255, 0);
-outline:none;
-}
+                #welcomeLabel{
+                background-color: rgba(255, 255, 255, 0);
+                border-bottom:1px solid rgba(255, 255, 255, 180);
+                }
+                QPushButton#messageButton{
+                background-color: rgba(255, 255, 255, 0);
+                outline:none;
+                }
 
-#frame_3{
-	background-color: rgba(89, 89, 89, 60);
-border-radius:20px;
-}
-#frame_4{
-background-color: rgba(89, 89, 89, 60);
-border-radius:20px;
-}
+                #frame_3{
+                background-color: rgba(89, 89, 89, 60);
+                border-radius:20px;
+                }
+                #frame_4{
+                background-color: rgba(89, 89, 89, 60);
+                border-radius:20px;
+                }
 
-QPushButton{
-border-radius:10px;
-    
-    background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.496955, fy:1, stop:0 rgba(0, 220, 255, 255), stop:1 rgba(255, 205, 120, 255));
-    font:700 20pt &quot;Microsoft YaHei UI&quot;;
-    color: rgb(112, 112, 112);
-border:none;
-outline:none;
-}
+                QPushButton{
+                border-radius:10px;
 
-QPushButton#messageButton{
+                background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.496955, fy:1, stop:0
+                rgba(0, 220, 255, 255), stop:1 rgba(255, 205, 120, 255));
+                font:700 20pt &quot;Microsoft YaHei UI&quot;;
+                color: rgb(112, 112, 112);
+                border:none;
+                outline:none;
+                }
 
-border-radius:10px;
-    background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.496955, fy:1, stop:0 rgba(0, 220, 255, 255), stop:1 rgba(255, 205, 120, 255));
-    font:700 20pt &quot;Microsoft YaHei UI&quot;;
-    color: rgb(112, 112, 112);
-border:none;
-outline:none;
-}
+                QPushButton#messageButton{
+
+                border-radius:10px;
+                background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.496955, fy:1, stop:0
+                rgba(0, 220, 255, 255), stop:1 rgba(255, 205, 120, 255));
+                font:700 20pt &quot;Microsoft YaHei UI&quot;;
+                color: rgb(112, 112, 112);
+                border:none;
+                outline:none;
+                }
 
 
-QPushButton:hover{
-border-radius:10px;
-    background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220, 255, 255), stop:1 rgba(255, 205, 120, 255));
-    font: 20pt &quot;Microsoft YaHei UI&quot;;
-border:none;
-outline:none;
-}
-QPushButton:pressed{
-border-radius:10px;
-    border:none;
-    background-color: qradialgradient(spread:pad, cx:0.506, cy:0.9375, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220, 255, 255), stop:1 rgba(255, 189, 78, 255));
-padding-top:5px;
-padding-left:5px;
-outline:none;
+                QPushButton:hover{
+                border-radius:10px;
+                background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0,
+                220, 255, 255), stop:1 rgba(255, 205, 120, 255));
+                font: 20pt &quot;Microsoft YaHei UI&quot;;
+                border:none;
+                outline:none;
+                }
+                QPushButton:pressed{
+                border-radius:10px;
+                border:none;
+                background-color: qradialgradient(spread:pad, cx:0.506, cy:0.9375, radius:0.538, fx:0.5, fy:0.5, stop:0
+                rgba(0, 220, 255, 255), stop:1 rgba(255, 189, 78, 255));
+                padding-top:5px;
+                padding-left:5px;
+                outline:none;
 
-    font: 20pt &quot;Microsoft YaHei UI&quot;;
-}
-QPushButton#messageButton:hover{
-border-radius:10px;
-    background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220, 255, 255), stop:1 rgba(255, 205, 120, 255));
-    font: 20pt &quot;Microsoft YaHei UI&quot;;
-border:none;
-outline:none;
-}
-QPushButton#messageButton:pressed{
-border-radius:10px;
-    
-    background-color: qradialgradient(spread:pad, cx:0.506, cy:0.9375, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220, 255, 255), stop:1 rgba(255, 189, 78, 255));
-padding-top:5px;
-padding-left:5px;
-border:none;
-outline:none;
-    font: 20pt &quot;Microsoft YaHei UI&quot;;
-}</string>
-  </property>
-  <widget class="QFrame" name="frame">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>891</width>
-     <height>661</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Shape::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Shadow::Raised</enum>
-   </property>
-   <widget class="QFrame" name="frame_2">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>40</y>
-      <width>201</width>
-      <height>581</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
-    </property>
-    <widget class="QLabel" name="welcomeLabel">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>20</y>
-       <width>201</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot;
-                        font-size:20pt;&quot;&gt;你好！&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
-                    </string>
-     </property>
+                font: 20pt &quot;Microsoft YaHei UI&quot;;
+                }
+                QPushButton#messageButton:hover{
+                border-radius:10px;
+                background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0,
+                220, 255, 255), stop:1 rgba(255, 205, 120, 255));
+                font: 20pt &quot;Microsoft YaHei UI&quot;;
+                border:none;
+                outline:none;
+                }
+                QPushButton#messageButton:pressed{
+                border-radius:10px;
+
+                background-color: qradialgradient(spread:pad, cx:0.506, cy:0.9375, radius:0.538, fx:0.5, fy:0.5, stop:0
+                rgba(0, 220, 255, 255), stop:1 rgba(255, 189, 78, 255));
+                padding-top:5px;
+                padding-left:5px;
+                border:none;
+                outline:none;
+                font: 20pt &quot;Microsoft YaHei UI&quot;;
+                }
+            </string>
+        </property>
+        <widget class="QFrame" name="frame">
+            <property name="geometry">
+                <rect>
+                    <x>20</x>
+                    <y>20</y>
+                    <width>891</width>
+                    <height>661</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <widget class="QFrame" name="frame_2">
+                <property name="geometry">
+                    <rect>
+                        <x>40</x>
+                        <y>40</y>
+                        <width>201</width>
+                        <height>581</height>
+                    </rect>
+                </property>
+                <property name="frameShape">
+                    <enum>QFrame::Shape::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>QFrame::Shadow::Raised</enum>
+                </property>
+                <widget class="QLabel" name="welcomeLabel">
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>20</y>
+                            <width>201</width>
+                            <height>61</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot;
+                            font-size:20pt;&quot;&gt;你好！&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+                        </string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="messageButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>30</x>
+                            <y>110</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>消息</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="Button">
+                    <property name="geometry">
+                        <rect>
+                            <x>30</x>
+                            <y>170</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>器材事务</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="Button2">
+                    <property name="geometry">
+                        <rect>
+                            <x>30</x>
+                            <y>240</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>我的账户</string>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QFrame" name="frame_3">
+                <property name="geometry">
+                    <rect>
+                        <x>290</x>
+                        <y>40</y>
+                        <width>561</width>
+                        <height>221</height>
+                    </rect>
+                </property>
+                <property name="frameShape">
+                    <enum>QFrame::Shape::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>QFrame::Shadow::Raised</enum>
+                </property>
+                <widget class="QPushButton" name="borrowEquipmentButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>60</x>
+                            <y>50</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>器材借用</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="reportMaintenanceButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>330</x>
+                            <y>50</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>器材报修</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="returnEquipmentButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>60</x>
+                            <y>140</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>器材归还</string>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QFrame" name="frame_4">
+                <property name="geometry">
+                    <rect>
+                        <x>290</x>
+                        <y>40</y>
+                        <width>561</width>
+                        <height>221</height>
+                    </rect>
+                </property>
+                <property name="frameShape">
+                    <enum>QFrame::Shape::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>QFrame::Shadow::Raised</enum>
+                </property>
+                <widget class="QPushButton" name="borrowHistoryButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>60</x>
+                            <y>50</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>我的借用日志</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="editProfileButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>330</x>
+                            <y>50</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>修改个人信息</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" name="logoutButton">
+                    <property name="geometry">
+                        <rect>
+                            <x>60</x>
+                            <y>140</y>
+                            <width>141</width>
+                            <height>31</height>
+                        </rect>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+                    </property>
+                    <property name="text">
+                        <string>退出登录</string>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
     </widget>
-    <widget class="QPushButton" name="messageButton">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>110</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>消息</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="Button">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>170</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>器材事务</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="Button2">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>240</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>我的账户</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_3">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>40</y>
-      <width>561</width>
-      <height>221</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
-    </property>
-    <widget class="QPushButton" name="borrowEquipmentButton">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>50</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>器材借用</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="reportMaintenanceButton">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>50</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>器材报修</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="returnEquipmentButton">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>140</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>器材归还</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_4">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>40</y>
-      <width>561</width>
-      <height>221</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
-    </property>
-    <widget class="QPushButton" name="borrowHistoryButton">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>50</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>我的借用日志</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="editProfileButton">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>50</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>修改个人信息</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="logoutButton">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>140</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-     </property>
-     <property name="text">
-      <string>退出登录</string>
-     </property>
-    </widget>
-   </widget>
-  </widget>
- </widget>
- <resources/>
- <connections/>
+    <resources/>
+    <connections/>
 </ui>

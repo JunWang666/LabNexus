@@ -1,183 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>view::messageCenter::MessageWindow</class>
- <widget class="QWidget" name="view::messageCenter::MessageWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-       <width>400</width>
-       <height>497</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>MessageWindow</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">/* ---- 整体窗口和字体 ---- */
-    QWidget#view::messageCenter::MessageWindow {
-    background-color: #F9F9F9; /* 设置一个非常浅的灰色背景 */
-    }
-
-    /* ---- 顶部计数区域 ---- */
-    QFrame#frame {
-    background-color: rgba(239, 246, 252, 180);
-
-    border-radius: 8px; /* 圆角保持不变 */
-    border: none; /* 最好禁用边框，让材质更纯粹 */
-    }
-
-    /* 确保内部所有控件背景透明，以显示出父控件的淡蓝色 */
-    QFrame#frame QWidget {
-    background-color: transparent;
-    border: none;
-    }
-
-    /* ---- 滚动区域 ---- */
-    QScrollArea#messageBoxArea {
-    background-color: transparent; /* 背景透明 */
-    border: none; /* 移除边框 */
-    }
-
-    QWidget#messageBoxAreaItem {
-    background-color: transparent; /* 滚动区域里的内容面板也设为透明 */
-    }
-
-
-    /* ---- 滚动条美化 ---- */
-    QScrollBar:vertical {
-    border: none;
-    background: transparent;
-    width: 8px; /* 滚动条宽度 */
-    margin: 0px 0px 0px 0px;
-    }
-
-    /* 滚动条滑块 */
-    QScrollBar::handle:vertical {
-    background: #D0D0D0; /* 滑块颜色 */
-    border-radius: 4px; /* 滑块圆角 */
-    min-height: 25px; /* 滑块最小高度 */
-    }
-
-    /* 鼠标悬停在滑块上 */
-    QScrollBar::handle:vertical:hover {
-    background: #A0A0A0; /* 悬停时颜色变深 */
-    }
-
-    /* 隐藏滚动条两端的箭头按钮 */
-    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-    height: 0px;
-    }
-
-    /* 滚动条的轨道 */
-    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-    background: none;
-    }
-
-       #label_Title{
-       background-color: rgba(255, 255, 255, 0);
-       border: none;
-
-       font: 700 20pt &quot;Microsoft YaHei UI&quot;;
-       }
-
-       #label_num{
-       font: 700 16pt &quot;Segoe UI Variable&quot;;
-       }
-
-   </string>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
-    <widget class="QLabel" name="label_Title">
-     <property name="font">
-      <font>
-          <family>Microsoft YaHei UI</family>
-       <pointsize>20</pointsize>
-          <italic>false</italic>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>消息中心</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QFrame" name="frame_2">
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+    <class>view::messageCenter::MessageWindow</class>
+    <widget class="QWidget" name="view::messageCenter::MessageWindow">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>400</width>
+                <height>497</height>
+            </rect>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
+        <property name="windowTitle">
+            <string>MessageWindow</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-             <widget class="QLabel" name="label_num">
-           <property name="font">
-            <font>
-                <family>Segoe UI Variable</family>
-                <pointsize>16</pointsize>
-                <italic>false</italic>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LayoutDirection::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string>0</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="font">
-            <font>
-             <family>Segoe UI Variable</family>
-             <pointsize>12</pointsize>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>未读消息</string>
-           </property>
-          </widget>
-         </item>
+        <property name="styleSheet">
+            <string notr="true">/* ---- 整体窗口和字体 ---- */
+                QWidget#view::messageCenter::MessageWindow {
+                background-color: #F9F9F9; /* 设置一个非常浅的灰色背景 */
+                }
+
+                /* ---- 顶部计数区域 ---- */
+                QFrame#frame {
+                background-color: rgba(239, 246, 252, 180);
+
+                border-radius: 8px; /* 圆角保持不变 */
+                border: none; /* 最好禁用边框，让材质更纯粹 */
+                }
+
+                /* 确保内部所有控件背景透明，以显示出父控件的淡蓝色 */
+                QFrame#frame QWidget {
+                background-color: transparent;
+                border: none;
+                }
+
+                /* ---- 滚动区域 ---- */
+                QScrollArea#messageBoxArea {
+                background-color: transparent; /* 背景透明 */
+                border: none; /* 移除边框 */
+                }
+
+                QWidget#messageBoxAreaItem {
+                background-color: transparent; /* 滚动区域里的内容面板也设为透明 */
+                }
+
+
+                /* ---- 滚动条美化 ---- */
+                QScrollBar:vertical {
+                border: none;
+                background: transparent;
+                width: 8px; /* 滚动条宽度 */
+                margin: 0px 0px 0px 0px;
+                }
+
+                /* 滚动条滑块 */
+                QScrollBar::handle:vertical {
+                background: #D0D0D0; /* 滑块颜色 */
+                border-radius: 4px; /* 滑块圆角 */
+                min-height: 25px; /* 滑块最小高度 */
+                }
+
+                /* 鼠标悬停在滑块上 */
+                QScrollBar::handle:vertical:hover {
+                background: #A0A0A0; /* 悬停时颜色变深 */
+                }
+
+                /* 隐藏滚动条两端的箭头按钮 */
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+                }
+
+                /* 滚动条的轨道 */
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+                }
+
+                #label_Title{
+                background-color: rgba(255, 255, 255, 0);
+                border: none;
+
+                font: 700 20pt &quot;Microsoft YaHei UI&quot;;
+                }
+
+                #label_num{
+                font: 700 16pt &quot;Segoe UI Variable&quot;;
+                }
+
+            </string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+                <widget class="QLabel" name="label_Title">
+                    <property name="font">
+                        <font>
+                            <family>Microsoft YaHei UI</family>
+                            <pointsize>20</pointsize>
+                            <italic>false</italic>
+                            <bold>true</bold>
+                        </font>
+                    </property>
+                    <property name="text">
+                        <string>消息中心</string>
+                    </property>
+                </widget>
+            </item>
+            <item>
+                <widget class="QFrame" name="frame">
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                        <item>
+                            <widget class="QFrame" name="frame_2">
+                                <property name="frameShape">
+                                    <enum>QFrame::Shape::StyledPanel</enum>
+                                </property>
+                                <property name="frameShadow">
+                                    <enum>QFrame::Shadow::Raised</enum>
+                                </property>
+                                <layout class="QVBoxLayout" name="verticalLayout">
+                                    <item>
+                                        <widget class="QLabel" name="label_num">
+                                            <property name="font">
+                                                <font>
+                                                    <family>Segoe UI Variable</family>
+                                                    <pointsize>16</pointsize>
+                                                    <italic>false</italic>
+                                                    <bold>true</bold>
+                                                </font>
+                                            </property>
+                                            <property name="layoutDirection">
+                                                <enum>Qt::LayoutDirection::LeftToRight</enum>
+                                            </property>
+                                            <property name="text">
+                                                <string>0</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item>
+                                        <widget class="QLabel" name="label_2">
+                                            <property name="font">
+                                                <font>
+                                                    <family>Segoe UI Variable</family>
+                                                    <pointsize>12</pointsize>
+                                                    <bold>false</bold>
+                                                </font>
+                                            </property>
+                                            <property name="text">
+                                                <string>未读消息</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                </layout>
+                            </widget>
+                        </item>
+                    </layout>
+                </widget>
+            </item>
+            <item>
+                <widget class="QScrollArea" name="messageBoxArea">
+                    <property name="widgetResizable">
+                        <bool>true</bool>
+                    </property>
+                    <widget class="QWidget" name="messageBoxAreaItem">
+                        <property name="geometry">
+                            <rect>
+                                <x>0</x>
+                                <y>0</y>
+                                <width>382</width>
+                                <height>340</height>
+                            </rect>
+                        </property>
+                    </widget>
+                </widget>
+            </item>
         </layout>
-       </widget>
-      </item>
-     </layout>
     </widget>
-   </item>
-   <item>
-    <widget class="QScrollArea" name="messageBoxArea">
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="messageBoxAreaItem">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-           <width>382</width>
-           <height>340</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections/>
+    <resources/>
+    <connections/>
 </ui>

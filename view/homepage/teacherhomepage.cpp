@@ -12,6 +12,8 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include "view/loginPage/changepassword.h"
+#include "view/messageCenter/messagewindow.h"
+
 namespace view::homepage {
     teacherHomepage::teacherHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),
         ui(new Ui::teacherHomepage), T_name(name), T_ID(ID) {
@@ -77,7 +79,6 @@ namespace view::homepage {
     void teacherHomepage::on_editProfileButton_clicked() {
         service::log() << "教师 " << T_name << " 点击了修改个人信息按钮";
 
-        // TODO: 打开修改密码/个人信息页面
         loginPage::changePassword *change_pass_page=new loginPage::changePassword();
         change_pass_page->setData(T_ID);
         change_pass_page->show();
@@ -107,8 +108,9 @@ namespace view::homepage {
     void teacherHomepage::on_messageButton_clicked() {
         service::log() << "教师 " << T_name << " 点击了消息按钮";
 
-        // TODO: 打开消息中心页面
-
+        view::messageCenter::MessageWindow *messageWindow = new view::messageCenter::MessageWindow();
+        service::MutiWindow::manager().addWindow(messageWindow);
+        messageWindow->show();
     }
 
     void teacherHomepage::on_Button_clicked()

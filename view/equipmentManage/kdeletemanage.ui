@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>view::equipment::kdeletemanage</class>
- <widget class="QWidget" name="view::equipment::kdeletemanage">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>174</width>
-    <height>72</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QPushButton" name="addrecord">
-     <property name="text">
-      <string>新增记录</string>
-     </property>
+    <class>view::equipment::kdeletemanage</class>
+    <widget class="QWidget" name="view::equipment::kdeletemanage">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>174</width>
+                <height>72</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Form</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+            <item row="0" column="0">
+                <widget class="QPushButton" name="addrecord">
+                    <property name="text">
+                        <string>新增记录</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="0" column="1">
+                <widget class="QPushButton" name="changerecord">
+                    <property name="text">
+                        <string>修改记录</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="1" column="0">
+                <widget class="QPushButton" name="deleterecord">
+                    <property name="text">
+                        <string>删除记录</string>
+                    </property>
+                </widget>
+            </item>
+            <item row="1" column="1">
+                <widget class="QPushButton" name="close">
+                    <property name="text">
+                        <string>取消</string>
+                    </property>
+                </widget>
+            </item>
+        </layout>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="changerecord">
-     <property name="text">
-      <string>修改记录</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="deleterecord">
-     <property name="text">
-      <string>删除记录</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="close">
-     <property name="text">
-      <string>取消</string>
-     </property>
-    </widget>
-   </item>
-  </layout>
- </widget>
- <resources/>
- <connections/>
+    <resources/>
+    <connections/>
 </ui>
