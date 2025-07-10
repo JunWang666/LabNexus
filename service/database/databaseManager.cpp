@@ -1,4 +1,4 @@
-// databaseManager.cpp
+﻿// databaseManager.cpp
 
 #include "databaseManager.h"
 #include <QDebug>
@@ -15,6 +15,7 @@ namespace service {
         if (!setupAndConnect()) {
             qDebug() << "Failed to connect to database during construction:" << m_lastError;
         }
+
     }
 
     DatabaseManager::~DatabaseManager() {

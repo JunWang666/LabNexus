@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by gouzuang on 25-7-6.
 //
 
@@ -71,6 +71,7 @@ namespace service {
         // 回调方式处理查询结果
         void processQueryResults(const QString &queryString,
                                  std::function<void(const QSqlRecord &)> processor);
+
 
     private:
         void initialize();

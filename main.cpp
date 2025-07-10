@@ -1,4 +1,4 @@
-// main.cpp
+﻿// main.cpp
 
 #include "pch.h"
 #include "module/data/data_Booking.h"
@@ -68,6 +68,7 @@ int main(int argc, char *argv[]) {
     }
 
     view::login::loginPage b;
+    view::equipment::equipment_home c;
 
 #ifdef Q_OS_WIN
       // 从窗口实例 b 获取句柄，而不是用 this
@@ -77,6 +78,7 @@ int main(int argc, char *argv[]) {
     //b.setAttribute(Qt::WA_NoSystemBackground);
     // 显示窗口
     b.show();
+    c.show();
 
     return QApplication::exec();
 }

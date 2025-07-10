@@ -148,7 +148,7 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="1" column="0">
        <widget class="QGroupBox" name="manager">
         <property name="title">
          <string>库管理</string>
@@ -221,43 +221,6 @@
           <widget class="QPushButton" name="zclose">
            <property name="text">
             <string>退出</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QGroupBox" name="alluser">
-        <property name="title">
-         <string/>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QPushButton" name="toapply">
-           <property name="text">
-            <string>申请</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="stuexam">
-           <property name="text">
-            <string>学生预约审查</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="adfix">
-           <property name="text">
-            <string>学生报修审查</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="zreturn">
-           <property name="text">
-            <string>回到主界面</string>
            </property>
           </widget>
          </item>

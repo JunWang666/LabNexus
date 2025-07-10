@@ -73,6 +73,13 @@ namespace data::Booking {
      * @brief 更新审批状态表字段
      */
     bool updateBookingApprovalField(int bookingId, const QString &fieldName, const QVariant &value);
-}
 
+    /**
+     * @brief 创建一个完整的预订记录
+     */
+    bool createFullBookingRecord(int bookingId, int userId, const QDateTime &createDate,
+                                 int equipmentClassId, int equipmentId,
+                                 const QDateTime &requestStartTime, const QDateTime &requestEndTime,
+                                 const QString &approvalStatus, int approverId);
+    }
 #endif //DATA_BOOKING_H

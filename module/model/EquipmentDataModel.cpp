@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Nana7mi_ on 25-7-8.
 //
 
@@ -33,6 +33,7 @@ namespace dataModel{
                 case Col_Type:   return record.type;
                 case Col_Status: return record.status;
                 case Col_InDate: return record.inDate;
+                case Col_Classroom: return record.class_id; // 新增：所在教室
                 default:         return QVariant();
             }
         }
@@ -44,7 +45,7 @@ namespace dataModel{
             return QVariant();
         if (orientation == Qt::Horizontal) {
             static QStringList headers = {
-                "设备ID","设备名称","设备类型","当前状态","入库时间"
+                "设备ID","设备名称","设备类型","当前状态","入库时间","所在教室"
             };
             if (section >= 0 && section < headers.size())
                 return headers.at(section);
