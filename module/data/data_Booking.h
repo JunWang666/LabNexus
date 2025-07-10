@@ -9,7 +9,7 @@
 #include <QDateTime>
 #include <QString>
 #include <QVariant>
-
+#include "module/data/data_EquipmentManage.h"
 namespace data::Booking {
     inline  QString path = "./booking.db";
 
@@ -34,6 +34,10 @@ namespace data::Booking {
     void createBookingTimeTable();
 
     void createBookingApprovalTable();
+
+    /********************/
+    bool createBookingARecord(QString typeName);
+    /********************/
 
     /**
      * @brief 预订记录结构，用于模型展示

@@ -6,6 +6,9 @@
 #define TEACHERHOMEPAGE_H
 
 #include "pch.h"
+#include "view/bookingService/apply.h"
+#include "view/bookingService/booking_home.h"
+#include "view/bookingService/rentteacher.h"
 
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
@@ -40,6 +43,8 @@ namespace view::homepage {
         QString T_name; // 教师姓名
         QString T_ID; // 教师ID
         QPoint mouseOffset;
+        view::Order::RentTeacher *rentTeacher;
+
         void mousePressEvent(QMouseEvent *event) override;
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;

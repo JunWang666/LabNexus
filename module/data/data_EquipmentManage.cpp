@@ -91,6 +91,32 @@ namespace data::Equipment {
         return success;
     }
 
+    bool updateEquipmentOnRepair(int id,const QString& status ) {
+        service::DatabaseManager db("./equipment.db");
+        QString queryString = R"(
+        UPDATE equipment_instance
+        SET status = ? WHERE id = ?)";
+        QVariantList parmas;
+        parmas << status << id;
+        bool success = db.executePreparedNonQuery(queryString, parmas);
+        if (!success) {
+            log(LogLevel::ERR) << "修改失败" << db.getLastError();
+        }
+        return success;
+    }
+
+    QStringList getEquipmentOnStatus(const QString& status) {
+        QStringList list;
+        QList<fullEquipmentRecord> records;
+        records = loadFullEquipmentRecords();
+        for (const auto& record : records ) {
+            if (record.status == status) {
+                list.append(record.type);
+            }
+        }
+        return list;
+    }
+
     namespace EquipmentClass {
             void createEquipmentClassTable() {
                 service::DatabaseManager db(path);

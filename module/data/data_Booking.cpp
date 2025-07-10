@@ -120,6 +120,10 @@ namespace data::Booking {
         }
     }
 
+    bool createBookingARecord(QString typeName) {
+        return false;
+    }
+
     QList<fullBookingRecord> loadBookingFullRecords() {
         service::DatabaseManager db(path);
         QList<fullBookingRecord> records;

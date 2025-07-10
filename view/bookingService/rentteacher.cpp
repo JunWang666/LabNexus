@@ -15,41 +15,45 @@ RentTeacher::RentTeacher(QWidget *parent) :
     QWidget(parent), ui(new Ui::RentTeacher) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose,false);
-    setUpModel_device();
-    setUpModel_request();
-    loadData();
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
     ui->pageListWidget->addItem("报修");
     ui->pageListWidget->addItem("归还");
+    setUpModel_device();
+    setUpModel_request();
+    setUpModel_repair();
+    setUpModel_return();
+    loadData();
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
-        if (row > 0 && row < ui->pageListWidget->count()) {
+        if (row >= 0 && row < ui->pageListWidget->count()) {
             ui->stackedWidget->setCurrentIndex(row);
         }
     });
-    ui->pageListWidget->setCurrentRow(0);
-    ui->stackedWidget->setCurrentIndex(0);
+    // ui->pageListWidget->setCurrentRow(0);
+    // ui->stackedWidget->setCurrentIndex(0);
 }
 
 RentTeacher::RentTeacher(const QString &name, const QString &id, QWidget *parent) :
     QWidget(parent),ui(new Ui::RentTeacher),name(name),id(id){
     ui->setupUi(this);
-    setUpModel_device();
-    setUpModel_request();
-    loadData();
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
     ui->pageListWidget->addItem("报修");
     ui->pageListWidget->addItem("归还");
+    setUpModel_device();
+    setUpModel_request();
+    setUpModel_repair();
+    setUpModel_return();
+    loadData();
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
         const int row = ui->pageListWidget->row(item);
-        if (row > 0 && row < ui->pageListWidget->count()) {
+        if (row >= 0 && row < ui->pageListWidget->count()) {
             ui->stackedWidget->setCurrentIndex(row);
         }
     });
-    ui->pageListWidget->setCurrentRow(0);
-    ui->stackedWidget->setCurrentIndex(0);
+    // ui->pageListWidget->setCurrentRow(0);
+    // ui->stackedWidget->setCurrentIndex(0);
 }
 
 RentTeacher::~RentTeacher() {
@@ -132,10 +136,10 @@ void RentTeacher::setUpModel_repair() {
 
 void RentTeacher::setUpModel_return() {
     modelReturn = new dataModel::EquipmentDataModel(this);
-    repairFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
-    repairFilterProxyMdel->setSourceModel(modelReturn);
+    returnFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
+    returnFilterProxyMdel->setSourceModel(modelReturn);
     //设置模型
-    ui->returnTableView->setModel(repairFilterProxyMdel);
+    ui->returnTableView->setModel(returnFilterProxyMdel);
     //设置隐藏列
     ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
@@ -143,9 +147,9 @@ void RentTeacher::setUpModel_return() {
 }
 
 void RentTeacher::setIndex(int row) {
-        this->show();
-        ui->pageListWidget->setCurrentRow(row);
-        ui->stackedWidget->setCurrentIndex(row);
+    ui->pageListWidget->setCurrentRow(row);
+    ui->stackedWidget->setCurrentIndex(row);
+    this->show();
 }
 
 // void RentTeacher::setColEditable(QStandardItemModel *model, int col, bool editable) {
@@ -166,14 +170,15 @@ void RentTeacher::on_btnSend_clicked()
     //设置选择模型
     QItemSelectionModel *selectionModel = ui->sendTableView->selectionModel();
     if (selectionModel->hasSelection()) {//如果有单元格被选择
-        QModelIndexList  indexes = selectionModel->selectedRows();//获取index
-        int index = indexes.at(0).row();//转为行数
-        QModelIndex statusIndex = modelDevice->index(index, dataModel::EquipmentDataModel::Col_Status);
-        QModelIndex nameIndex = modelDevice->index(index, dataModel::EquipmentDataModel::Col_Name);
+        QModelIndexList  indexes = selectionModel->selectedIndexes();//获取index
+        QModelIndex proxyIndex = indexes.first();
+        QModelIndex index = deviceFilterProxyMdel->mapToSource(proxyIndex);
+        QModelIndex statusIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_Status);
+        QModelIndex typeIndex = modelDevice->index(index.row(), dataModel::EquipmentDataModel::Col_Type);
         QString status = modelDevice->data(statusIndex).toString();
         if (status == "可用"){
-            QString devName = modelDevice->data(nameIndex).toString();
-            sendRent = new SendRent(name, id,this);
+            QString devType = modelDevice->data(typeIndex).toString();
+            sendRent = new SendRent(name, id,devType,this);
             sendRent->show();
         }
     }
@@ -192,9 +197,10 @@ void RentTeacher::on_btnCheck_clicked()
 void RentTeacher::on_btnReturn_clicked() {
     QItemSelectionModel *selectionModel = ui->returnTableView->selectionModel();
     if (selectionModel->hasSelection()) {
-        QModelIndexList  indexes = selectionModel->selectedRows();
-        int index = indexes.at(0).row();
-        QModelIndex idIndex = modelReturn->index(index, dataModel::EquipmentDataModel::Col_ID);
+        QModelIndexList  indexes = selectionModel->selectedIndexes();
+        QModelIndex proxyIndex = indexes.first();
+        QModelIndex index = returnFilterProxyMdel->mapToSource(proxyIndex);
+        QModelIndex idIndex = modelReturn->index(index.row(), dataModel::EquipmentDataModel::Col_ID);
         int id = modelReturn->data(idIndex).toInt();
         if (data::Equipment::updateEquipmentOnReturn(id)) {
             loadData();
