@@ -28,6 +28,8 @@ namespace view::messageCenter {
         ui->SenderGroup->setText(senderGroup);
         ui->SendDate->setText(mailData.send_date.toString("yyyy-MM-dd hh:mm:ss"));
         ui->textBrowser->setPlainText(mailData.content);
+
+        data::mail::setMailRead(messageId); // 设置邮件为已读
     }
 
     MessageDetailPage::~MessageDetailPage() {

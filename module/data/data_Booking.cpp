@@ -241,17 +241,18 @@ namespace data::Booking {
         return false;
     }
 
-    bool createFullBookingRecord(int bookingId, int userId, const QDateTime &createDate,
+    bool createFullBookingRecord(int userId, const QDateTime &createDate,
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId) {
         service::DatabaseManager db(path);
 
-        QString infoQuery = QString("INSERT INTO booking_info (id, user_id, create_date) VALUES (%1, %2, '%3')")
-                .arg(bookingId)
-                .arg(userId)
-                .arg(createDate.toString("yyyy-MM-dd hh:mm:ss"));
-        if (!db.executeNonQuery(infoQuery)) return false;
+        QString infoQuery = "INSERT INTO booking_info (user_id, create_date) VALUES (?, ?)";
+        auto bookingId = db.executePreparedInsertAndGetId(infoQuery,
+                                                          {
+                                                              QVariant(userId),
+                                                              QVariant(createDate.toString("yyyy-MM-dd hh:mm:ss"))
+                                                          });
 
         QString equipmentQuery = QString(
                     "INSERT INTO booking_equipment (booking_id, equipment_class_id, equipment_id) VALUES (%1, %2, %3)")

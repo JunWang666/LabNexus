@@ -9,6 +9,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QList>
+
 namespace data::Equipment {
     inline QString path = "./equipment.db";
 
@@ -44,11 +45,15 @@ namespace data::Equipment {
 
 
     QList<fullEquipmentRecord> loadFullEquipmentRecords();
+
     bool updateEquipmentOnReturn(int id);
     bool updateEquipmentOnRepair(int id,const QString & status);
     QStringList getEquipmentOnStatus(const QString & status);
     EquipmentIds getEquipmentIdsByName(const QString & devName);
     /*************/
+
+
+
 
 
     namespace EquipmentClass {
@@ -59,6 +64,9 @@ namespace data::Equipment {
          */
         void createEquipmentClassTable();
 
+        QString getEquNameFromEquClassId(int classId);
+
+        int getEquCountFromEquClassId(int classId);
     }
 
     namespace EquipmentInstnace {
@@ -69,6 +77,5 @@ namespace data::Equipment {
          */
         void createEquipmentInstanceTable();
     }
-
 }
 #endif //DATA_EQUIPMENTMANAGE_H

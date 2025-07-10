@@ -6,6 +6,7 @@
 
 #include "sendrent.h"
 #include "ui_SendRent.h"
+#include "module/data/data_Booking.h"
 #include "module/data/data_EquipmentManage.h"
 
 namespace view::Order {

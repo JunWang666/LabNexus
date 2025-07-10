@@ -85,6 +85,43 @@
                 font: 700 16pt &quot;Segoe UI Variable&quot;;
                 }
 
+
+                /* 翻页按钮的基本样式 */
+                QPushButton#prevButton, QPushButton#nextButton {
+                background-color: #EFEFEF;
+                border: 1px solid #DCDCDC;
+                border-radius: 8px; /* 与其他组件统一的圆角 */
+                color: #555555;
+                font-size: 14pt;
+                font-weight: bold;
+                padding: 0px 10px; /* 左右内边距，形成圆角矩形 */
+                min-height: 28px; /* 固定高度 */
+                max-height: 28px;
+                }
+                #frame_3{
+                background-color: rgba(239, 246, 252, 180);
+                }
+
+                /* 鼠标悬停效果 */
+                QPushButton#prevButton:hover, QPushButton#nextButton:hover {
+                background-color: #E0E0E0;
+                border-color: #C0C0C0;
+                }
+
+                /* 鼠标按下效果 */
+                QPushButton#prevButton:pressed, QPushButton#nextButton:pressed {
+                background-color: #D0D0D0;
+                border-color: #B0B0B0;
+                }
+
+                /* 页面标签样式 */
+                QLabel#pageLabel {
+                background-color: transparent;
+                color: #333333;
+                font: 11pt &quot;Microsoft YaHei UI&quot;;
+                padding: 0 8px; /* 左右留出一些间距 */
+                }
+
             </string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -143,7 +180,7 @@
                                         <widget class="QLabel" name="label_2">
                                             <property name="font">
                                                 <font>
-                                                    <family>Segoe UI Variable</family>
+                                                    <family>Microsoft YaHei UI</family>
                                                     <pointsize>12</pointsize>
                                                     <bold>false</bold>
                                                 </font>
@@ -160,6 +197,55 @@
                 </widget>
             </item>
             <item>
+                <widget class="QFrame" name="frame_3">
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_2">
+                        <item>
+                            <spacer name="horizontalSpacer">
+                                <property name="orientation">
+                                    <enum>Qt::Orientation::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                    <size>
+                                        <width>40</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="prevButton">
+                                <property name="text">
+                                    <string>&lt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLabel" name="pageLabel">
+                                <property name="text">
+                                    <string>1 / 5</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="nextButton">
+                                <property name="text">
+                                    <string>&gt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </widget>
+            </item>
+            <item>
                 <widget class="QScrollArea" name="messageBoxArea">
                     <property name="widgetResizable">
                         <bool>true</bool>
@@ -170,7 +256,7 @@
                                 <x>0</x>
                                 <y>0</y>
                                 <width>382</width>
-                                <height>340</height>
+                                <height>285</height>
                             </rect>
                         </property>
                     </widget>

@@ -32,5 +32,8 @@
 #include <QLineEdit>
 #include <QVariant>
 #include <expected>
+#include <QTimer>
+#include "module/scanner/InventoryAlert.h"
+#include "service/taskManager/timerTaskManager.h"
 
 #endif //PCH_H

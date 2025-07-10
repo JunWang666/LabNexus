@@ -49,8 +49,6 @@ namespace data::mail {
             log(LogLevel::INFO) << "数据库文件已存在";
         }
         findSystemUser();
-        send_mail(systemReservedAccounts["库存预警"], 2, "欢迎使用库存管理系统",
-                   "这是您的第一封邮件，感谢您使用我们的系统！", "{}");
     }
 
     void createMailTable() {
@@ -227,4 +225,21 @@ namespace data::mail {
 
         return 0;
     }
+
+    bool setMailRead(int mailId) {
+        service::DatabaseManager db(path);
+        if (!db.isConnected()) {
+            log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
+            return false;
+        }
+        QString updateQuery = "UPDATE mail SET status = 1 WHERE id = ?";
+        if (db.executePreparedNonQuery(updateQuery, {mailId})) {
+            log(service::LogLevel::DATA) << "邮件已标记为已读: ID = " << mailId;
+            return true;
+        } else {
+            log(service::LogLevel::ERR) << "标记邮件为已读失败: ID = " << mailId << ", 错误: " << db.getLastError();
+            return false;
+        }
+    }
+
 }

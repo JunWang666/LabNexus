@@ -123,6 +123,10 @@ add_executable(LabNexus main.cpp
         view/bookingService/setapprover.cpp
         view/bookingService/setapprover.h
         view/bookingService/setapprover.ui
+        module/scanner/InventoryAlert.cpp
+        module/scanner/InventoryAlert.h
+        service/taskManager/timerTaskManager.cpp
+        service/taskManager/timerTaskManager.h
 )
 target_link_libraries(LabNexus
         Qt::Core
