@@ -46,8 +46,8 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     service::logger::instance().setLogFile(
-        QString("app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
-    service::logger::instance().setDataLogFile("data.log");
+        QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
+    service::logger::instance().setDataLogFile("log/data.log");
     service::log() << "程序启动";
 
     data::UserControl::buildDB();

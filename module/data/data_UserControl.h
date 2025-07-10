@@ -6,6 +6,7 @@
 #define USERCONTROL_H
 #include <expected>
 #include<pch.h>
+#include <QMap>
 #include "service/database/databaseManager.h"
 
 namespace data::UserControl {
@@ -23,6 +24,9 @@ namespace data::UserControl {
     };
 
     inline int currentUserId = -1;
+
+    // 内建用户组ID字典
+    inline QMap<QString, int> builtInGroupIds;
 
     void dropDB();
 
@@ -75,7 +79,7 @@ namespace data::UserControl {
          * @param idNumber 用户的学工号
          * @param username 用户名
          * @param password 用户密码
-         * @param group 用户所属的组Id，默认空表示不添加到组。
+         * @param groupId 用户所属的组Id，默认空表示不添加到组。
          * @return std::expected<int, UserControlError> 成功时包含创建用户的ID，失败时包含错误类型。
          */
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,

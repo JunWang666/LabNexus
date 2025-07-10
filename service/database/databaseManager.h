@@ -70,6 +70,8 @@ namespace service {
 
         QSqlRecord getTableStructure(const QString &tableName);
 
+        int executePreparedInsertAndGetId(const QString &queryString, const QVariantList &parameters);
+
         // 批量操作
         bool executeBatch(const QStringList &queries);
 
@@ -81,8 +83,6 @@ namespace service {
         void initialize();
 
         void cleanup();
-
-        void safeCleanup();
 
         QString generateConnectionName();
 

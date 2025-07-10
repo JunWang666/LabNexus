@@ -3,6 +3,9 @@
 //
 
 #include "data_mail.h"
+
+#include <dwmapi.h>
+
 #include "pch.h"
 
 #include <QFile>
@@ -22,8 +25,12 @@ namespace data::mail {
     }
 
     void registerSystemUser() {
-        systemReservedAccounts.insert(
-            "库存预警", data::UserControl::Login::createNewUser(0, "库存预警", "huidbauiuicbabiabduiab", "System").value());
+        data::UserControl::Login::createNewUser("-1", "库存预警", "huidbauiuicbabiabduiab", "System").value();
+
+    }
+
+    void findSystemUser() {
+        systemReservedAccounts.insert("库存预警",data::UserControl::Login::foundUserIdByIdNumber("-1").value());
     }
 
     void buildDB() {
@@ -41,6 +48,9 @@ namespace data::mail {
         } else {
             log(LogLevel::INFO) << "数据库文件已存在";
         }
+        findSystemUser();
+        send_mail(systemReservedAccounts["库存预警"], 2, "欢迎使用库存管理系统",
+                   "这是您的第一封邮件，感谢您使用我们的系统！", "{}");
     }
 
     void createMailTable() {

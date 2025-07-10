@@ -1,6 +1,7 @@
 //
 // Created by gouzuang on 25-7-8.
 //
+#pragma once
 
 #ifndef DATA_MAIL_H
 #define DATA_MAIL_H
@@ -45,6 +46,7 @@ namespace data::mail {
     void dropDB();
 
     void registerSystemUser();
+    void findSystemUser();
 
     /**
      * @brief 创建邮件表
@@ -112,7 +114,7 @@ namespace data::mail {
      */
     int getUnreadMailCount(int receiverId);
 
-    QMap<QString, int> systemReservedAccounts;
+    inline QMap<QString, int> systemReservedAccounts;
 }
 
 

@@ -29,10 +29,6 @@ registerPage::registerPage(QWidget *parent) :
     this->setWindowFlag(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     ui->passwordRequirementLabel->setText("密码必须是8~16位且必须包含数字，大小写字母");
-    // 连接信号槽
-    connect(ui->submitButton, &QPushButton::clicked, this, &registerPage::on_submitButton_clicked);
-    connect(ui->studentRadioButton, &QRadioButton::clicked, this, &registerPage::on_studentRadioButton_clicked);
-    connect(ui->teacherRadioButton, &QRadioButton::clicked, this, &registerPage::on_teacherRadioButton_clicked);
 }
 
 registerPage::~registerPage() {
