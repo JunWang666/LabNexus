@@ -148,6 +148,7 @@ target_link_libraries(TestLogs PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Test
+        dbghelp
 )
 target_include_directories(TestLogs PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestLogs PRIVATE pch.h)
@@ -160,12 +161,14 @@ add_executable(TestDB
         service/database/databasePathProvidor.cpp
         service/database/databaseManager.cpp
         module/data/data_UserControl.cpp
+        module/data/data_mail.cpp
 )
 target_link_libraries(TestDB PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Test
         Qt::Sql
+        dbghelp
 )
 target_include_directories(TestDB PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestDB PRIVATE pch.h)
@@ -179,13 +182,14 @@ add_executable(TestBooking
         service/database/databaseManager.cpp
         module/data/data_UserControl.cpp
         module/data/data_Booking.cpp
-        tests/test_booking.cpp
+        module/data/data_mail.cpp
 )
 target_link_libraries(TestBooking PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Test
         Qt::Sql
+        dbghelp
 )
 target_include_directories(TestBooking PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestBooking PRIVATE pch.h)
@@ -205,6 +209,7 @@ target_link_libraries(TestMail PRIVATE
         Qt::Widgets
         Qt::Test
         Qt::Sql
+        dbghelp
 )
 target_include_directories(TestMail PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestMail PRIVATE pch.h)
@@ -216,7 +221,7 @@ add_executable(TestEquipmentManage tests/test_equipment_manage.cpp
         module/data/data_EquipmentManage.cpp
 )
 
-target_link_libraries(TestEquipmentManage PRIVATE Qt6::Core Qt6::Sql Qt6::Test Qt6::Widgets)
+target_link_libraries(TestEquipmentManage PRIVATE Qt6::Core Qt6::Sql Qt6::Test Qt6::Widgets dbghelp)
 target_include_directories(TestEquipmentManage PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestEquipmentManage PRIVATE pch.h)
 add_test(NAME TestEquipmentManage COMMAND TestEquipmentManage)
