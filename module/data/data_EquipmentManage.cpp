@@ -94,31 +94,31 @@ namespace data::Equipment {
             }
         }
 
-    namespace EquipmentInstnace {
-        void createEquipmentInstanceTable() {
-            service::DatabaseManager db(path);
-            if (!db.tableExists("equipment_instance")) {
-                QString createTableQuery = R"(
+        // data_EquipmentManage.cpp（修改表创建逻辑）
+            namespace EquipmentInstnace {
+            void createEquipmentInstanceTable() {
+                service::DatabaseManager db(path);
+                if (!db.tableExists("equipment_instance")) {
+                    QString createTableQuery = R"(
                 CREATE TABLE equipment_instance (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        name TEXT NOT NULL,
-                        class_id INTEGER NOT NULL,
-                        status TEXT NOT NULL DEFAULT '可用',
-                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
-                    )
-                )";
-                if (db.executeNonQuery(createTableQuery)) {
-                    log(service::LogLevel::DATA) << "设备实例表创建成功";
-                }
-                else {
-                    log(service::LogLevel::ERR) << "设备实例表创建失败";
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- 自增主键（无需手动赋值）
+                    equipment_number TEXT NOT NULL UNIQUE, -- 新增：唯一设备编号（避免冲突）
+                    name TEXT NOT NULL,                     -- 设备名称（用户输入）
+                    class_id INTEGER NOT NULL,              -- 设备类别ID（外键）
+                    status TEXT NOT NULL DEFAULT '可用',    -- 设备状态
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  -- 自动生成创建时间
+                    FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
+                )
+            )";
+                    if (db.executeNonQuery(createTableQuery)) {
+                        log(service::LogLevel::DATA) << "设备实例表创建成功（含唯一设备编号字段）";
+                    } else {
+                        log(service::LogLevel::ERR) << "设备实例表创建失败";
+                    }
+                } else {
+                    log(service::LogLevel::INFO) << "设备实例表已经存在";
                 }
             }
-            else {
-                log(service::LogLevel::INFO) << "设备实例表已经存在";
-            }
-
         }
-    }
+
 }

@@ -17,6 +17,10 @@
 namespace view::equipment {
 equipment_home::equipment_home(QWidget *parent) : QWidget(parent), ui(new view::equipment::Ui::equipment_home) {
     ui->setupUi(this);
+     data::Equipment::buildDB();
+    data::Equipment::EquipmentClass::createEquipmentClassTable();
+     data::Equipment::EquipmentInstnace::createEquipmentInstanceTable();
+
 }
 
 equipment_home::~equipment_home() {
@@ -48,7 +52,7 @@ void equipment_home::on_kadd_clicked() //添加器材
 void equipment_home::on_kreall_clicked() //整理库数据
 {
     // 1. 确保数据库及表结构存在（原有功能）
-    data::Equipment::buildDB();
+
 
     // 2. 加载所有设备完整记录
     QList<data::Equipment::fullEquipmentRecord> records = data::Equipment::loadFullEquipmentRecords();

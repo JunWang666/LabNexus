@@ -28,7 +28,7 @@ private:
     void extracted(QList<QVariantMap> &results);
     void loadEquipmentClasses();         // 从数据库加载设备类别到下拉框
     void initStatusOptions();        // 初始化设备状态下拉框选项
-    void loadClassrooms();
+    void loadClassrooms();           //加载设备类
 };
 
 #endif // KADDMANAGE_H

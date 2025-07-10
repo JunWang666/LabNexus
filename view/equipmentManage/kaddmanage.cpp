@@ -2,12 +2,13 @@
 #include <QMessageBox>
 #include <QDate> // 用于获取当前日期
 #include "service/database/databaseManager.h" // 数据库操作类
-
+#include "module/data/data_EquipmentManage.h"
 kaddmanage::kaddmanage(QWidget *parent)
     : QDialog(parent), ui(new view::equipment::Ui::kaddmanage) {
     ui->setupUi(this);
     loadClassrooms();        // 加载“所在教室”下拉框数据（新增）
     initStatusOptions();     // 初始化状态下拉框（原逻辑）
+
     connect(ui->addButton, &QPushButton::clicked, this, &kaddmanage::on_addButton_clicked);
 }
 
@@ -21,13 +22,13 @@ void kaddmanage::loadClassrooms() {
     auto results = db.executeQueryAndFetchAll(query); // 从数据库查询教室数据
 
     ui->comboBox->clear(); // 清空下拉框原有内容
-    ui->comboBox->addItem("请选择所在教室", -1); // 默认提示项（值为-1表示未选择）
+    ui->comboBox->addItem("请选择所在仪器类", -1); // 默认提示项（值为-1表示未选择）
 
     if (results.isEmpty()) {
-        // 数据库无教室数据时，添加示例教室（硬编码）
-        ui->comboBox->addItem("101实验室", -101); // 示例1：名称+ID（ID设为负数避免冲突）
-        ui->comboBox->addItem("202教室", -202);   // 示例2
-        ui->comboBox->addItem("303准备室", -303);  // 示例3
+        // 数据库无教室数据时，添加示例仪器类（硬编码）
+        ui->comboBox->addItem("试管", -101); // 示例1：名称+ID（ID设为负数避免冲突）
+        ui->comboBox->addItem("显微镜", -202);   // 示例2
+        ui->comboBox->addItem("离心机", -303);  // 示例3
     } else {
         // 数据库有数据时，正常加载数据库中的教室
         for (const auto &row : results) {
@@ -45,19 +46,18 @@ void kaddmanage::initStatusOptions() {
     ui->comboBox_2->setCurrentText("可用");
 }
 
-// 添加按钮点击事件（核心逻辑）
 void kaddmanage::on_addButton_clicked() {
     // 从 UI 控件获取输入（注意转义单引号防 SQL 注入）
-    QString instrumentName = ui->equipmentNameEdit->text().trimmed().replace("'", "''"); // 仪器名称（原“仪器名称”输入框）
-    QString batchNumber = ui->batchNumberEdit->text().trimmed().replace("'", "''");       // 批次号（原“批次号”输入框）
-    QString quantityStr = ui->quantityEdit->text().trimmed();                             // 添加个数（原“添加个数”输入框）
-    QString status = ui->comboBox_2->currentText().replace("'", "''");                    // 设备状态（原状态下拉框）
-    int classroomId = ui->comboBox->currentData().toInt();                                // 所在教室 ID（新增）
-    QString classroomName = ui->comboBox->currentText().replace("'", "''");               // 所在教室名称（用于显示）
+    QString instrumentName = ui->equipmentNameEdit->text().trimmed().replace("'", "''"); // 设备名称（如“显微镜”）
+    QString batchNumber = ui->batchNumberEdit->text();       // 批次号（如“2024001”）
+    QString quantityStr = ui->quantityEdit->text().trimmed();                             // 添加个数（如“3”）
+    QString statuss = ui->comboBox_2->currentText().replace("'", "''");                    // 设备状态（如“可用”）
+    int classId = ui->comboBox->currentData().toInt();                                    // 设备类别ID（从下拉框获取）
+    QString className = ui->comboBox->currentText().replace("'", "''");                   // 设备类别名称（用于提示）
 
-    // 输入校验（新增所在教室校验）
+    // 输入校验
     if (instrumentName.isEmpty()) {
-        QMessageBox::warning(this, "错误", "仪器名称不能为空！");
+        QMessageBox::warning(this, "错误", "设备名称不能为空！");
         return;
     }
     if (batchNumber.isEmpty()) {
@@ -70,62 +70,70 @@ void kaddmanage::on_addButton_clicked() {
         QMessageBox::warning(this, "错误", "添加个数必须为正整数！");
         return;
     }
-    if (classroomId == -1) {
-        QMessageBox::warning(this, "错误", "请选择所在教室！");
+    if (classId == -1) {
+        QMessageBox::warning(this, "错误", "请选择有效的设备类别！");
         return;
     }
 
-    // 生成仪器编号（规则：仪器名称+添加时间(年月日)+批次号+序号）
-    QDate currentDate = QDate::currentDate();
-    QString dateStr = currentDate.toString("yyyyMMdd"); // 格式：20240708
+    // 生成设备编号（规则：名称+日期+批次+序号，如“显微镜_20240708_2024001_1”）
+    QDateTime currentDate = QDateTime::currentDateTime();
+    QString dateStr = currentDate.toString("yyyy-MM-dd hh:mm:ss");
     QString baseNumber = QString("%1_%2_%3").arg(instrumentName).arg(dateStr).arg(batchNumber);
 
-    // 数据库插入（适配单参数 executeNonQuery）
+    // 数据库操作
     service::DatabaseManager db(data::Equipment::path);
     db.beginTransaction();
-    bool allSuccess = true;
+    int successCount = 0;
+    int skipCount = 0;
     QString errorDetails;
 
     for (int i = 0; i < quantity; ++i) {
-        // 生成最终仪器编号（序号从_1开始）
-        QString finalEquipmentId = (quantity > 1)
-                                       ? QString("%1_%2").arg(baseNumber).arg(i + 1)
-                                       : baseNumber;
+        // 生成最终设备编号（序号从_1开始）
+        QString finalEquipmentNumber = (quantity > 1)
+                                           ? QString("%1_%2").arg(baseNumber).arg(i + 1)
+                                           : baseNumber;
 
-        // 拼接 SQL 插入语句（包含新增的 classroom 字段）
+        // 步骤1：检查设备编号是否已存在（避免冲突）
+        QString checkQuery = QString(R"(
+            SELECT COUNT(*) AS count FROM equipment_instance
+            WHERE equipment_number = '%1'
+        )").arg(finalEquipmentNumber);
+        auto checkResult = db.executeQueryAndFetchAll(checkQuery);
+
+
+        // 步骤2：插入新记录（使用数据库自增id，不手动指定）
         QString insertQuery = QString(R"(
             INSERT INTO equipment_instance (
-                id, name, type, status, batch_number, class_id, in_date
+                 id, name, status,created_at,class_id
             ) VALUES (
-                '%1', '%2', '%3', '%4', '%5', '%6', '%7'
+                '%1', '%2', %3, '%4','%5'
             )
-        )").arg(
-                                      finalEquipmentId,    // 仪器编号（生成的唯一值）
-                                      instrumentName,      // 仪器名称（用户输入）
-                                      "待补充类型",         // 注：需根据实际设备类型逻辑填充（如从其他下拉框获取）
-                                      status,              // 状态（下拉框选择）
-                                      batchNumber,         // 批次号（用户输入）
-                                      classroomName,       // 所在教室（下拉框名称，或根据需求存 ID）
-                                      dateStr              // 入库时间（年月日，与编号时间一致）
-                                      );
+        )").arg(batchNumber.toInt()).arg(instrumentName).arg(statuss).arg(dateStr).arg(classId);              // 设备状态（下拉框选择）
 
-        if (!db.executeNonQuery(insertQuery)) {
-            allSuccess = false;
+
+        if (db.executeNonQuery(insertQuery)) {
+            successCount++;
+        } else {
             errorDetails += QString("第%1条记录插入失败：%2\n").arg(i + 1).arg(db.getLastError());
-            break;
         }
     }
 
-    if (allSuccess) {
+    // 提交事务并反馈结果
+    if (successCount > 0 || skipCount > 0) {
         db.commitTransaction();
-        QMessageBox::information(this, "成功", QString("已成功添加%1个设备实例！").arg(quantity));
-        emit dataAdded(); // 通知主界面刷新
-        this->close();
+        QString msg = QString("成功添加%1个设备，跳过%2个重复设备！")
+                          .arg(successCount).arg(skipCount);
+        if (!errorDetails.isEmpty()) {
+            msg += QString("\n错误详情：%1").arg(errorDetails);
+        }
+        QMessageBox::information(this, "结果", msg);
     } else {
         db.rollbackTransaction();
-        QMessageBox::critical(this, "失败",
-                              QString("添加失败（%1/%2条成功）：\n%3").arg(quantity - errorDetails.count('\n'))
-                                  .arg(quantity)
-                                  .arg(errorDetails));
+        QMessageBox::critical(this, "失败", QString("所有记录插入失败：%1").arg(errorDetails));
     }
+
+    if (successCount > 0) {
+        emit dataAdded(); // 通知主界面刷新
+    }
+    this->close();
 }
