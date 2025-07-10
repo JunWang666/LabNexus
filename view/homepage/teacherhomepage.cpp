@@ -21,6 +21,7 @@ namespace view::homepage {
         setupUI();
         ui->frame_3->hide();
         ui->frame_4->hide();
+        rentTeacher = nullptr;
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -28,6 +29,7 @@ namespace view::homepage {
 
     teacherHomepage::~teacherHomepage() {
         delete ui;
+        delete rentTeacher;
     }
 
     void teacherHomepage::setupUI() {
@@ -46,25 +48,37 @@ namespace view::homepage {
     void teacherHomepage::on_borrowEquipmentButton_clicked() {
         service::log() << "教师 " << T_name << " 点击了器材借用按钮";
 
-        // TODO: 打开设备借用页面
         // auto *borrowPage = new view::booking::booking_home();
         // borrowPage->show();
-
-
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
+        rentTeacher->setIndex(Order::RentTeacher::Col_Rent);
+        // QMessageBox::information(this, "器材借用",
+        //                          QString("器材借用功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_returnEquipmentButton_clicked() {
         service::log() << "教师 " << T_name << " 点击了器材归还按钮";
 
-        // TODO: 打开设备归还页面
-
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
+        rentTeacher->setIndex(Order::RentTeacher::Col_Return);
+        // QMessageBox::information(this, "器材归还",
+        //                          QString("器材归还功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_borrowHistoryButton_clicked() {
         service::log() << "教师 " << T_name << " 点击了借用日志按钮";
 
         // TODO: 打开借用历史页面
-
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
+        rentTeacher->on_btnCheck_clicked();
+        // QMessageBox::information(this, "我的借用日志",
+        //                          QString("借用日志功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_reportMaintenanceButton_clicked() {
@@ -73,7 +87,12 @@ namespace view::homepage {
         // TODO: 打开设备报修页面
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
-
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
+        rentTeacher->setIndex(Order::RentTeacher::Col_Repair);
+        // QMessageBox::information(this, "器材报修",
+        //                          QString("器材报修功能开发中...\n用户: %1\nID: %2").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_editProfileButton_clicked() {
@@ -87,22 +106,29 @@ namespace view::homepage {
     void teacherHomepage::on_approvalButton_clicked() {
         service::log() << "教师 " << T_name << " 点击了审批按钮";
 
-        // TODO: 打开审批页面，显示待审批的学生借用申请
-
+        if (!rentTeacher) {
+            rentTeacher = new view::Order::RentTeacher(T_name,T_ID);
+        }
+        rentTeacher->setIndex(Order::RentTeacher::Col_Check);
+        // QMessageBox::information(this, "审批",
+        //                          QString("审批功能开发中...\n用户: %1\nID: %2\n\n在这里您可以审批学生的设备借用申请。").arg(T_name).arg(T_ID));
     }
 
     void teacherHomepage::on_logoutButton_clicked() {
         service::log() << "教师 " << T_name << " 退出登录";
 
+        int ret = QMessageBox::question(this, "退出登录",
+                                        QString("确定要退出登录吗？\n用户: %1").arg(T_name),
+                                        QMessageBox::Yes | QMessageBox::No);
 
-
+        if (ret == QMessageBox::Yes) {
             // 返回登录页面
             auto *loginPage = new view::login::loginPage();
             loginPage->setAttribute(Qt::WA_DeleteOnClose);
             loginPage->show();
 
             this->close(); // 关闭当前教师主页
-
+        }
     }
 
     void teacherHomepage::on_messageButton_clicked() {

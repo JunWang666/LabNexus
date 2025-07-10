@@ -22,6 +22,7 @@ namespace view::homepage {
         ui->frame_3->hide();
         ui->frame_4->hide();
         setupUI();
+        rent = nullptr;
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -29,6 +30,7 @@ namespace view::homepage {
 
     studentHomepage::~studentHomepage() {
         delete ui;
+        delete rent;
     }
 
     void studentHomepage::setupUI() {
@@ -50,22 +52,37 @@ namespace view::homepage {
         // TODO: 打开设备借用页面
         // auto *borrowPage = new view::booking::booking_home();
         // borrowPage->show();
-
-
+        if (!rent) {
+            rent = new view::Order::Rent(S_name,S_ID);
+        }
+        rent->setIndex(Order::Rent::Col_Rent);
+        // QMessageBox::information(this, "器材借用",
+        //                          QString("器材借用功能开发中...\n用户: %1\nID: %2\n\n在这里您可以申请借用实验设备，申请需要等待教师审批。").arg(S_name).arg(
+        //                              S_ID));
     }
 
     void studentHomepage::on_returnEquipmentButton_clicked() {
         service::log() << "学生 " << S_name << " 点击了器材归还按钮";
 
         // TODO: 打开设备归还页面
-
+        if (!rent) {
+            rent = new view::Order::Rent(S_name,S_ID);
+        }
+        rent->setIndex(Order::Rent::Col_Return);
+        // QMessageBox::information(this, "器材归还",
+        //                          QString("器材归还功能开发中...\n用户: %1\nID: %2\n\n在这里您可以归还已借用的设备。").arg(S_name).arg(S_ID));
     }
 
     void studentHomepage::on_borrowHistoryButton_clicked() {
         service::log() << "学生 " << S_name << " 点击了借用日志按钮";
 
         // TODO: 打开借用历史页面
-
+        if (!rent) {
+            rent = new view::Order::Rent(S_name,S_ID);
+        }
+        rent->on_btnCheck_clicked();
+        // QMessageBox::information(this, "我的借用日志",
+        //                          QString("借用日志功能开发中...\n用户: %1\nID: %2\n\n在这里您可以查看自己的设备借用历史记录。").arg(S_name).arg(S_ID));
     }
 
     void studentHomepage::on_reportMaintenanceButton_clicked() {
@@ -74,8 +91,12 @@ namespace view::homepage {
         // TODO: 打开设备报修页面
         // auto *maintenancePage = new view::maintenance::maintenance_home();
         // maintenancePage->show();
-
-
+        if (!rent) {
+            rent = new view::Order::Rent(S_name,S_ID);
+        }
+        rent->setIndex(Order::Rent::Col_Repair);
+        // QMessageBox::information(this, "器材报修",
+        //                          QString("器材报修功能开发中...\n用户: %1\nID: %2\n\n在这里您可以报告设备故障或损坏。").arg(S_name).arg(S_ID));
     }
 
     void studentHomepage::on_editProfileButton_clicked() {
