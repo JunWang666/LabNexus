@@ -99,11 +99,11 @@ namespace service {
         QString m_connectionName; // 唯一连接名
         QSqlDatabase m_database; // 数据库连接对象
         QString m_databasePath; // SQLite数据库路径
-        QString m_driverName;   // 数据库驱动名称
-        QString m_hostName;     // 主机名或IP
-        quint16 m_port;         // 端口号
-        QString m_userName;     // 用户名
-        QString m_password;     // 密码
+        QString m_driverName; // 数据库驱动名称
+        QString m_hostName; // 主机名或IP
+        quint16 m_port; // 端口号
+        QString m_userName; // 用户名
+        QString m_password; // 密码
         QString m_lastError; // 最后一次错误信息
         bool m_connected; // 连接状态
 

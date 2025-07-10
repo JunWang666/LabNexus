@@ -17,12 +17,12 @@ namespace service {
                                      const QString &userName,
                                      const QString &password)
         : m_databasePath(databasePath)
-        , m_driverName(driverName)
-        , m_hostName(hostName)
-        , m_port(port)
-        , m_userName(userName)
-        , m_password(password)
-        , m_connected(false) {
+          , m_driverName(driverName)
+          , m_hostName(hostName)
+          , m_port(port)
+          , m_userName(userName)
+          , m_password(password)
+          , m_connected(false) {
         initialize();
         if (!setupAndConnect()) {
             qDebug() << "Failed to connect to database during construction:" << m_lastError;
