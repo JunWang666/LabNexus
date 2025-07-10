@@ -266,40 +266,37 @@ namespace data::UserControl {
         }
 
         std::expected<bool, UserControlError> addUserToGroup(int userId, const QString &groupName) {
-            service::DatabaseManager db(path);
-
-            // 检查组是否存在
-            QString checkGroupQuery = R"(
-                SELECT id FROM groups WHERE name = ?
-            )";
-            auto groupResults = db.executePreparedQueryAndFetchAll(checkGroupQuery, {groupName});
-            if (groupResults.isEmpty()) {
-                log(service::LogLevel::INFO) << "组不存在: " << groupName;
+            auto groupIds = searchGroupIdByName(groupName);
+            if (groupIds.isEmpty()) {
                 return std::unexpected(UserControlError::GroupNotFound);
             }
-            int groupId = groupResults.first()["id"].toInt();
+            if (groupIds.size() > 1) {
+                return std::unexpected(UserControlError::MutiResultFound);
+            }
+            return addUserToGroup(userId, groupIds.first());
+        }
 
+        std::expected<bool, UserControlError> addUserToGroup(int userId, int groupId) {
+            service::DatabaseManager db(path);
             // 检查用户是否已经在该组中
-            QString checkUserInGroupQuery = R"(
+            QString checkQuery = R"(
                 SELECT user_id FROM user_groups WHERE user_id = ? AND group_id = ?
             )";
-            auto userInGroupResults = db.executePreparedQueryAndFetchAll(checkUserInGroupQuery, {userId, groupId});
-            if (!userInGroupResults.isEmpty()) {
-                log(service::LogLevel::INFO) << "用户 " << userId << " 已经在组 " << groupName << " 中";
+            auto results = db.executePreparedQueryAndFetchAll(checkQuery, {userId, groupId});
+            if (!results.isEmpty()) {
+                log(service::LogLevel::INFO) << "用户 " << userId << " 已经在组 " << groupId << " 中";
                 return std::unexpected(UserControlError::UserAlreadyInGroup);
             }
-
             // 将用户添加到组
-            QString insertUserGroupQuery = R"(
+            QString insertQuery = R"(
                 INSERT INTO user_groups(user_id, group_id, status)
                 VALUES(?, ?, 'AllRight')
             )";
-            if (db.executePreparedNonQuery(insertUserGroupQuery, {userId, groupId})) {
-                log(service::LogLevel::DATA) << "用户 " << userId << " 添加到组 " << groupName << " 成功";
+            if (db.executePreparedNonQuery(insertQuery, {userId, groupId})) {
+                log(service::LogLevel::DATA) << "用户 " << userId << " 添加到组 " << groupId << " 成功";
                 return true;
             }
-
-            log(service::LogLevel::ERR) << "用户 " << userId << " 添加到组 " << groupName << " 失败";
+            log(service::LogLevel::ERR) << "用户 " << userId << " 添加到组 " << groupId << " 失败";
             return std::unexpected(UserControlError::DatabaseError);
         }
 
@@ -328,23 +325,84 @@ namespace data::UserControl {
             return groupNames;
         }
 
+        QList<int> getUserInWhichGroupIdList(int userId) {
+            service::DatabaseManager db(path);
+            QString query = R"(
+                SELECT g.id
+                FROM groups g
+                JOIN user_groups ug ON g.id = ug.group_id
+                WHERE ug.user_id = ?
+            )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {userId});
+            QList<int> groupIds;
+            for (const auto &row: results) {
+                groupIds.append(row["id"].toInt());
+            }
+            return groupIds;
+        }
+
+        QList<int> searchGroupIdByName(const QString &groupName) {
+            QList<int> groupIds;
+            service::DatabaseManager db(path);
+            QString query = R"(
+                SELECT id FROM groups WHERE name LIKE ?
+            )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {"%" + groupName + "%"});
+            for (const auto &row: results) {
+                groupIds.append(row["id"].toInt());
+            }
+            return groupIds;
+        }
+
         void deleteUserFromGroup(int userId, const QString &groupName) {
+            auto groupIds = searchGroupIdByName(groupName);
+            if (groupIds.isEmpty()) {
+                log(service::LogLevel::ERR) << "组不存在: " << groupName;
+                return;
+            }
+            if (groupIds.size() > 1) {
+                log(service::LogLevel::ERR) << "找到多个匹配组: " << groupName;
+                return;
+            }
+            int groupId = groupIds.first();
+            service::DatabaseManager db(path);
+            QString deleteQuery = R"(
+                        DELETE FROM user_groups WHERE user_id = ? AND group_id = ?
+                    )";
+            if (db.executePreparedNonQuery(deleteQuery, {userId, groupId})) {
+                log(service::LogLevel::DATA) << "用户" << userId << "已从组" << groupName << "中删除";
+            } else {
+                log(service::LogLevel::ERR) << "删除用户" << userId << "从组" << groupName << "失败";
+            }
         }
 
 
         bool isUserInGroup(int userId, const QString &groupName) {
             service::DatabaseManager db(path);
             QString query = R"(
-        SELECT COUNT(*)
-        FROM user_groups ug
-        JOIN groups g ON ug.group_id = g.id
-        WHERE ug.user_id = ? AND g.name = ?
-    )";
+                SELECT COUNT(*)
+                FROM user_groups ug
+                JOIN groups g ON ug.group_id = g.id
+                WHERE ug.user_id = ? AND g.name = ?
+            )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId, groupName});
             if (results.isEmpty()) {
                 return false;
             }
             return results.first()["COUNT(*)"].toInt() > 0;
+        }
+
+        QList<int> getAllGroupId() {
+            service::DatabaseManager db(path);
+            QString query = R"(
+                  SELECT id FROM groups
+              )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {});
+            QList<int> groupIds;
+            for (const auto &row: results) {
+                groupIds.append(row["id"].toInt());
+            }
+            return groupIds;
         }
     }
 
