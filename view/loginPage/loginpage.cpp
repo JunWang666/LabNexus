@@ -34,10 +34,6 @@ namespace view::login {
         ui->lineEdit_2->setText("密码错误或用户不存在");
         ui->lineEdit->hide();
         ui->lineEdit_2->hide();
-        // 初始化用户数据库
-        data::UserControl::buildDB();
-
-        // Qt的自动连接机制会自动连接on_*_clicked()槽函数，无需手动连接
     }
 
     loginPage::~loginPage() {
@@ -45,23 +41,9 @@ namespace view::login {
     }
 
     int loginPage::confirm_user(QString &ID_c, QString &password_c) {
-        // 使用LabNexus的用户验证系统
         auto result = data::UserControl::Login::isUserPasswordValid(ID_c, password_c);
         if (result) {
             int userId = result.value();
-
-            // 获取用户所在的组来确定用户类型
-            QString userGroup = data::UserControl::permission::getUserInWhichGroup(userId);
-
-            if (userGroup == "Student") {
-                user = 1; // 学生
-            } else if (userGroup == "Teacher") {
-                user = 2; // 老师
-            } else if (userGroup == "Administrator") {
-                user = 4; // 管理员
-            } else {
-                user = 0; // 无效用户
-            }
 
             // 获取用户名
             auto nameResult = data::UserControl::UserInfo::getUserNameById(userId);
@@ -73,7 +55,6 @@ namespace view::login {
 
             return userId;
         } else {
-            user = 0;
             return 0;
         }
     }
@@ -90,28 +71,25 @@ namespace view::login {
         }
 
         int userId = confirm_user(ID, password);
-        if (userId > 0 && user > 0) {
-            service::log() << "用户 " << ID << " 登录成功，类型: " << user;
-
-            if (user == 1) {
+        data::UserControl::currentUserId = userId;
+        auto userGroup = data::UserControl::permission::getUserInWhichGroupIdList(userId);
+        if (userId > 0 && !userGroup.isEmpty()) {
+            if (userGroup.contains(1)) {
                 // 学生用户 - 打开学生主页
                 auto *studentHome = new view::homepage::studentHomepage(name, ID);
                 studentHome->show();
                 this->close(); // 关闭登录页面
-            } else if (user == 2) {
+            } else if (userGroup.contains(2)) {
                 // 老师用户 - 打开教师主页
                 auto *teacherHome = new view::homepage::teacherHomepage(name, ID);
                 teacherHome->show();
                 this->close(); // 关闭登录页面
-            } else if (user >= 4) {
+            } else if (userGroup.contains(3)) {
                 // 管理员用户 - 打开管理员主页
                 auto *adminHome = new view::homepage::administratorHomepage(name, ID);
                 adminHome->show();
                 this->close(); // 关闭登录页面
             }
-
-            // 暂时不关闭登录窗口，等实现了其他页面后再添加
-            // this->close();
         } else {
             service::log() << "用户 " << ID << " 登录失败";
             ui->lineEdit_2->show();

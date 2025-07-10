@@ -11,7 +11,7 @@
 #include <QVariant>
 #include "module/data/data_EquipmentManage.h"
 namespace data::Booking {
-    inline static QString path = "./booking.db";
+    inline  QString path = "./booking.db";
 
     /**
      * @brief 删除预订数据库。

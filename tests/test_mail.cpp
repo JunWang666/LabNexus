@@ -16,11 +16,12 @@ private slots:
 
 void TestMail::initTestCase() {
     data::mail::path = "test_mail.db";
+    data::UserControl::path = "test_user.db";
     data::UserControl::dropDB();
     data::mail::dropDB();
     data::UserControl::buildDB();
     data::mail::buildDB();
-    // Create test users
+
     auto senderResult = data::UserControl::Login::createNewUser("sender_id", "sender", "password", "Student");
     QVERIFY(senderResult.has_value());
     auto receiverResult = data::UserControl::Login::createNewUser("receiver_id", "receiver", "password", "Student");

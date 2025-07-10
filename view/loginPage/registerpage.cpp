@@ -29,10 +29,6 @@ registerPage::registerPage(QWidget *parent) :
     this->setWindowFlag(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     ui->passwordRequirementLabel->setText("密码必须是8~16位且必须包含数字，大小写字母");
-    // 连接信号槽
-    connect(ui->submitButton, &QPushButton::clicked, this, &registerPage::on_submitButton_clicked);
-    connect(ui->studentRadioButton, &QRadioButton::clicked, this, &registerPage::on_studentRadioButton_clicked);
-    connect(ui->teacherRadioButton, &QRadioButton::clicked, this, &registerPage::on_teacherRadioButton_clicked);
 }
 
 registerPage::~registerPage() {
@@ -88,20 +84,11 @@ void registerPage::on_submitButton_clicked() {
     // 获取输入信息
     name = ui->usernameLineEdit->text();
     ID = ui->idLineEdit->text();
-    
-    // 确定用户组
-    QString userGroup;
-    if (identity == 1) {
-        userGroup = "Student";
-    } else if (identity == 2) {
-        userGroup = "Teacher";
-    }
-    
-    // 使用LabNexus的数据库系统创建用户
-    auto result = data::UserControl::Login::createNewUser(ID, name, password, userGroup);
-    
+
+    auto result = data::UserControl::Login::createNewUser(ID, name, password, identity);
+
     if (result) {
-        service::log() << "新用户注册成功: " << ID << " (" << name << ") - " << userGroup;
+        service::log() << "新用户注册成功: " << ID << " (" << name << ") - " << identity;
         ui->passwordRequirementLabel->setText("注册成功！");
         _sleep(1000);
         this->close();
@@ -128,10 +115,14 @@ void registerPage::on_submitButton_clicked() {
 
 void registerPage::on_studentRadioButton_clicked() {
     identity = 1;
+    ui->studentRadioButton->setStyleSheet("color:red");
+    ui->teacherRadioButton->setStyleSheet("color:white");
 }
 
 void registerPage::on_teacherRadioButton_clicked() {
     identity = 2;
+    ui->studentRadioButton->setStyleSheet("color:white");
+    ui->teacherRadioButton->setStyleSheet("color:red");
 }
 void registerPage::on_pushButton_cancel_clicked()
 {

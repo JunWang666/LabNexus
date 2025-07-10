@@ -21,8 +21,8 @@ namespace view::loginPage {
 
     public:
         explicit changePassword(QWidget *parent = nullptr);
-
         ~changePassword() override;
+        void setData(const QString& IDD);
 
     signals:
         void backToLogin();
@@ -34,7 +34,7 @@ namespace view::loginPage {
 
     private:
         Ui::changePassword *ui;
-
+        int change_name;//0就是不变，1就是要变
         // 成员变量
         QString userId;
         QString prePassword;

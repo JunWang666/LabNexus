@@ -12,6 +12,8 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
+#include "view/messageCenter/messagewindow.h"
+
 namespace view::homepage {
     administratorHomepage::administratorHomepage(const QString &name, const QString &ID,
                                                  QWidget *parent) : QWidget(parent), ui(new Ui::administratorHomepage),
@@ -19,6 +21,8 @@ namespace view::homepage {
         ui->setupUi(this);
         setupUI();
         orderCheck = nullptr;
+        ui->frame_3->hide();
+        ui->frame_4->hide();
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -120,11 +124,9 @@ namespace view::homepage {
     void administratorHomepage::on_messageButton_clicked() {
         service::log() << "管理员 " << A_name << " 点击了消息按钮";
 
-        // TODO: 打开消息中心页面
-        QMessageBox::information(this, "消息中心",
-                                 QString(
-                                     "消息中心功能开发中...\n用户: %1\nID: %2\n\n在这里您可以：\n• 查看系统通知和警告\n• 管理公告信息\n• 处理用户反馈\n• 发送系统消息")
-                                 .arg(A_name).arg(A_ID));
+        view::messageCenter::MessageWindow *messageWindow = new view::messageCenter::MessageWindow();
+        service::MutiWindow::manager().addWindow(messageWindow);
+        messageWindow->show();
     }
     void administratorHomepage::on_Button_clicked()
     {

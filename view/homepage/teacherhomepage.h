@@ -5,10 +5,8 @@
 #ifndef TEACHERHOMEPAGE_H
 #define TEACHERHOMEPAGE_H
 
-#include <QWidget>
-#include <QString>
-#include "view/bookingService/rentteacher.h"
 #include "pch.h"
+
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
 
@@ -46,9 +44,6 @@ namespace view::homepage {
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;
         void setupUI(); // 初始化界面
-    private:
-        view::Order::RentTeacher* rentTeacher;
-
     };
 } // view::homepage
 

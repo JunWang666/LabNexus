@@ -11,7 +11,7 @@
 #include "module/data/data_UserControl.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
-#include "service/styleHelper/StyleHelper.h"
+#include "service/styleHelper/MicaHelper.h"
 
 namespace view::messageCenter {
     MessageWindow::MessageWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MessageWindow) {
@@ -61,7 +61,12 @@ namespace view::messageCenter {
             MessageData data;
             data.id = QString::number(mail.id);
             data.title = mail.subject;
-            data.sender = QString::number(mail.sender_id);
+            auto senderOpt = data::UserControl::UserInfo::getUserNameById(mail.sender_id);
+            if (senderOpt.has_value()) {
+                data.sender = senderOpt.value();
+            } else {
+                data.sender = QStringLiteral("未知发件人：") + QString::number(mail.sender_id);
+            }
             data.content = mail.content;
             data.timestamp = mail.send_date.toString("yyyy-MM-dd hh:mm");
 

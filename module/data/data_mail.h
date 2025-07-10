@@ -1,6 +1,7 @@
 //
 // Created by gouzuang on 25-7-8.
 //
+#pragma once
 
 #ifndef DATA_MAIL_H
 #define DATA_MAIL_H
@@ -9,7 +10,7 @@
 #include <QDateTime>
 
 namespace data::mail {
-    inline static QString path = "mail.db";
+    inline QString path = "mail.db";
 
     struct Mail {
         int id;
@@ -43,6 +44,9 @@ namespace data::mail {
      * 如果文件不存在，则记录一条信息日志表示文件不存在。
      */
     void dropDB();
+
+    void registerSystemUser();
+    void findSystemUser();
 
     /**
      * @brief 创建邮件表
@@ -89,6 +93,8 @@ namespace data::mail {
      */
     QList<Mail> getUnreadMails(int receiverId, int page, int pageSize=5);
 
+    Mail getMailById(int mailId);
+
     /**
          * @brief 计算特定接收者的邮件所需的总页数。
          *
@@ -107,6 +113,8 @@ namespace data::mail {
      * @return 显示所有未读邮件总数。如果没有未读邮件，则返回0。
      */
     int getUnreadMailCount(int receiverId);
+
+    inline QMap<QString, int> systemReservedAccounts;
 }
 
 
