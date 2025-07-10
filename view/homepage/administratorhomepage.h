@@ -41,7 +41,8 @@ namespace view::homepage {
         QString A_name; // 管理员姓名
         QString A_ID; // 管理员ID
         QPoint mouseOffset;
-        view::Order::ManagerCheck* orderCheck;
+        view::Order::ManagerCheck *orderCheck;
+
         void mousePressEvent(QMouseEvent *event) override;
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;

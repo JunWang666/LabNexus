@@ -64,8 +64,9 @@ jobs:
           cmake -S . -B build -D CMAKE_PREFIX_PATH=%QT_ROOT_DIR%
 
           rem 2. CMake 编译步骤：使用生成的项目文件进行编译
-          rem --config Release 指定��译 Release 版本
-          cmake --build build --config Release
+          rem --config Release 指定编译 Release 版本
+          rem --parallel 使用所有可用的 CPU 核心进行并行构建
+          cmake --build build --config Release --parallel
 
       # 4. 上传构建产物
       - name: Upload build directory

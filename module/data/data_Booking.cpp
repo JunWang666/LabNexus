@@ -121,7 +121,7 @@ namespace data::Booking {
     }
 
     bool createBookingARecord(QString typeName) {
-
+        return false;
     }
 
     QList<fullBookingRecord> loadBookingFullRecords() {
