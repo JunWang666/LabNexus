@@ -6,6 +6,8 @@
 #define ADMINISTRATORHOMEPAGE_H
 
 #include "pch.h"
+#include "view/bookingService/apply.h"
+#include "view/bookingService/managercheck.h"
 
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
@@ -39,6 +41,7 @@ namespace view::homepage {
         QString A_name; // 管理员姓名
         QString A_ID; // 管理员ID
         QPoint mouseOffset;
+        view::Order::ManagerCheck* orderCheck;
         void mousePressEvent(QMouseEvent *event) override;
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;

@@ -13,6 +13,7 @@
 #include <QMouseEvent>
 #include "view/loginPage/changepassword.h"
 #include "view/messageCenter/messagewindow.h"
+#include "view/bookingService/rentteacher.h"
 
 namespace view::homepage {
     teacherHomepage::teacherHomepage(const QString &name, const QString &ID, QWidget *parent) : QWidget(parent),
