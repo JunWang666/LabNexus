@@ -3,7 +3,6 @@
 //
 
 #include "logger.h"
-#include <regex>
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <io.h>
@@ -16,12 +15,27 @@ namespace service {
         return instance;
     }
 
-    logger::logger() : currentLevel_(LogLevel::INFO), minLevel_(LogLevel::DEBUG), console_(true) {
+    logger::logger() : currentLevel_(LogLevel::INFO), minLevel_(LogLevel::DEBUG), enableStackTrace_(false) {
+#if defined(_WIN32) || defined(_WIN64)
+        // 设置控制台UTF-8编码
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+
+        // 初始化符号处理器
+        SymInitialize(GetCurrentProcess(), NULL, TRUE);
+#endif
+        
+        // 输出初始化消息来测试控制台输出
+        std::cout << "[LOGGER] Logger initialized successfully" << std::endl;
+        std::cout.flush();
     }
 
     logger::~logger() {
         if (file_.is_open()) file_.close();
         if (dataFile_.is_open()) dataFile_.close();
+#if defined(_WIN32) || defined(_WIN64)
+        SymCleanup(GetCurrentProcess());
+#endif
     }
 
     void logger::setLevel(LogLevel level) {
@@ -32,68 +46,60 @@ namespace service {
     void logger::setLogFile(const std::string &filename) {
         std::lock_guard<std::mutex> lock(mtx_);
         if (file_.is_open()) file_.close();
+        
+        // 确保目录存在
+        std::string path = filename;
+        size_t lastSlash = path.find_last_of("/\\");
+        if (lastSlash != std::string::npos) {
+            std::string dir = path.substr(0, lastSlash);
+            // 创建目录
+#if defined(_WIN32) || defined(_WIN64)
+            std::string createDirCmd = "mkdir \"" + dir + "\" 2>nul";
+            system(createDirCmd.c_str());
+#else
+            std::string createDirCmd = "mkdir -p \"" + dir + "\"";
+            system(createDirCmd.c_str());
+#endif
+        }
+        
         file_.open(filename, std::ios::app);
+        if (!file_.is_open()) {
+            std::cout << "[LOGGER ERROR] Failed to open log file: " << filename << std::endl;
+        } else {
+            std::cout << "[LOGGER] Log file opened: " << filename << std::endl;
+        }
     }
 
     void logger::setDataLogFile(const std::string &filename) {
         std::lock_guard<std::mutex> lock(mtx_);
         if (dataFile_.is_open()) dataFile_.close();
+        
+        // 确保目录存在
+        std::string path = filename;
+        size_t lastSlash = path.find_last_of("/\\");
+        if (lastSlash != std::string::npos) {
+            std::string dir = path.substr(0, lastSlash);
+            // 创建目录
+#if defined(_WIN32) || defined(_WIN64)
+            std::string createDirCmd = "mkdir \"" + dir + "\" 2>nul";
+            system(createDirCmd.c_str());
+#else
+            std::string createDirCmd = "mkdir -p \"" + dir + "\"";
+            system(createDirCmd.c_str());
+#endif
+        }
+        
         dataFile_.open(filename, std::ios::app);
-    }
-
-    void logger::enableConsole(bool enable) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        console_ = enable;
-    }
-
-    // 过滤器相关方法实现
-    void logger::setFilter(const LogFilter& filter) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        filter_ = filter;
-    }
-
-    void logger::clearFilter() {
-        std::lock_guard<std::mutex> lock(mtx_);
-        filter_ = nullptr;
-    }
-
-    void logger::addKeywordFilter(const std::string& keyword, bool exclude) {
-        std::lock_guard<std::mutex> lock(mtx_);
-        if (exclude) {
-            excludeKeywords_.push_back(keyword);
+        if (!dataFile_.is_open()) {
+            std::cout << "[LOGGER ERROR] Failed to open data log file: " << filename << std::endl;
         } else {
-            includeKeywords_.push_back(keyword);
+            std::cout << "[LOGGER] Data log file opened: " << filename << std::endl;
         }
     }
 
-    void logger::addRegexFilter(const std::string& pattern, bool exclude) {
+    void logger::enableStackTrace(bool enable) {
         std::lock_guard<std::mutex> lock(mtx_);
-        try {
-            std::regex regexPattern(pattern);
-            LogFilter regexFilter = [pattern, exclude](const std::string& msg, LogLevel level) -> bool {
-                std::regex regex(pattern);
-                bool matches = std::regex_search(msg, regex);
-                return exclude ? !matches : matches;
-            };
-
-            if (filter_) {
-                // 如果已经有过滤器，组合使用
-                LogFilter oldFilter = filter_;
-                filter_ = [oldFilter, regexFilter](const std::string& msg, LogLevel level) -> bool {
-                    return oldFilter(msg, level) && regexFilter(msg, level);
-                };
-            } else {
-                filter_ = regexFilter;
-            }
-        } catch (const std::regex_error& e) {
-            // 忽略无效的正则表达式
-        }
-    }
-
-    void logger::clearKeywordFilters() {
-        std::lock_guard<std::mutex> lock(mtx_);
-        includeKeywords_.clear();
-        excludeKeywords_.clear();
+        enableStackTrace_ = enable;
     }
 
     logger &logger::operator<<(LogLevel level) {
@@ -119,40 +125,12 @@ namespace service {
         }
 
         std::string message = buffer_.str();
-        if (shouldLog(message, currentLevel_)) {
+        if (!message.empty()) {  // 只有在有内容时才输出
             write(message, currentLevel_);
         }
 
         buffer_.str("");
         buffer_.clear();
-    }
-
-    bool logger::shouldLog(const std::string &msg, LogLevel level) {
-        // 应用自定义过滤器
-        if (filter_ && !filter_(msg, level)) {
-            return false;
-        }
-
-        // 应用关键词过滤器
-        if (!includeKeywords_.empty()) {
-            bool found = false;
-            for (const auto& keyword : includeKeywords_) {
-                if (msg.find(keyword) != std::string::npos) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) return false;
-        }
-
-        // 应用排除关键词过滤器
-        for (const auto& keyword : excludeKeywords_) {
-            if (msg.find(keyword) != std::string::npos) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     void logger::write(const std::string &msg, LogLevel level) {
@@ -174,17 +152,24 @@ namespace service {
                 levelStr = "[DATA]";
                 break;
         }
-        std::string out = levelStr + " " + msg + "\n";
-#if defined(_WIN32) || defined(_WIN64)
-        if (console_) {
-            SetConsoleOutputCP(CP_UTF8);
-            std::cout << out;
-        }
-#else
-        if (console_) {
-            std::cout << out;
-        }
-#endif
+        
+        std::string timestamp = getCurrentTimestamp();
+        std::string out = timestamp + " " + levelStr + " " + msg;
+        
+        // 添加堆栈信息（仅对错误级别或显式启用时）
+        // if (enableStackTrace_ || level == LogLevel::ERR) {
+        //     std::string stack = getCallStack();
+        //     if (!stack.empty()) {
+        //         out += "\nCall Stack:\n" + stack;
+        //     }
+        // }
+        
+        out += "\n";
+        
+        // 输出到控制台，强制刷新
+        std::cout << out;
+        std::cout.flush();  // 强制刷新控制台输出
+        
         if (level == LogLevel::DATA) {
             if (dataFile_.is_open()) dataFile_ << out, dataFile_.flush();
         } else {
@@ -192,26 +177,71 @@ namespace service {
         }
     }
 
-    LogStream::LogStream(LogLevel level) : level_(level) {
+    std::string logger::getCurrentTimestamp() {
+        auto now = std::chrono::system_clock::now();
+        auto time_t = std::chrono::system_clock::to_time_t(now);
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            now.time_since_epoch()) % 1000;
+        
+        std::ostringstream oss;
+        oss << std::put_time(std::localtime(&time_t), "%Y-%m-%d %H:%M:%S");
+        oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
+        return oss.str();
     }
 
-    LogStream::~LogStream() {
-        logger::instance() << level_ << buffer_.str() << std::endl;
-    }
-
-    LogStream &LogStream::operator<<(LogLevel level) {
-        level_ = level;
-        return *this;
-    }
-
-    LogStream &LogStream::operator<<(std::ostream &(*manip)(std::ostream &)) {
-        if (manip == static_cast<std::ostream &(*)(std::ostream &)>(std::endl)) {
-            buffer_ << manip;
+    std::string logger::getCallStack() {
+        std::string result;
+        
+#if defined(_WIN32) || defined(_WIN64)
+        // Windows 堆栈跟踪
+        void* stack[64];
+        WORD numberOfFrames = CaptureStackBackTrace(0, 64, stack, NULL);
+        
+        HANDLE process = GetCurrentProcess();
+        SYMBOL_INFO* symbol = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+        symbol->MaxNameLen = 255;
+        symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+        
+        for (int i = 0; i < numberOfFrames; i++) {
+            DWORD64 address = (DWORD64)(stack[i]);
+            if (SymFromAddr(process, address, 0, symbol)) {
+                result += "    " + std::string(symbol->Name) + "\n";
+            } else {
+                result += "    <unknown>\n";
+            }
         }
-        return *this;
-    }
-
-    LogStream log(LogLevel level) {
-        return {level};
+        free(symbol);
+#else
+        // Linux/Unix 堆栈跟踪
+        void* array[64];
+        size_t size = backtrace(array, 64);
+        char** strings = backtrace_symbols(array, size);
+        
+        if (strings != NULL) {
+            for (size_t i = 0; i < size; i++) {
+                std::string frame = strings[i];
+                
+                // 尝试解析函数名
+                size_t begin = frame.find('(');
+                size_t end = frame.find('+');
+                if (begin != std::string::npos && end != std::string::npos && begin < end) {
+                    std::string mangled = frame.substr(begin + 1, end - begin - 1);
+                    int status;
+                    char* demangled = abi::__cxa_demangle(mangled.c_str(), 0, 0, &status);
+                    if (status == 0) {
+                        result += "    " + std::string(demangled) + "\n";
+                        free(demangled);
+                    } else {
+                        result += "    " + mangled + "\n";
+                    }
+                } else {
+                    result += "    " + frame + "\n";
+                }
+            }
+            free(strings);
+        }
+#endif
+        
+        return result;
     }
 }

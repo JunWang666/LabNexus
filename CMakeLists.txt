@@ -131,6 +131,7 @@ target_link_libraries(LabNexus
         Qt::Widgets
         Qt::Sql
         dwmapi
+        dbghelp
 )
 target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(LabNexus PRIVATE pch.h)

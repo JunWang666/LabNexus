@@ -21,8 +21,6 @@
                 QFrame#frame{
                 border-radius:30px;
                 background-image: url(:/User_Page.jpg);
-                border-repeat: no-repeat;
-                border-position: center;
 
                 }
 

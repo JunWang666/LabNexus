@@ -4,6 +4,8 @@
 #include<pch.h>
 #include "module/data/data_UserControl.h"
 
+#include "data_mail.h"
+
 namespace data::UserControl {
     void dropDB() {
         QFile dbFile(path);
@@ -135,6 +137,9 @@ namespace data::UserControl {
             if (!newUserId.has_value()) {
                 throw std::runtime_error("Failed to retrieve new user ID after creation.");
             }
+
+            data::mail::send_mail(data::mail::systemReservedAccounts["LabNexus团队"],
+                                  newUserId.value(), "欢迎使用LabNexus", "您的账号已创建成功，请妥善保管您的账号信息。","");
             return newUserId.value();
         }
 
@@ -442,6 +447,18 @@ namespace data::UserControl {
             service::DatabaseManager db(path);
             QString query = "SELECT username FROM users WHERE id = ?";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
+
+            if (results.isEmpty()) {
+                return std::unexpected(UserInfoError::UserNotFound);
+            }
+
+            return results.first()["username"].toString();
+        }
+
+        std::expected<QString, UserInfoError> getUserNameByIdNumber(QString IdNumber) {
+            service::DatabaseManager db(path);
+            QString query = "SELECT username FROM users WHERE id_number = ?";
+            auto results = db.executePreparedQueryAndFetchAll(query, {IdNumber});
 
             if (results.isEmpty()) {
                 return std::unexpected(UserInfoError::UserNotFound);

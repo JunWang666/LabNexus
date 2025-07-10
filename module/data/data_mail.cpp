@@ -25,12 +25,23 @@ namespace data::mail {
     }
 
     void registerSystemUser() {
-        data::UserControl::Login::createNewUser("-1", "库存预警", "huidbauiuicbabiabduiab", "System").value();
-
+        data::UserControl::Login::createNewUser("-1", "库存预警", "huidbauiuicbabiabduiab", "System");
+        data::UserControl::Login::createNewUser("-2", "LabNexus团队", "bcfuiasbiasuibcviuab", "System");
     }
 
     void findSystemUser() {
-        systemReservedAccounts.insert("库存预警",data::UserControl::Login::foundUserIdByIdNumber("-1").value());
+        std::vector<QString> searchIds = {"-1","-2"};
+        for (QString id : searchIds) {
+            auto userNameResult = data::UserControl::UserInfo::getUserNameByIdNumber(id);
+            auto id2 = data::UserControl::Login::foundUserIdByIdNumber(id);
+            if (userNameResult and id2.has_value()) {
+                data::mail::systemReservedAccounts.insert(userNameResult.value(),id2.value());
+                log(LogLevel::INFO) << "学工号: " << id << "，用户名: " << userNameResult.value();
+            } else {
+                log(LogLevel::ERR) << "查找学工号为 " << id << " 的用户名失败";
+            }
+        }
+        log(LogLevel::DEBUG)<<data::mail::systemReservedAccounts;
     }
 
     void buildDB() {
@@ -44,10 +55,10 @@ namespace data::mail {
                 return;
             }
             createMailTable();
-            registerSystemUser();
         } else {
             log(LogLevel::INFO) << "数据库文件已存在";
         }
+        registerSystemUser();
         findSystemUser();
     }
 
@@ -97,14 +108,15 @@ namespace data::mail {
             VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, 0, ?)
         )";
 
-        if (db.executePreparedNonQuery(insertQuery, {senderId, receiverId, subject, content, extra_data})) {
+        // 保证 extra_data 为空时传递空字符串，避免违反 NOT NULL 约束
+        QString extra = extra_data.isEmpty() ? "" : extra_data;
+        if (db.executePreparedNonQuery(insertQuery, {senderId, receiverId, subject, content, extra})) {
             log(service::LogLevel::DATA) << "邮件发送成功: " << subject;
         } else {
             log(service::LogLevel::ERR) << "发送邮件失败: " << db.getLastError();
         }
     }
 
-    // 私有辅助函数，用于将查询结果转换为Mail对象
     static Mail createMailFromRecord(const QVariantMap &record) {
         Mail mail;
         mail.id = record["id"].toInt();
