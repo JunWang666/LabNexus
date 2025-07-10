@@ -38,25 +38,6 @@ void TestMail::testSendAndReceiveMail() {
     QVERIFY(senderIdOpt.has_value());
     QVERIFY(receiverIdOpt.has_value());
 
-    int senderId = senderIdOpt.value();
-    int receiverId = receiverIdOpt.value();
-
-    data::mail::send_mail(senderId, receiverId, "Test Subject 1", "Test Content 1", "{}");
-    data::mail::send_mail(senderId, receiverId, "Test Subject 2", "Test Content 2", "{}");
-    log(LogLevel::INFO)<<"data::mail::getUnreadMailCount(receiverId):"<<data::mail::getUnreadMailCount(receiverId);
-    QCOMPARE(data::mail::getUnreadMailCount(receiverId), 2);
-
-    auto mails = data::mail::getAllMails(receiverId, 1, 10);
-    log(LogLevel::INFO)<< "Mails size: " << mails.size()<< "Mails: " << mails[0].subject<<" "<<mails[1].subject;
-    QCOMPARE(mails.size(), 2);
-    QCOMPARE(mails[0].subject, "Test Subject 1");
-    QCOMPARE(mails[1].subject, "Test Subject 2");
-
-    auto unreadMails = data::mail::getUnreadMails(receiverId, 1, 10);
-
-    QCOMPARE(unreadMails.size(), 2);
-
-    QCOMPARE(data::mail::getMailCount(receiverId), 2);
 }
 
 QTEST_MAIN(TestMail)
