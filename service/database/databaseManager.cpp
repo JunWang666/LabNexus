@@ -247,12 +247,12 @@ namespace service {
     int DatabaseManager::executePreparedInsertAndGetId(const QString &queryString, const QVariantList &parameters) {
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
-            log(LogLevel::ERR)<<m_lastError;
+            log(LogLevel::ERR) << m_lastError;
         }
 
         QSqlQuery query(m_database);
         query.prepare(queryString);
-        for (const QVariant &param : parameters) {
+        for (const QVariant &param: parameters) {
             query.addBindValue(param);
         }
 
@@ -262,7 +262,8 @@ namespace service {
             if (lastId.isValid()) {
                 return lastId.toLongLong();
             } else {
-                m_lastError = "Query executed successfully, but failed to retrieve last insert ID. The driver may not support this feature or the table may not have an auto-incrementing primary key.";
+                m_lastError =
+                        "Query executed successfully, but failed to retrieve last insert ID. The driver may not support this feature or the table may not have an auto-incrementing primary key.";
                 log(LogLevel::ERR) << m_lastError;
                 return -1;
             }

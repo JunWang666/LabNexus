@@ -46,6 +46,7 @@ namespace data::mail {
     void dropDB();
 
     void registerSystemUser();
+
     void findSystemUser();
 
     /**
