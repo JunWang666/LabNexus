@@ -127,24 +127,42 @@ namespace data::UserControl {
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
                                                            const QString &password,
-                                                           const QString group) {
+                                                           const QString &group) {
+            if (group.isEmpty()) {
+                log(service::LogLevel::DATA) << "未指定组，用户创建成功但未添加到任何组";
+                return createNewUser(idNumber, username, password);
+            }
+
+            log(service::LogLevel::DATA) << "查询组ID: " << group;
+            auto groupIds = permission::searchGroupIdByName(group);
+            if (groupIds.isEmpty()) {
+                log(service::LogLevel::ERR) << "组不存在: " << group;
+                return std::unexpected(UserControlError::GroupNotFound);
+            }
+            if (groupIds.size() > 1) {
+                log(service::LogLevel::ERR) << "找到多个匹配组: " << group;
+                return std::unexpected(UserControlError::MutiResultFound);
+            }
+
+            return createNewUser(idNumber, username, password, groupIds.first());
+        }
+
+        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
+                                                           const QString &password, int groupId) {
             auto newUserResult = createNewUser(idNumber, username, password);
             if (!newUserResult) {
                 return std::unexpected(newUserResult.error());
             }
-
-            if (group.isEmpty()) {
-                log(service::LogLevel::DATA) << "未指定组，用户创建成功但未添加到任何组";
+            if (groupId <= 0) {
+                log(service::LogLevel::DATA) << "未指定组ID，用户创建成功但未添加到任何组";
                 return newUserResult.value();
             }
-
-            log(service::LogLevel::DATA) << "尝试将用户添加到组: " << group;
-            auto addToGroupResult = permission::addUserToGroup(newUserResult.value(), group);
+            log(service::LogLevel::DATA) << "尝试将用户添加到组ID: " << groupId;
+            auto addToGroupResult = permission::addUserToGroup(newUserResult.value(), groupId);
             if (!addToGroupResult) {
-                log(service::LogLevel::ERR) << "用户 " << newUserResult.value() << " 添加到组 " << group << " 失败";
+                log(service::LogLevel::ERR) << "用户 " << newUserResult.value() << " 添加到组ID " << groupId << " 失败";
                 return std::unexpected(addToGroupResult.error());
             }
-
             return newUserResult.value();
         }
 

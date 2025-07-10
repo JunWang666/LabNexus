@@ -70,6 +70,19 @@ namespace data::UserControl {
                                                            const QString &group);
 
         /**
+         * @brief 创建新用户并可选添加到指定组。
+         *
+         * @param idNumber 用户的学工号
+         * @param username 用户名
+         * @param password 用户密码
+         * @param group 用户所属的组Id，默认空表示不添加到组。
+         * @return std::expected<int, UserControlError> 成功时包含创建用户的ID，失败时包含错误类型。
+         */
+        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
+                                                           const QString &password,
+                                                           int groupId);
+
+        /**
          * @brief 通过学工号查找用户ID。
          *
          * 此函数尝试根据给定的学工号在数据库中查找对应的用户ID。

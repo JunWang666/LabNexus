@@ -89,19 +89,10 @@ void registerPage::on_submitButton_clicked() {
     name = ui->usernameLineEdit->text();
     ID = ui->idLineEdit->text();
     
-    // 确定用户组
-    QString userGroup;
-    if (identity == 1) {
-        userGroup = "Student";
-    } else if (identity == 2) {
-        userGroup = "Teacher";
-    }
-    
-    // 使用LabNexus的数据库系统创建用户
-    auto result = data::UserControl::Login::createNewUser(ID, name, password, userGroup);
+    auto result = data::UserControl::Login::createNewUser(ID, name, password, identity);
     
     if (result) {
-        service::log() << "新用户注册成功: " << ID << " (" << name << ") - " << userGroup;
+        service::log() << "新用户注册成功: " << ID << " (" << name << ") - " << identity;
         ui->passwordRequirementLabel->setText("注册成功！");
         _sleep(1000);
         this->close();
