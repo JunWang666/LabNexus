@@ -116,6 +116,8 @@ namespace data::mail {
     int getUnreadMailCount(int receiverId);
 
     inline QMap<QString, int> systemReservedAccounts;
+
+    bool setMailRead(int mailId);
 }
 
 

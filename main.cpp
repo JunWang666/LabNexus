@@ -1,9 +1,20 @@
 // main.cpp
 
 #include "pch.h"
+#include "module/data/data_Booking.h"
+#include <QTableView>
+#include "module/data/data_mail.h"
+#include "module/model/BookingDataModel.h"
+#include "view/bookingService/booking_home.h"
+#include "view/bookingService/rent.h"
+#include "view/homepage/teacherhomepage.h"
+#include "view/loginPage/loginpage.h"
+#include "view/loginPage/registerpage.h"
+#include "view/messageCenter/messagewindow.h"
+#include "view/equipmentManage/equipment_home.h"
+
 
 void setup_tasks() {
-    bot::InventoryAlert::sendAlert();
     // 后台定时每1分钟扫描库存告警
     service::taskManager::getTimer().scheduleTask(60000, []() {
         bot::InventoryAlert::sendAlert();

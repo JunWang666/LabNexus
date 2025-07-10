@@ -19,6 +19,7 @@ namespace view::messageCenter {
         initializeUI();
         service::style::setMica(this);
         loadMailsFromDatabase(data::UserControl::currentUserId);
+        ui->label_num->setNum(data::mail::getUnreadMailCount(data::UserControl::currentUserId));
     }
 
     MessageWindow::MessageWindow(int userId, QWidget *parent) : QWidget(parent), ui(new Ui::MessageWindow) {

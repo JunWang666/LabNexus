@@ -32,18 +32,8 @@
 #include <QLineEdit>
 #include <QVariant>
 #include <expected>
-#include "module/data/data_Booking.h"
-#include <QTableView>
-#include "module/data/data_mail.h"
-#include "module/model/BookingDataModel.h"
-#include "view/bookingService/booking_home.h"
-#include "view/bookingService/rent.h"
-#include "view/homepage/teacherhomepage.h"
-#include "view/loginPage/loginpage.h"
-#include "view/loginPage/registerpage.h"
-#include "view/messageCenter/messagewindow.h"
-#include "view/equipmentManage/equipment_home.h"
-#include "service/taskManager/timerTaskManager.h"
+#include <QTimer>
 #include "module/scanner/InventoryAlert.h"
+#include "service/taskManager/timerTaskManager.h"
 
 #endif //PCH_H
