@@ -1,45 +1,13 @@
 // main.cpp
 
 #include "pch.h"
-#include "module/data/data_Booking.h"
-#include <QTableView>
 
-#include "module/data/data_mail.h"
-#include "module/model/BookingDataModel.h"
-#include "view/bookingService/booking_home.h"
-#include "view/bookingService/rent.h"
-#include "view/homepage/teacherhomepage.h"
-#include "view/loginPage/loginpage.h"
-#include "view/loginPage/registerpage.h"
-#include "view/messageCenter/messagewindow.h"
-#include "view/equipmentManage/equipment_home.h"
-#ifdef Q_OS_WIN
-#include <windows.h>
-#include <WinUser.h>
-#include "assets/style/blurredTranslucent.h"
-#endif
-
-
-void applyBlurEffect(HWND hwnd) {
-#ifdef Q_OS_WIN
-    // 确保这里的 HMODULE 和函数指针定义也在 #ifdef Q_OS_WIN 内部
-    using pfnSetWindowCompositionAttribute = BOOL(WINAPI *)(HWND, WINDOWCOMPOSITIONATTRIBDATA *);
-
-    HMODULE hUser = GetModuleHandle(L"user32.dll");
-    if (hUser) {
-        auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute) GetProcAddress(
-            hUser, "SetWindowCompositionAttribute");
-        if (setWindowCompositionAttribute) {
-            ACCENT_POLICY accent = {ACCENT_ENABLE_BLURBEHIND, 0, 0, 0};
-            WINDOWCOMPOSITIONATTRIBDATA data;
-            data.Attrib = WCA_ACCENT_POLICY;
-            data.pvData = &accent;
-            data.cbData = sizeof(accent);
-            setWindowCompositionAttribute(hwnd, &data);
-        }
-    }
-    log(LogLevel::INFO) << "应用模糊效果成功";
-#endif
+void setup_tasks() {
+    bot::InventoryAlert::sendAlert();
+    // 后台定时每1分钟扫描库存告警
+    service::taskManager::getTimer().scheduleTask(60000, []() {
+        bot::InventoryAlert::sendAlert();
+    });
 }
 
 int main(int argc, char *argv[]) {
@@ -67,14 +35,10 @@ int main(int argc, char *argv[]) {
     data::UserControl::currentUserId = 2;
     view::login::loginPage b;
 
-#ifdef Q_OS_WIN
-    // 从窗口实例 b 获取句柄，而不是用 this
-    HWND hwnd = (HWND) b.winId();
-    //applyBlurEffect(hwnd);
-#endif
-    //b.setAttribute(Qt::WA_NoSystemBackground);
-    // 显示窗口
     b.show();
+
+    setup_tasks();
+    service::taskManager::getTimer().startAll();
 
     return QApplication::exec();
 }

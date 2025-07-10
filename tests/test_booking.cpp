@@ -39,7 +39,7 @@ void TestBooking::initTestCase() {
     QDateTime createDate = QDateTime::fromString("2025-07-07 10:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime requestStartTime = QDateTime::fromString("2025-07-08 09:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime requestEndTime = QDateTime::fromString("2025-07-08 11:00:00", "yyyy-MM-dd hh:mm:ss");
-    bool success = data::Booking::createFullBookingRecord(1, user1Id, createDate, 1, 1, requestStartTime, requestEndTime, "Pending", user2Id);
+    bool success = data::Booking::createFullBookingRecord(user1Id, createDate, 1, 1, requestStartTime, requestEndTime, "Pending", user2Id);
     QVERIFY(success);
 }
 

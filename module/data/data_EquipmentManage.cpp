@@ -9,7 +9,7 @@ namespace data::Equipment {
         QFile dbFile(path);
         if (dbFile.exists()) {
             if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功"<<path;
+                log(LogLevel::INFO) << "数据库文件删除成功" << path;
             } else {
                 log(LogLevel::ERR) << "数据库文件删除失败";
             }
@@ -23,7 +23,7 @@ namespace data::Equipment {
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功"<<path;
+                log(service::LogLevel::INFO) << "数据库文件创建成功" << path;
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
@@ -32,14 +32,12 @@ namespace data::Equipment {
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
-        
-
     }
 
-        /**
-         * @brief 从数据库加载所有设备实例的完整记录，通过 JOIN 关联类别表。
-         * @return 返回包含所有设备记录的 QList。
-         */
+    /**
+     * @brief 从数据库加载所有设备实例的完整记录，通过 JOIN 关联类别表。
+     * @return 返回包含所有设备记录的 QList。
+     */
     QList<fullEquipmentRecord> loadFullEquipmentRecords() {
         QList<fullEquipmentRecord> records;
         service::DatabaseManager db(path);
@@ -62,7 +60,7 @@ namespace data::Equipment {
         )";
 
         auto results = db.executeQueryAndFetchAll(queryString);
-        for (const auto &row : results) {
+        for (const auto &row: results) {
             fullEquipmentRecord rec;
             rec.id = row["id"].toInt();
             rec.name = row["name"].toString();
@@ -91,7 +89,7 @@ namespace data::Equipment {
         return success;
     }
 
-    bool updateEquipmentOnRepair(int id,const QString& status ) {
+    bool updateEquipmentOnRepair(int id, const QString &status) {
         service::DatabaseManager db("./equipment.db");
         QString queryString = R"(
         UPDATE equipment_instance
@@ -105,11 +103,11 @@ namespace data::Equipment {
         return success;
     }
 
-    QStringList getEquipmentOnStatus(const QString& status) {
+    QStringList getEquipmentOnStatus(const QString &status) {
         QStringList list;
         QList<fullEquipmentRecord> records;
         records = loadFullEquipmentRecords();
-        for (const auto& record : records ) {
+        for (const auto &record: records) {
             if (record.status == status) {
                 list.append(record.type);
             }
@@ -117,26 +115,53 @@ namespace data::Equipment {
         return list;
     }
 
+
     namespace EquipmentClass {
-            void createEquipmentClassTable() {
-                service::DatabaseManager db(path);
-                if (!db.tableExists("equipment_class")) {
-                    QString createTableQuery = R"(
+        void createEquipmentClassTable() {
+            service::DatabaseManager db(path);
+            if (!db.tableExists("equipment_class")) {
+                QString createTableQuery = R"(
                     CREATE TABLE equipment_class (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
                         description TEXT,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        amount INTEGER NOT NULL DEFAULT 0
+                        total_amount INTEGER NOT NULL DEFAULT 0,
+                        usable_amount INTEGER NOT NULL DEFAULT 0,
+                        alarm_amount INTEGER NOT NULL DEFAULT 0
                     )
                 )";
-                    db.executeNonQuery(createTableQuery);
-                    log(service::LogLevel::DATA) << "设备类别表创建成功";
-                } else {
-                    log(service::LogLevel::INFO) << "设备类别表已存在";
-                }
+                db.executeNonQuery(createTableQuery);
+                log(service::LogLevel::DATA) << "设备类别表创建成功";
+            } else {
+                log(service::LogLevel::INFO) << "设备类别表已存在";
             }
         }
+
+        QString getEquNameFromEquClassId(int classId) {
+            service::DatabaseManager db(path);
+            QString queryString = QString(R"(
+            SELECT name FROM equipment_class WHERE id = %1
+        )").arg(classId);
+            auto results = db.executeQueryAndFetchAll(queryString);
+            if (!results.isEmpty()) {
+                return results.first()["name"].toString();
+            }
+            return "未知类别";
+        }
+
+        int getEquCountFromEquClassId(int classId) {
+            service::DatabaseManager db(path);
+            QString queryString = QString(R"(
+                    SELECT usable_amount FROM equipment_class WHERE id = %1
+                )").arg(classId);
+            auto results = db.executeQueryAndFetchAll(queryString);
+            if (!results.isEmpty()) {
+                return results.first()["usable_amount"].toInt();
+            }
+            return 0;
+        }
+    }
 
     namespace EquipmentInstnace {
         void createEquipmentInstanceTable() {
@@ -147,7 +172,7 @@ namespace data::Equipment {
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
                         class_id INTEGER NOT NULL,
-                        status TEXT NOT NULL DEFAULT '可用',
+                        status TEXT NOT NULL DEFAULT 'useable',
                         rentId INTEGER,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
@@ -155,15 +180,12 @@ namespace data::Equipment {
                 )";
                 if (db.executeNonQuery(createTableQuery)) {
                     log(service::LogLevel::DATA) << "设备实例表创建成功";
-                }
-                else {
+                } else {
                     log(service::LogLevel::ERR) << "设备实例表创建失败";
                 }
-            }
-            else {
+            } else {
                 log(service::LogLevel::INFO) << "设备实例表已经存在";
             }
-
         }
     }
 }
