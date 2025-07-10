@@ -32,11 +32,17 @@ namespace data::UserControl {
             permission::createGroupTable();
             permission::createUserGroupTable();
             // 创建用户组
-            if (auto r = permission::createGroup("Student", ""); !r) {
+            if (auto r = permission::createGroup("Student", "学生组"); !r) {
                 log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
             }
-            if (auto r = permission::createGroup("Teacher", ""); !r) {
+            if (auto r = permission::createGroup("Teacher", "教师组"); !r) {
                 log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
+            }
+            if (auto r = permission::createGroup("Admin", "系统管理员组"); !r) {
+                log(LogLevel::ERR) << "创建组 Admin 失败, 错误码:" << static_cast<int>(r.error());
+            }
+            if (auto r = permission::createGroup("System", "系统预留账号"); !r) {
+                log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
             }
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";

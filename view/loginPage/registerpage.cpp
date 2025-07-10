@@ -88,9 +88,9 @@ void registerPage::on_submitButton_clicked() {
     // 获取输入信息
     name = ui->usernameLineEdit->text();
     ID = ui->idLineEdit->text();
-    
+
     auto result = data::UserControl::Login::createNewUser(ID, name, password, identity);
-    
+
     if (result) {
         service::log() << "新用户注册成功: " << ID << " (" << name << ") - " << identity;
         ui->passwordRequirementLabel->setText("注册成功！");

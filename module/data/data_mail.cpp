@@ -21,6 +21,11 @@ namespace data::mail {
         }
     }
 
+    void registerSystemUser() {
+        systemReservedAccounts.insert(
+            "库存预警", data::UserControl::Login::createNewUser(0, "库存预警", "huidbauiuicbabiabduiab", "System").value());
+    }
+
     void buildDB() {
         QFile dbFile(path);
         if (!dbFile.exists()) {
@@ -32,6 +37,7 @@ namespace data::mail {
                 return;
             }
             createMailTable();
+            registerSystemUser();
         } else {
             log(LogLevel::INFO) << "数据库文件已存在";
         }

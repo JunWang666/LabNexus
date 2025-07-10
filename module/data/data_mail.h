@@ -44,6 +44,8 @@ namespace data::mail {
      */
     void dropDB();
 
+    void registerSystemUser();
+
     /**
      * @brief 创建邮件表
      *
@@ -109,6 +111,8 @@ namespace data::mail {
      * @return 显示所有未读邮件总数。如果没有未读邮件，则返回0。
      */
     int getUnreadMailCount(int receiverId);
+
+    QMap<QString, int> systemReservedAccounts;
 }
 
 
