@@ -18,7 +18,7 @@ namespace view::homepage {
                                                                     A_name(name), A_ID(ID) {
         ui->setupUi(this);
         setupUI();
-        orderCheck = new Order::ManagerCheck(this);
+        orderCheck = nullptr;
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -26,6 +26,7 @@ namespace view::homepage {
 
     administratorHomepage::~administratorHomepage() {
         delete ui;
+        delete orderCheck;
     }
 
     void administratorHomepage::setupUI() {
@@ -58,6 +59,9 @@ namespace view::homepage {
         service::log() << "管理员 " << A_name << " 点击了审批按钮";
 
         // TODO: 打开审批页面
+        if (!orderCheck) {
+            orderCheck = new Order::ManagerCheck(this);
+        }
         orderCheck->show();
         // QMessageBox::information(this, "审批管理",
         //                          QString(

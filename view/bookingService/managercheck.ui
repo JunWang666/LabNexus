@@ -101,24 +101,7 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnClose</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::ManagerCheck</receiver>
-   <slot>on_btnClose_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>327</x>
-     <y>474</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>331</x>
-     <y>592</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>on_btnClose_clicked()</slot>
  </slots>

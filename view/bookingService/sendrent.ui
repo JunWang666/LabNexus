@@ -331,4 +331,7 @@
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>on_btnSend_clicked()</slot>
+ </slots>
 </ui>

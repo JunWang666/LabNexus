@@ -64,8 +64,12 @@ namespace dataModel{
             case Col_RentId: record.rentId = value.toInt(); break;
             default: return false;
         }
-        emit dataChanged(index, index);
-        return true;
+        bool success = data::Equipment::updateEquipmentOnRepair(record.id,record.status);
+        if (success) {
+            emit dataChanged(index, index);
+            return true;
+        }
+        return false;
     }
 
     Qt::ItemFlags EquipmentDataModel::flags(const QModelIndex &index) const {

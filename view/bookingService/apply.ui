@@ -89,24 +89,7 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnClose</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::Apply</receiver>
-   <slot>on_btnClose_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>297</x>
-     <y>413</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>308</x>
-     <y>470</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>on_btnClose_clicked()</slot>
  </slots>
