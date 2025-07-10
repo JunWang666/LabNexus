@@ -6,6 +6,7 @@
 #define USERCONTROL_H
 #include <expected>
 #include<pch.h>
+#include <QMap>
 #include "service/database/databaseManager.h"
 
 namespace data::UserControl {
@@ -18,10 +19,14 @@ namespace data::UserControl {
         GroupNotFound,
         UserAlreadyInGroup,
         GroupAlreadyExists,
-        DatabaseError
+        DatabaseError,
+        MutiResultFound
     };
 
     inline int currentUserId = -1;
+
+    // 内建用户组ID字典
+    inline QMap<QString, int> builtInGroupIds;
 
     void dropDB();
 
@@ -66,7 +71,20 @@ namespace data::UserControl {
          */
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
                                                            const QString &password,
-                                                           const QString group);
+                                                           const QString &group);
+
+        /**
+         * @brief 创建新用户并可选添加到指定组。
+         *
+         * @param idNumber 用户的学工号
+         * @param username 用户名
+         * @param password 用户密码
+         * @param groupId 用户所属的组Id，默认空表示不添加到组。
+         * @return std::expected<int, UserControlError> 成功时包含创建用户的ID，失败时包含错误类型。
+         */
+        std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
+                                                           const QString &password,
+                                                           int groupId);
 
         /**
          * @brief 通过学工号查找用户ID。
@@ -133,6 +151,15 @@ namespace data::UserControl {
         std::expected<bool, UserControlError> addUserToGroup(int userId, const QString &groupName);
 
         /**
+         * @brief 将指定用户添加到组中。
+         *
+         * @param userId 要添加到组中的用户的ID
+         * @param groupId 目标组Id
+         * @return std::expected<bool, UserControlError> 成功时为true，失败时包含错误类型。
+         */
+        std::expected<bool, UserControlError> addUserToGroup(int userId, int groupId);
+
+        /**
          * @brief 获取指定用户所属的所有组。
          *
          * 该函数通过查询数据库，获取给定用户ID所属的所有组，并将这些组名以逗号分隔的字符串形式返回。如果用户不属于任何组，则返回空字符串。
@@ -151,6 +178,24 @@ namespace data::UserControl {
          * @return QVector<QString> 包含用户所属组名的字符串向量；如果用户不属于任何组，则返回一个空的QVector。
          */
         QStringList getUserInWhichGroupList(int userId);
+
+        /**
+         * @brief 获取指定用户所属的所有组ID列表。
+         *
+         * @param userId 用户ID
+         * @return QVector<int> 包含用户所属组ID的int向量；如果用户不属于任何组，则返回一个空的QVector。
+         */
+        QList<int> getUserInWhichGroupIdList(int userId);
+
+        /**
+         * @brief 根据组名搜索组ID。
+         *
+         * 该函数通过查询数据库，获取与给定组名匹配的所有组ID，并将这些ID以QVector<int>的形式返回。如果没有找到匹配的组，则返回一个空的QVector。
+         *
+         * @param groupName 组名
+         * @return QList<int> 包含与组名匹配的组ID列表；如果没有找到匹配的组，则返回一个空的QList。
+         */
+        QList<int> searchGroupIdByName(const QString &groupName);
 
         /**
          * @brief 从指定组中删除用户。
@@ -174,6 +219,24 @@ namespace data::UserControl {
          * @return bool 如果用户在指定的组中则返回true，否则返回false。
          */
         bool isUserInGroup(int userId, const QString &groupName);
+
+        /**
+         * @brief 检查用户是否属于指定的组。
+         *
+         * 该函数通过获取用户所在的所有组，然后检查这些组中是否包含指定的目标组名来判断用户是否属于该组。
+         *
+         * @param userId 用户ID
+         * @param groupId 组ID
+         * @return bool 如果用户在指定的组中则返回true，否则返回false。
+         */
+        bool isUserInGroup(int userId, int groupId);
+
+        /**
+         * @brief 获取所有组的ID列表。
+         *
+         * @return QList<int> 所有组ID列表。
+         */
+        QList<int> getAllGroupId();
     }
 
     namespace UserInfo {
@@ -181,6 +244,12 @@ namespace data::UserControl {
             UserNotFound
         };
 
+        /**
+         * @brief 根据用户ID获取用户名。
+         *
+         * @param userId 用户ID
+         * @return std::expected<QString, UserInfoError> 成功时包含用户名，失败时返回UserNotFound错误。
+         */
         std::expected<QString, UserInfoError> getUserNameById(int userId);
 
         /**

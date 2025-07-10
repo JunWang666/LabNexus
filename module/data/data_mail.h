@@ -1,6 +1,7 @@
 //
 // Created by gouzuang on 25-7-8.
 //
+#pragma once
 
 #ifndef DATA_MAIL_H
 #define DATA_MAIL_H
@@ -43,6 +44,9 @@ namespace data::mail {
      * 如果文件不存在，则记录一条信息日志表示文件不存在。
      */
     void dropDB();
+
+    void registerSystemUser();
+    void findSystemUser();
 
     /**
      * @brief 创建邮件表
@@ -109,6 +113,8 @@ namespace data::mail {
      * @return 显示所有未读邮件总数。如果没有未读邮件，则返回0。
      */
     int getUnreadMailCount(int receiverId);
+
+    inline QMap<QString, int> systemReservedAccounts;
 }
 
 

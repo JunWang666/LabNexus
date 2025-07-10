@@ -20,19 +20,17 @@
 #endif
 
 
-void applyBlurEffect(HWND hwnd)
-{
+void applyBlurEffect(HWND hwnd) {
 #ifdef Q_OS_WIN
     // 确保这里的 HMODULE 和函数指针定义也在 #ifdef Q_OS_WIN 内部
-    using pfnSetWindowCompositionAttribute = BOOL(WINAPI *)(HWND, WINDOWCOMPOSITIONATTRIBDATA*);
+    using pfnSetWindowCompositionAttribute = BOOL(WINAPI *)(HWND, WINDOWCOMPOSITIONATTRIBDATA *);
 
     HMODULE hUser = GetModuleHandle(L"user32.dll");
-    if (hUser)
-    {
-        auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)GetProcAddress(hUser, "SetWindowCompositionAttribute");
-        if (setWindowCompositionAttribute)
-        {
-            ACCENT_POLICY accent = { ACCENT_ENABLE_BLURBEHIND, 0, 0, 0 };
+    if (hUser) {
+        auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute) GetProcAddress(
+            hUser, "SetWindowCompositionAttribute");
+        if (setWindowCompositionAttribute) {
+            ACCENT_POLICY accent = {ACCENT_ENABLE_BLURBEHIND, 0, 0, 0};
             WINDOWCOMPOSITIONATTRIBDATA data;
             data.Attrib = WCA_ACCENT_POLICY;
             data.pvData = &accent;
@@ -40,7 +38,7 @@ void applyBlurEffect(HWND hwnd)
             setWindowCompositionAttribute(hwnd, &data);
         }
     }
-    log(LogLevel::INFO)<< "应用模糊效果成功";
+    log(LogLevel::INFO) << "应用模糊效果成功";
 #endif
 }
 
@@ -48,8 +46,8 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     service::logger::instance().setLogFile(
-        QString("app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
-    service::logger::instance().setDataLogFile("data.log");
+        QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
+    service::logger::instance().setDataLogFile("log/data.log");
     service::log() << "程序启动";
 
     data::UserControl::buildDB();
@@ -63,16 +61,16 @@ int main(int argc, char *argv[]) {
         a.setStyleSheet(styleSheet);
         styleFile.close();
     } else {
-        log(LogLevel::ERR)<< "无法加载样式表文件: " << styleFile.fileName();
+        log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     }
 
     data::UserControl::currentUserId = 2;
-    view::messageCenter::MessageWindow b;
+    view::login::loginPage b;
 
 #ifdef Q_OS_WIN
-      // 从窗口实例 b 获取句柄，而不是用 this
-      HWND hwnd = (HWND)b.winId();
-      //applyBlurEffect(hwnd);
+    // 从窗口实例 b 获取句柄，而不是用 this
+    HWND hwnd = (HWND) b.winId();
+    //applyBlurEffect(hwnd);
 #endif
     //b.setAttribute(Qt::WA_NoSystemBackground);
     // 显示窗口

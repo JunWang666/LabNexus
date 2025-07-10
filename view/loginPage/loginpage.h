@@ -48,12 +48,6 @@ namespace view::login {
         void mousePressEvent(QMouseEvent *event) override;
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;
-        int user;
-        // 0无效
-        // 001学生
-        // 010老师
-        // 100管理员
-        // 还有的组合可能是110，即既是老师也是管理员,但是我想后面如果有需求再完善
     };
 } // view::login
 
