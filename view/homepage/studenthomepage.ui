@@ -55,6 +55,7 @@ border-radius:10px;
     255, 255), stop:1 rgba(255, 205, 120, 255));
     font:700 20pt &quot;Microsoft YaHei UI&quot;;
     color: rgb(112, 112, 112);
+	border: none;
 }
 
 QPushButton#messageButton{
@@ -72,6 +73,7 @@ border-radius:10px;
     background-color: qradialgradient(spread:pad, cx:0.5, cy:1, radius:0.538, fx:0.5, fy:0.5, stop:0 rgba(0, 220, 255,
     255), stop:1 rgba(255, 205, 120, 255));
     font: 20pt &quot;Microsoft YaHei UI&quot;;
+	border: none;
 }
 QPushButton:pressed{
     border-radius:10px;
