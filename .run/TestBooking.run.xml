@@ -1,16 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="TestBooking" type="CTestRunConfiguration" factoryName="CTestRun"
-                   PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false"
-                   EMULATE_TERMINAL="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$"
-                   PASS_PARENT_ENVS_2="true" PROJECT_NAME="LabNexus" TARGET_NAME="TestBooking" CONFIG_NAME="Debug-MinGW"
-                   RUN_PATH="$CTestCurrentExecutableName$" TEST_MODE="PATTERN">
-        <method v="2">
-            <option name="DeactivateBeforeRunTask">
-                <option name="dataSourceId" value="864b80c5-1ef6-46af-b1c3-4128c2076967"/>
-            </option>
-            <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask"
-                    enabled="true"/>
-            <option name="BeforeTestRunTask" enabled="true"/>
-        </method>
-    </configuration>
+  <configuration default="false" name="TestBooking" type="CTestRunConfiguration" factoryName="CTestRun" PROGRAM_PARAMS="--extra-verbose" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$CMakeCurrentLocalGenerationDir$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LabNexus" TARGET_NAME="TestBooking" CONFIG_NAME="Debug" RUN_PATH="$CTestCurrentExecutableName$" TEST_MODE="PATTERN">
+    <method v="2">
+      <option name="DeactivateBeforeRunTask">
+        <option name="dataSourceId" value="864b80c5-1ef6-46af-b1c3-4128c2076967" />
+      </option>
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      <option name="BeforeTestRunTask" enabled="true" />
+    </method>
+  </configuration>
 </component>

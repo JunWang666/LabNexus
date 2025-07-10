@@ -146,11 +146,15 @@ void Rent::on_btnSend_clicked()
         QModelIndex proxyIndex = indexes.first();
         QModelIndex index = rentFilterProxyMdel->mapToSource(proxyIndex);
         QModelIndex statusIndex = modelRent->index(index.row(), dataModel::EquipmentDataModel::Col_Status);//获取状态索引
-        QModelIndex typeIndex = modelRent->index(index.row(), dataModel::EquipmentDataModel::Col_Type);//获取名称索引
+        QModelIndex devIndex = modelRent->index(index.row(), dataModel::EquipmentDataModel::Col_Name);//获取名称索引
+        QModelIndex idIndex = modelRent->index(index.row(),dataModel::EquipmentDataModel::Col_ID);//获取id
+        QModelIndex classIdIndex = modelRent->index(index.row(),dataModel::EquipmentDataModel::Col_ClassId);//获取classId
         QString status = modelRent->data(statusIndex).toString();
         if (status == "可用") {
-            QString devType = modelRent->data(typeIndex).toString();
-            sendRent = new SendRent(name,id,devType,this);
+            QString devType = modelRent->data(devIndex).toString();
+            int equipmentId = modelRent->data(idIndex).toInt();
+            int classId = modelRent->data(classIdIndex).toInt();
+            sendRent = new SendRent(name,id,devType,equipmentId,classId,this);
             sendRent->show();
         }
     }
@@ -164,7 +168,7 @@ void Rent::on_btnSend_clicked()
 //点击查看按钮查看申请
 void Rent::on_btnCheck_clicked()
 {
-    checkApply = new Apply(this);
+    checkApply = new Apply();
     checkApply->show();
 }
 

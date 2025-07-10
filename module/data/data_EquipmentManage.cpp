@@ -116,6 +116,29 @@ namespace data::Equipment {
     }
 
 
+    EquipmentIds getEquipmentIdsByName(const QString &devName) {
+        EquipmentIds result;
+        service::DatabaseManager db("./equipment.db");
+        if (!db.isConnected()) {
+            return result; // 返回无效的ID
+        }
+
+        QString queryString = "SELECT id, equipment_class_id FROM equipment WHERE name = ?";
+        QVariantList params = {devName};
+
+        // 使用你已有的 executePreparedQueryAndFetchAll 函数
+        auto queryResult = db.executePreparedQueryAndFetchAll(queryString, params);
+
+        if (!queryResult.isEmpty()) {
+            // 假设设备名称是唯一的，我们只取第一个结果
+            QVariantMap row = queryResult.first();
+            result.id = row["id"].toInt();
+            result.class_id = row["equipment_class_id"].toInt();
+        }
+
+        return result;
+    }
+
     namespace EquipmentClass {
         void createEquipmentClassTable() {
             service::DatabaseManager db(path);

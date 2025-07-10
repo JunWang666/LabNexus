@@ -37,6 +37,11 @@ namespace data::Booking {
     void createBookingApprovalTable();
 
     /********************/
+    bool createBookingARecord(int userId, const QDateTime &createDate,
+                             int equipmentClassId, int equipmentId,
+                             const QDateTime &requestStartTime, const QDateTime &requestEndTime,
+                             const QString &approvalStatus, int approverId);
+
     bool createBookingARecord(QString typeName);
 
     /********************/

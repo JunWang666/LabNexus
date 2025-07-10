@@ -120,6 +120,9 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messagedetailpage.cpp
         view/messageCenter/messagedetailpage.h
         view/messageCenter/messagedetailpage.ui
+        view/bookingService/setapprover.cpp
+        view/bookingService/setapprover.h
+        view/bookingService/setapprover.ui
         module/scanner/InventoryAlert.cpp
         module/scanner/InventoryAlert.h
         service/taskManager/timerTaskManager.cpp

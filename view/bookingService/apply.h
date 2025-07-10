@@ -8,6 +8,7 @@
 #include <QWidget>
 #include "module/model/BookingDataModel.h"
 #include "module/model/filterproxymdel.h"
+#include "view/bookingService/setapprover.h"
 
 namespace view::Order {
 QT_BEGIN_NAMESPACE
@@ -25,12 +26,15 @@ public:
     void setUpModel();
 public slots:
     void on_btnClose_clicked();
+    void on_btnRush_clicked();
 private:
     Ui::Apply *ui;
     dataModel::BookingDataModel *model;
     QString name;
     QString id;
     fliterModel::FilterProxyMdel * fliterModel;
+    SetApprover * setApprover;
+    QString teacherId;
 };
 } // view::Order
 
