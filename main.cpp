@@ -7,6 +7,7 @@
 
 #include "module/data/data_mail.h"
 #include "module/model/BookingDataModel.h"
+#include "service/stastic/sharedFunctions.h"
 #include "view/bookingService/booking_home.h"
 #include "view/bookingService/rent.h"
 #include "view/homepage/teacherhomepage.h"
@@ -22,29 +23,6 @@ void setup_tasks() {
     });
 }
 
-void initDB() {
-    data::mail::buildDB();
-    data::UserControl::buildDB();
-    // 创建用户组
-    if (auto r = data::UserControl::permission::createGroup("Student", "学生组"); !r) {
-        log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
-    }
-    if (auto r = data::UserControl::permission::createGroup("Teacher", "教师组"); !r) {
-        log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
-    }
-    if (auto r = data::UserControl::permission::createGroup("Admin", "系统管理员组"); !r) {
-        log(LogLevel::ERR) << "创建组 Admin 失败, 错误码:" << static_cast<int>(r.error());
-    }
-    if (auto r = data::UserControl::permission::createGroup("System", "系统预留账号"); !r) {
-        log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
-    }
-    data::mail::registerSystemUser();
-    data::UserControl::Login::createNewUser("0","Admin","Admin",
-                                            data::UserControl::permission::searchGroupIdByName("Admin").first());
-    data::Booking::buildDB();
-    data::Equipment::buildDB();
-    data::mail::findSystemUser();
-}
 
 int main(int argc, char *argv[]) {
     service::logger::instance().setLogFile(
@@ -56,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     QApplication a(argc, argv);
 
-    initDB();
+    service::initDB();
 
     // QFile styleFile(":/styles/fluent.qss");
     // if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
