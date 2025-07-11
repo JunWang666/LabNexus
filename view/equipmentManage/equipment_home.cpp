@@ -13,9 +13,14 @@
 #include "module/data/data_Booking.h"
 #include "module/data/data_EquipmentManage.h"
 #include <QStringConverter> // Qt 6 需包含
+#include <QSqlTableModel>
+#include <QTableView>
+#include "view/bookingService/managercheck.h"
+#include <QWidget>
 
 namespace view::equipment {
-equipment_home::equipment_home(QWidget *parent) : QWidget(parent), ui(new view::equipment::Ui::equipment_home) {
+equipment_home::equipment_home(QWidget *parent) : QWidget(parent), ui(new view::equipment::Ui::equipment_home)
+{
     ui->setupUi(this);
      data::Equipment::buildDB();
     data::Equipment::EquipmentClass::createEquipmentClassTable();
@@ -103,15 +108,19 @@ void equipment_home::on_kchange_clicked() //修改库数据
 void equipment_home::on_kdel_clicked() //删除库数据
 {
     kdeletemanage *dialog = new kdeletemanage(this);
+
     dialog->show();
 }
 
 void equipment_home::on_kexam_clicked() //检查和审批审查
 {
-    // TODO: 实现检查和审批审查功能
+    view::Order::ManagerCheck *a = new view::Order::ManagerCheck();
+    service::style::setMica(a);
+    service::MutiWindow::manager().addWindow(a);
+    a->show();
 }
 
-void equipment_home::on_kseeborrow_clicked()
+void equipment_home::on_kseeborrow_clicked()//借用记录
 {
     // 创建一个对话框
     QDialog dialog(this);
@@ -146,7 +155,7 @@ void equipment_home::on_kseeborrow_clicked()
     dialog.exec();
 }
 
-void equipment_home::on_seefix_clicked()
+void equipment_home::on_seefix_clicked()//维修记录
 {
     QDialog dialog(this);
     dialog.setWindowTitle("维修日志");

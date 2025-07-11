@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
     b.show();
     c.show();
 
+
     setup_tasks();
     service::taskManager::getTimer().startAll();
 
