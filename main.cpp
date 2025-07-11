@@ -22,12 +22,14 @@ void setup_tasks() {
 }
 
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
-
     service::logger::instance().setLogFile(
         QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
     service::logger::instance().setDataLogFile("log/data.log");
+    service::logger::instance().setLevel(LogLevel::DEBUG);
+    service::logger::instance().enableStackTrace(false);
     service::log() << "程序启动";
+
+    QApplication a(argc, argv);
 
     data::UserControl::buildDB();
     data::Booking::buildDB();
@@ -43,7 +45,6 @@ int main(int argc, char *argv[]) {
         log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     }
 
-    data::UserControl::currentUserId = 2;
     view::login::loginPage b;
 
     b.show();

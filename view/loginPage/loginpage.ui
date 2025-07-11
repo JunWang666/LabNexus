@@ -21,8 +21,6 @@
                 QFrame#frame{
                 border-radius:30px;
                 border-image: url(:/Login_page.jpg);
-                border-repeat: no-repeat;
-                border-position: center;
 
                 }
                 #frame_2{

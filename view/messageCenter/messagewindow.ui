@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>view::messageCenter::MessageWindow</class>
-    <widget class="QWidget" name="view::messageCenter::MessageWindow">
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>400</width>
-                <height>497</height>
-            </rect>
-        </property>
-        <property name="windowTitle">
-            <string>MessageWindow</string>
-        </property>
-        <property name="styleSheet">
-            <string notr="true">/* ---- 整体窗口和字体 ---- */
+ <class>view::messageCenter::MessageWindow</class>
+ <widget class="QWidget" name="view::messageCenter::MessageWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>497</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MessageWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* ---- 整体窗口和字体 ---- */
                 QWidget#view::messageCenter::MessageWindow {
                 background-color: #F9F9F9; /* 设置一个非常浅的灰色背景 */
                 }
 
                 /* ---- 顶部计数区域 ---- */
                 QFrame#frame {
-                background-color: rgba(239, 246, 252, 180);
+                background-color: rgba(239, 246, 252, 220);
 
                 border-radius: 8px; /* 圆角保持不变 */
-                border: none; /* 最好禁用边框，让材质更纯粹 */
                 }
 
                 /* 确保内部所有控件背景透明，以显示出父控件的淡蓝色 */
@@ -86,32 +85,38 @@
                 }
 
 
-                /* 翻页按钮的基本样式 */
-                QPushButton#prevButton, QPushButton#nextButton {
-                background-color: #EFEFEF;
-                border: 1px solid #DCDCDC;
-                border-radius: 8px; /* 与其他组件统一的圆角 */
-                color: #555555;
-                font-size: 14pt;
-                font-weight: bold;
-                padding: 0px 10px; /* 左右内边距，形成圆角矩形 */
-                min-height: 28px; /* 固定高度 */
-                max-height: 28px;
-                }
+                /* 翻页按钮的基本样式 - 透明背景 */
+QPushButton#prevButton, QPushButton#nextButton {
+    background-color: transparent; /* 改为透明 */
+    border-radius: 8px; /* 与其他组件统一的圆角 */
+    color: #555555;
+    font-size: 14pt;
+    font-weight: bold;
+    padding: 0px 10px; /* 左右内边距，形成圆角矩形 */
+    min-height: 28px; /* 固定高度 */
+    max-height: 28px;
+border: none; /* 最好禁用边框，让材质更纯粹 */
+}
+
                 #frame_3{
-                background-color: rgba(239, 246, 252, 180);
+                background-color: rgba(239, 246, 252, 120);
+border: none; /* 最好禁用边框，让材质更纯粹 */
                 }
 
                 /* 鼠标悬停效果 */
                 QPushButton#prevButton:hover, QPushButton#nextButton:hover {
                 background-color: #E0E0E0;
                 border-color: #C0C0C0;
+border: none; /* 最好禁用边框，让材质更纯粹 */
+
                 }
 
                 /* 鼠标按下效果 */
                 QPushButton#prevButton:pressed, QPushButton#nextButton:pressed {
                 background-color: #D0D0D0;
                 border-color: #B0B0B0;
+border: none; /* 最好禁用边框，让材质更纯粹 */
+
                 }
 
                 /* 页面标签样式 */
@@ -123,147 +128,147 @@
                 }
 
             </string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
-                <widget class="QLabel" name="label_Title">
-                    <property name="font">
-                        <font>
-                            <family>Microsoft YaHei UI</family>
-                            <pointsize>20</pointsize>
-                            <italic>false</italic>
-                            <bold>true</bold>
-                        </font>
-                    </property>
-                    <property name="text">
-                        <string>消息中心</string>
-                    </property>
-                </widget>
-            </item>
-            <item>
-                <widget class="QFrame" name="frame">
-                    <property name="frameShape">
-                        <enum>QFrame::Shape::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>QFrame::Shadow::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout">
-                        <item>
-                            <widget class="QFrame" name="frame_2">
-                                <property name="frameShape">
-                                    <enum>QFrame::Shape::StyledPanel</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>QFrame::Shadow::Raised</enum>
-                                </property>
-                                <layout class="QVBoxLayout" name="verticalLayout">
-                                    <item>
-                                        <widget class="QLabel" name="label_num">
-                                            <property name="font">
-                                                <font>
-                                                    <family>Segoe UI Variable</family>
-                                                    <pointsize>16</pointsize>
-                                                    <italic>false</italic>
-                                                    <bold>true</bold>
-                                                </font>
-                                            </property>
-                                            <property name="layoutDirection">
-                                                <enum>Qt::LayoutDirection::LeftToRight</enum>
-                                            </property>
-                                            <property name="text">
-                                                <string>0</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item>
-                                        <widget class="QLabel" name="label_2">
-                                            <property name="font">
-                                                <font>
-                                                    <family>Microsoft YaHei UI</family>
-                                                    <pointsize>12</pointsize>
-                                                    <bold>false</bold>
-                                                </font>
-                                            </property>
-                                            <property name="text">
-                                                <string>未读消息</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                </layout>
-                            </widget>
-                        </item>
-                    </layout>
-                </widget>
-            </item>
-            <item>
-                <widget class="QFrame" name="frame_3">
-                    <property name="frameShape">
-                        <enum>QFrame::Shape::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>QFrame::Shadow::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_2">
-                        <item>
-                            <spacer name="horizontalSpacer">
-                                <property name="orientation">
-                                    <enum>Qt::Orientation::Horizontal</enum>
-                                </property>
-                                <property name="sizeHint" stdset="0">
-                                    <size>
-                                        <width>40</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </item>
-                        <item>
-                            <widget class="QPushButton" name="prevButton">
-                                <property name="text">
-                                    <string>&lt;</string>
-                                </property>
-                            </widget>
-                        </item>
-                        <item>
-                            <widget class="QLabel" name="pageLabel">
-                                <property name="text">
-                                    <string>1 / 5</string>
-                                </property>
-                                <property name="alignment">
-                                    <set>Qt::AlignmentFlag::AlignCenter</set>
-                                </property>
-                            </widget>
-                        </item>
-                        <item>
-                            <widget class="QPushButton" name="nextButton">
-                                <property name="text">
-                                    <string>&gt;</string>
-                                </property>
-                            </widget>
-                        </item>
-                    </layout>
-                </widget>
-            </item>
-            <item>
-                <widget class="QScrollArea" name="messageBoxArea">
-                    <property name="widgetResizable">
-                        <bool>true</bool>
-                    </property>
-                    <widget class="QWidget" name="messageBoxAreaItem">
-                        <property name="geometry">
-                            <rect>
-                                <x>0</x>
-                                <y>0</y>
-                                <width>382</width>
-                                <height>285</height>
-                            </rect>
-                        </property>
-                    </widget>
-                </widget>
-            </item>
-        </layout>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QLabel" name="label_Title">
+     <property name="font">
+      <font>
+       <family>Microsoft YaHei UI</family>
+       <pointsize>20</pointsize>
+       <italic>false</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>消息中心</string>
+     </property>
     </widget>
-    <resources/>
-    <connections/>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QFrame" name="frame_2">
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_num">
+           <property name="font">
+            <font>
+             <family>Segoe UI Variable</family>
+             <pointsize>16</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <family>Microsoft YaHei UI</family>
+             <pointsize>12</pointsize>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>未读消息</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_3">
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="prevButton">
+        <property name="text">
+         <string>&lt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="pageLabel">
+        <property name="text">
+         <string>1 / 5</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="nextButton">
+        <property name="text">
+         <string>&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="messageBoxArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="messageBoxAreaItem">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>382</width>
+        <height>289</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>

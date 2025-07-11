@@ -70,7 +70,7 @@ namespace data::mail {
      * @param extra_data 附加数据，JSON格式字符串
      */
     void send_mail(int senderId, int receiverId, const QString &subject, const QString &content,
-                   const QString &extra_data);
+                   const QString &extra_data={});
 
     /**
      * @brief 获取特定接收者的邮件列表，支持分页。
