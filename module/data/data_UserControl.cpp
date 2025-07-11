@@ -466,5 +466,16 @@ namespace data::UserControl {
                 throw std::runtime_error("Failed to update username.");
             }
         }
+
+        QMap<int, QString> loadUsersMap() {
+            QMap<int ,QString> usersMap;
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(SELECT id_number,username FROM users)";
+            auto results = db.executeQueryAndFetchAll(query);
+            for (const auto &row : results) {
+                usersMap[row["id_number"].toInt()] = row["username"].toString();
+            }
+            return usersMap;
+        }
     }
 }
