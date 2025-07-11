@@ -172,6 +172,7 @@ namespace view::loginPage {
 
             // 发送信号返回登录页面
             emit backToLogin();
+            emit refresh(userName);
             this->close();
         } else {
             ui->passwordHintLabel->setText("密码修改失败，请稍后重试");

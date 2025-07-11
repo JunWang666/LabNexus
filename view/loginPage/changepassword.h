@@ -26,7 +26,7 @@ namespace view::loginPage {
 
     signals:
         void backToLogin();
-
+        void refresh(QString username);
     private slots:
         void onConfirmChangePassword();
 

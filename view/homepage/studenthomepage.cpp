@@ -104,6 +104,11 @@ namespace view::homepage {
         loginPage::changePassword *change_pass_page=new loginPage::changePassword();
         change_pass_page->setData(S_ID);
         change_pass_page->show();
+        QObject::connect(change_pass_page,&loginPage::changePassword::refresh,[=](QString username){        ui->welcomeLabel->setText(
+                QString(
+                    "<html><head/><body><p align=\"center\"><span style=\" font-size:20pt;\">你好！%1</span></p></body></html>")
+                    .arg(username));
+});
         // TODO: 打开修改密码/个人信息页面
 
     }
