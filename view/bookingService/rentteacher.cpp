@@ -14,6 +14,7 @@ namespace view::Order {
 RentTeacher::RentTeacher(QWidget *parent) :
     QWidget(parent), ui(new Ui::RentTeacher) {
     ui->setupUi(this);
+    this->setWindowTitle("我的事务");
     this->setAttribute(Qt::WA_DeleteOnClose,false);
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
@@ -37,6 +38,7 @@ RentTeacher::RentTeacher(QWidget *parent) :
 RentTeacher::RentTeacher(const QString &name, const QString &id, QWidget *parent) :
     QWidget(parent),ui(new Ui::RentTeacher),name(name),id(id){
     ui->setupUi(this);
+    this->setWindowTitle("我的事务");
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("审批");
     ui->pageListWidget->addItem("报修");

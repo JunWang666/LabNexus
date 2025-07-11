@@ -1,4 +1,4 @@
-// main.cpp
+﻿// main.cpp
 
 #include "pch.h"
 #include "module/data/data_Booking.h"
@@ -48,6 +48,7 @@ int main(int argc, char *argv[]) {
     view::login::loginPage b;
 
     b.show();
+
 
     setup_tasks();
     service::taskManager::getTimer().startAll();

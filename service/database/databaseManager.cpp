@@ -1,4 +1,4 @@
-// databaseManager.cpp
+﻿// databaseManager.cpp
 
 #include "databaseManager.h"
 #include <QDebug>
