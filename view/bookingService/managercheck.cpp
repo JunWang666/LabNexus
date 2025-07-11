@@ -11,6 +11,7 @@ namespace view::Order {
 ManagerCheck::ManagerCheck(QWidget *parent) :
     QWidget(parent), ui(new Ui::ManagerCheck) {
     ui->setupUi(this);
+    this->setWindowTitle("审批");
     this->setAttribute(Qt::WA_DeleteOnClose,false);
     setUpModel();
     loadData();
