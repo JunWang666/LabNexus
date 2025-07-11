@@ -16,33 +16,5 @@ namespace service::Path {
             }
         }
     }
-
-    QString booking() {
-        return base()+"booking.db";
-    }
-
-    QString equipment() {
-        return base()+"equipment.db";
-    }
-
-    QString mail() {
-        return base()+"mail.db";
-    }
-
-    QString user() {
-        return base()+"user.db";
-    }
-
-    QString base() {
-        return "./data/";
-    }
-
-    QString debuglog() {
-        return "./log/";
-    }
-
-    QString datalog() {
-        return "./log/data.log";
-    }
 }
 

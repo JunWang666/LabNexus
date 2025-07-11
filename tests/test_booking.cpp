@@ -3,6 +3,7 @@
 #include "../module/data/data_UserControl.h"
 #include "../service/logger/logger.h"
 #include "../service/database/databaseManager.h"
+#include "service/stastic/sharedFunctions.h"
 
 class TestBooking : public QObject {
 Q_OBJECT
@@ -24,6 +25,8 @@ void TestBooking::initTestCase() {
 
     data::UserControl::buildDB();
     data::Booking::buildDB();
+    service::initDB();
+
 
     data::UserControl::Login::createNewUser("123", "Stu1", "123", "Student");
     data::UserControl::Login::createNewUser("011", "Tea1", "456", "Teacher");
