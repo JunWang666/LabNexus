@@ -26,7 +26,7 @@ void kaddmanage::loadClassrooms() {
 
     if (results.isEmpty()) {
         // 数据库无教室数据时，添加示例仪器类（硬编码）
-        ui->comboBox->addItem("试管", -101); // 示例1：名称+ID（ID设为负数避免冲突）
+        ui->comboBox->addItem("试管"); // 示例1：名称+ID（ID设为负数避免冲突）
         ui->comboBox->addItem("显微镜", -202);   // 示例2
         ui->comboBox->addItem("离心机", -303);  // 示例3
     } else {
