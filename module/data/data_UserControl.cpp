@@ -1,4 +1,4 @@
-﻿//
+//
 // Created by gouzuang on 25-7-6.
 //
 #include<pch.h>
@@ -45,9 +45,11 @@ void dropDB() {
             if (auto r = permission::createGroup("System", "系统预留账号"); !r) {
                 log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
             }
-
-<<<<<<< HEAD
-=======
+            Login::createNewUser("0","Admin","Admin",
+                                                    permission::searchGroupIdByName("Admin").first());
+        } else {
+            log(service::LogLevel::INFO) << "数据库文件已存在";
+        }
         QStringList builtInGroupNames = {"Student", "Teacher", "Admin", "System"};
         for (const auto &groupName: builtInGroupNames) {
             auto ids = permission::searchGroupIdByName(groupName);
@@ -56,22 +58,6 @@ void dropDB() {
             }
         }
     }
->>>>>>> origin/master
-
-        Login::createUserTable();
-        permission::createGroupTable();
-        permission::createUserGroupTable();
-        // 创建用户组
-        if (auto r = permission::createGroup("Student", ""); !r) {
-            log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
-        }
-        if (auto r = permission::createGroup("Teacher", ""); !r) {
-            log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
-        }
-    } else {
-        log(service::LogLevel::INFO) << "数据库文件已存在";
-    }
-}
 
 namespace Login {
 void createUserTable() {

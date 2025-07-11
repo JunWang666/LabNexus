@@ -55,10 +55,11 @@ namespace data::mail {
                 return;
             }
             createMailTable();
+            registerSystemUser();
         } else {
             log(LogLevel::INFO) << "数据库文件已存在";
         }
-        registerSystemUser();
+
         findSystemUser();
     }
 

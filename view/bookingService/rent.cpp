@@ -18,7 +18,7 @@ Rent::Rent(QWidget *parent) :
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("报修");
     ui->pageListWidget->addItem("归还");
-    this->setWindowTitle("temp_rent");
+    this->setWindowTitle("我的事务");
     setUpModel();
     loadData();
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
@@ -37,7 +37,7 @@ Rent::Rent(const QString &name,const QString &id, QWidget *parent):
     ui->pageListWidget->addItem("申请");
     ui->pageListWidget->addItem("报修");
     ui->pageListWidget->addItem("归还");
-    this->setWindowTitle("temp_rent");
+    this->setWindowTitle("我的事务");
     setUpModel();
     loadData();
     connect(ui->pageListWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item) {
@@ -89,6 +89,7 @@ void Rent::setUpModel()
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
     ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
+    ui->stuRentTableView->hideColumn(dataModel::EquipmentDataModel::Col_ClassId);
     ui->stuRentTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     //初始化模型
@@ -105,6 +106,7 @@ void Rent::setUpModel()
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
     ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
+    ui->repairTableView->hideColumn(dataModel::EquipmentDataModel::Col_ClassId);
 
     //初始化模型
     modelReturn = new dataModel::EquipmentDataModel(this);
@@ -114,6 +116,7 @@ void Rent::setUpModel()
     ui->returnTableView->setModel(returnFilterProxyMdel);
     ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
     ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+    ui->returnTableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
 
 }
 
