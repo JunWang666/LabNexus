@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>308</width>
-    <height>388</height>
+    <height>347</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -168,48 +168,6 @@
             </item>
             <item>
              <widget class="QComboBox" name="deviceComboBpx">
-              <property name="minimumSize">
-               <size>
-                <width>157</width>
-                <height>0</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QFrame" name="frame_8">
-           <property name="frameShape">
-            <enum>QFrame::Shape::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Shadow::Raised</enum>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>借用个数：</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="numberSpinBox">
               <property name="minimumSize">
                <size>
                 <width>157</width>

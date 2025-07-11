@@ -34,6 +34,7 @@ namespace dataModel{
                 case Col_RentId: return record.rentId;
                 case Col_Status: return record.status;
                 case Col_InDate: return record.inDate;
+                case Col_ClassId: return record.class_id;
                 default:         return QVariant();
             }
         }
@@ -45,7 +46,7 @@ namespace dataModel{
             return QVariant();
         if (orientation == Qt::Horizontal) {
             static QStringList headers = {
-                "设备ID","设备名称","设备类型","借用人ID","当前状态","入库时间"
+                "设备ID","设备名称","设备类型","类ID","借用人ID","当前状态","入库时间"
             };
             if (section >= 0 && section < headers.size())
                 return headers.at(section);

@@ -38,13 +38,22 @@ namespace data::Equipment {
         QString status;
     };
 
+    struct EquipmentIds {
+        int id;
+        int class_id;
+    };
+
+
     QList<fullEquipmentRecord> loadFullEquipmentRecords();
 
     bool updateEquipmentOnReturn(int id);
+    bool updateEquipmentOnRepair(int id,const QString & status);
+    QStringList getEquipmentOnStatus(const QString & status);
+    EquipmentIds getEquipmentIdsByName(const QString & devName);
+    /*************/
 
-    bool updateEquipmentOnRepair(int id, const QString &status);
 
-    QStringList getEquipmentOnStatus(const QString &status);
+
 
 
     namespace EquipmentClass {
