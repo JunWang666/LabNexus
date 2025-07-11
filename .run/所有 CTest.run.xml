@@ -15,5 +15,5 @@
                     enabled="true"/>
             <option name="BeforeTestRunTask" enabled="true"/>
         </method>
-    </configuration>
+    </configuration
 </component>

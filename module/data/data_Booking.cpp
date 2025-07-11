@@ -120,6 +120,76 @@ namespace data::Booking {
         }
     }
 
+    bool createBookingARecord(int userId, const QDateTime &createDate, int equipmentClassId, int equipmentId,
+        const QDateTime &requestStartTime, const QDateTime &requestEndTime, const QString &approvalStatus,
+        int approverId) {
+        // 实例化你的数据库管理器
+        service::DatabaseManager db(path);
+        if (!db.isConnected()) {
+            log(service::LogLevel::ERR) << "创建预订记录失败：无法连接到数据库。" << db.getLastError();
+            return false;
+        }
+
+        // 1. 使用 DatabaseManager::beginTransaction() 开启事务
+        if (!db.beginTransaction()) {
+            log(service::LogLevel::ERR) << "开启事务失败: " << db.getLastError();
+            return false;
+        }
+
+        // 2. 插入 booking_info 表并获取新ID
+        //    使用你提供的 executePreparedInsertAndGetId 便捷函数
+        QString infoQuery = "INSERT INTO booking_info (user_id, create_date) VALUES (?, ?)";
+        QVariantList infoParams = {userId, createDate};
+        int newBookingId = db.executePreparedInsertAndGetId(infoQuery, infoParams);
+
+        // 3. 检查ID是否有效。根据你的实现，失败时返回-1
+        if (newBookingId == -1) {
+            log(service::LogLevel::ERR) << "插入 booking_info 并获取ID失败: " << db.getLastError();
+            db.rollbackTransaction(); // 出错，回滚事务
+            return false;
+        }
+
+        // 4. 使用新ID插入 booking_equipment 表
+        //    使用 executePreparedNonQuery 函数
+        QString equipmentQuery = "INSERT INTO booking_equipment (booking_id, equipment_class_id, equipment_id) VALUES (?, ?, ?)";
+        QVariantList equipmentParams = {newBookingId, equipmentClassId, equipmentId};
+        if (!db.executePreparedNonQuery(equipmentQuery, equipmentParams)) {
+            log(service::LogLevel::ERR) << "插入 booking_equipment 失败: " << db.getLastError();
+            db.rollbackTransaction(); // 出错，回滚事务
+            return false;
+        }
+
+        // 5. 使用新ID插入 booking_time 表
+        QString timeQuery = "INSERT INTO booking_time (booking_id, request_start_time, request_end_time) VALUES (?, ?, ?)";
+        QVariantList timeParams = {newBookingId, requestStartTime, requestEndTime};
+        if (!db.executePreparedNonQuery(timeQuery, timeParams)) {
+            log(service::LogLevel::ERR) << "插入 booking_time 失败: " << db.getLastError();
+            db.rollbackTransaction(); // 出错，回滚事务
+            return false;
+        }
+
+        // 6. 使用新ID插入 booking_approval 表
+        QString approvalQuery = "INSERT INTO booking_approval (booking_id, approval_status, approver_id) VALUES (?, ?, ?)";
+        QVariantList approvalParams = {newBookingId, approvalStatus, approverId};
+        if (!db.executePreparedNonQuery(approvalQuery, approvalParams)) {
+            log(service::LogLevel::ERR) << "插入 booking_approval 失败: " << db.getLastError();
+            db.rollbackTransaction(); // 出错，回滚事务
+            return false;
+        }
+
+        // 7. 所有插入都成功，提交事务
+        if (db.commitTransaction()) {
+            log(service::LogLevel::INFO) << "创建完整预订记录成功, 新ID: " << newBookingId;
+            return true;
+        } else {
+            log(service::LogLevel::ERR) << "提交事务失败: " << db.getLastError();
+            db.rollbackTransaction(); // 即使提交失败，也尝试回滚
+            return false;
+        }
+    }
+
+
+
     QList<fullBookingRecord> loadBookingFullRecords() {
         service::DatabaseManager db(path);
         QList<fullBookingRecord> records;
@@ -171,17 +241,18 @@ namespace data::Booking {
         return false;
     }
 
-    bool createFullBookingRecord(int bookingId, int userId, const QDateTime &createDate,
+    bool createFullBookingRecord(int userId, const QDateTime &createDate,
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId) {
         service::DatabaseManager db(path);
 
-        QString infoQuery = QString("INSERT INTO booking_info (id, user_id, create_date) VALUES (%1, %2, '%3')")
-                .arg(bookingId)
-                .arg(userId)
-                .arg(createDate.toString("yyyy-MM-dd hh:mm:ss"));
-        if (!db.executeNonQuery(infoQuery)) return false;
+        QString infoQuery = "INSERT INTO booking_info (user_id, create_date) VALUES (?, ?)";
+        auto bookingId = db.executePreparedInsertAndGetId(infoQuery,
+                                                          {
+                                                              QVariant(userId),
+                                                              QVariant(createDate.toString("yyyy-MM-dd hh:mm:ss"))
+                                                          });
 
         QString equipmentQuery = QString(
                     "INSERT INTO booking_equipment (booking_id, equipment_class_id, equipment_id) VALUES (%1, %2, %3)")

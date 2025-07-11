@@ -25,12 +25,15 @@
 #include <QtSql/QSqlRecord>
 #include "service/logger/logger.h"
 #include "service/database/databaseManager.h"
-
+#include "service/styleHelper/MicaHelper.h"
+#include "service/MutiWindow/MutiWindow.h"
 #include "module/data/data_UserControl.h"
 #include <QRegularExpression>
 #include <QLineEdit>
 #include <QVariant>
 #include <expected>
+#include <QTimer>
+#include "module/scanner/InventoryAlert.h"
+#include "service/taskManager/timerTaskManager.h"
 
 #endif //PCH_H
-

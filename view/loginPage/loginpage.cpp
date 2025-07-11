@@ -12,6 +12,12 @@
 #include "../homepage/teacherhomepage.h"
 #include "../homepage/studenthomepage.h"
 #include "../homepage/administratorhomepage.h"
+#include "module/data/data_UserControl.h"
+#include "service/logger/logger.h"
+#include <QMessageBox>
+#include <QString>
+#include <QMouseEvent>
+
 
 namespace view::login {
     loginPage::loginPage(QWidget *parent) : QWidget(parent), ui(new Ui::loginPage) {
@@ -21,14 +27,13 @@ namespace view::login {
         ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
         ui->passwordLineEdit->setMaxLength(16);
 
-        // 设置公告文本框为只读
-        ui->announcementTextEdit->setReadOnly(true);
-        ui->announcementTextEdit->setText("欢迎使用实验室设备管理系统！\n请输入您的用户ID和密码进行登录。");
 
-        // 初始化用户数据库
-        data::UserControl::buildDB();
-
-        // Qt的自动连接机制会自动连接on_*_clicked()槽函数，无需手动连接
+        this->setWindowFlag(Qt::FramelessWindowHint);
+        this->setAttribute(Qt::WA_TranslucentBackground);
+        ui->lineEdit->setText("无效的用户名");
+        ui->lineEdit_2->setText("密码错误或用户不存在");
+        ui->lineEdit->hide();
+        ui->lineEdit_2->hide();
     }
 
     loginPage::~loginPage() {
@@ -36,23 +41,9 @@ namespace view::login {
     }
 
     int loginPage::confirm_user(QString &ID_c, QString &password_c) {
-        // 使用LabNexus的用户验证系统
         auto result = data::UserControl::Login::isUserPasswordValid(ID_c, password_c);
         if (result) {
             int userId = result.value();
-
-            // 获取用户所在的组来确定用户类型
-            QString userGroup = data::UserControl::permission::getUserInWhichGroup(userId);
-
-            if (userGroup == "Student") {
-                user = 1; // 学生
-            } else if (userGroup == "Teacher") {
-                user = 2; // 老师
-            } else if (userGroup == "Administrator") {
-                user = 4; // 管理员
-            } else {
-                user = 0; // 无效用户
-            }
 
             // 获取用户名
             auto nameResult = data::UserControl::UserInfo::getUserNameById(userId);
@@ -64,49 +55,45 @@ namespace view::login {
 
             return userId;
         } else {
-            user = 0;
             return 0;
         }
     }
 
     void loginPage::on_loginButton_clicked() {
+        ui->lineEdit->hide();
+        ui->lineEdit_2->hide();
         ID = ui->userIdLineEdit->text();
         QString password = ui->passwordLineEdit->text();
 
         if (ID.isEmpty() || password.isEmpty()) {
-            QMessageBox::warning(this, "错误", "请输入用户ID和密码");
+            ui->lineEdit->show();
             return;
         }
 
         int userId = confirm_user(ID, password);
-        if (userId > 0 && user > 0) {
-            service::log() << "用户 " << ID << " 登录成功，类型: " << user;
-
-            if (user == 1) {
+        data::UserControl::currentUserId = userId;
+        bot::InventoryAlert::sendAlert();
+        auto userGroup = data::UserControl::permission::getUserInWhichGroupIdList(userId);
+        if (userId > 0 && !userGroup.isEmpty()) {
+            if (userGroup.contains(1)) {
                 // 学生用户 - 打开学生主页
-                QMessageBox::information(this, "登录成功", QString("欢迎，%1同学！").arg(name));
                 auto *studentHome = new view::homepage::studentHomepage(name, ID);
                 studentHome->show();
                 this->close(); // 关闭登录页面
-            } else if (user == 2) {
+            } else if (userGroup.contains(2)) {
                 // 老师用户 - 打开教师主页
-                QMessageBox::information(this, "登录成功", QString("欢迎，%1老师！").arg(name));
                 auto *teacherHome = new view::homepage::teacherHomepage(name, ID);
                 teacherHome->show();
                 this->close(); // 关闭登录页面
-            } else if (user >= 4) {
+            } else if (userGroup.contains(3)) {
                 // 管理员用户 - 打开管理员主页
-                QMessageBox::information(this, "登录成功", QString("欢迎，管理员%1！").arg(name));
                 auto *adminHome = new view::homepage::administratorHomepage(name, ID);
                 adminHome->show();
                 this->close(); // 关闭登录页面
             }
-
-            // 暂时不关闭登录窗口，等实现了其他页面后再添加
-            // this->close();
         } else {
             service::log() << "用户 " << ID << " 登录失败";
-            QMessageBox::warning(this, "错误", "无效的用户ID或密码");
+            ui->lineEdit_2->show();
         }
     }
 
@@ -131,5 +118,21 @@ namespace view::login {
         this->show();
         this->raise();
         this->activateWindow();
+    }
+    void loginPage::mousePressEvent(QMouseEvent *event)
+    {
+        if (event->button() == Qt::LeftButton)
+            mouseOffset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+    }
+
+    void loginPage::mouseMoveEvent(QMouseEvent *event)
+    {
+        if (event->buttons() & Qt::LeftButton)
+            move(event->globalPosition().toPoint() - mouseOffset);
+    }
+
+    void loginPage::mouseReleaseEvent(QMouseEvent *event)
+    {
+        Q_UNUSED(event);
     }
 } // view::login

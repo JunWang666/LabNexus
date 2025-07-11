@@ -15,17 +15,16 @@ private:
 };
 
 void TestBooking::initTestCase() {
-    //data::Booking::path = "./test_booking.db";
-    //data::UserControl::path = "./test_user.db";
+    data::Booking::path = "./test_booking.db";
+    data::UserControl::path = "./test_user.db";
     log(LogLevel::DEBUG)<<"data::Booking::path "<<data::Booking::path<<"   data::UserControl::path "<<data::UserControl::path;
-    // Setup test databases
+
     data::Booking::dropDB();
     data::UserControl::dropDB();
 
     data::UserControl::buildDB();
     data::Booking::buildDB();
 
-    // Setup: Create some users
     data::UserControl::Login::createNewUser("123", "Stu1", "123", "Student");
     data::UserControl::Login::createNewUser("011", "Tea1", "456", "Teacher");
 
@@ -37,16 +36,10 @@ void TestBooking::initTestCase() {
     int user1Id = *user1IdOpt;
     int user2Id = *user2IdOpt;
 
-    // We will directly insert into booking tables.
-    // service::DatabaseManager db(data::Booking::path);
-    // db.executeNonQuery(QString("INSERT INTO booking_info (id, user_id, create_date) VALUES (1, %1, '2025-07-07 10:00:00')").arg(user1Id));
-    // db.executeNonQuery("INSERT INTO booking_equipment (booking_id, equipment_class_id, equipment_id) VALUES (1, 1, 1)");
-    // db.executeNonQuery("INSERT INTO booking_time (booking_id, request_start_time, request_end_time) VALUES (1, '2025-07-08 09:00:00', '2025-07-08 11:00:00')");
-    // db.executeNonQuery(QString("INSERT INTO booking_approval (booking_id, approval_status, approver_id) VALUES (1, 'Pending', %1)").arg(user2Id));
     QDateTime createDate = QDateTime::fromString("2025-07-07 10:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime requestStartTime = QDateTime::fromString("2025-07-08 09:00:00", "yyyy-MM-dd hh:mm:ss");
     QDateTime requestEndTime = QDateTime::fromString("2025-07-08 11:00:00", "yyyy-MM-dd hh:mm:ss");
-    bool success = data::Booking::createFullBookingRecord(1, user1Id, createDate, 1, 1, requestStartTime, requestEndTime, "Pending", user2Id);
+    bool success = data::Booking::createFullBookingRecord(user1Id, createDate, 1, 1, requestStartTime, requestEndTime, "Pending", user2Id);
     QVERIFY(success);
 }
 

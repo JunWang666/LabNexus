@@ -7,7 +7,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-
 find_package(Qt6 COMPONENTS
         Core
         Gui
@@ -90,6 +89,13 @@ add_executable(LabNexus main.cpp
         view/loginPage/changepassword.cpp
         view/loginPage/changepassword.h
         view/loginPage/changepassword.ui
+        module/model/filterproxymdel.cpp
+        module/model/filterproxymdel.h
+        module/model/ApprovalStatusDelegate.cpp
+        module/model/ApprovalStatusDelegate.h
+        module/model/RepairStatusDelegate.cpp
+        module/model/RepairStatusDelegate.h
+        view/loginPage/style.qrc
         assets/style/fluentDesign.qss
         assets/style/style.qrc
         assets/style/style_res.qrc
@@ -102,12 +108,33 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messageblock.ui
         view/messageCenter/messageblock.cpp
         view/messageCenter/messageblock.h
+        service/styleHelper/MicaHelper.cpp
+        service/styleHelper/MicaHelper.h
+        service/MutiWindow/MutiWindow.h
+        service/MutiWindow/MutiWindow.cpp
+        view/messageCenter/messagedetailpage.cpp
+        view/messageCenter/messagedetailpage.h
+        view/messageCenter/messagedetailpage.ui
+        service/MutiWindow/MutiWindow.cpp
+        service/MutiWindow/MutiWindow.h
+        view/messageCenter/messagedetailpage.cpp
+        view/messageCenter/messagedetailpage.h
+        view/messageCenter/messagedetailpage.ui
+        view/bookingService/setapprover.cpp
+        view/bookingService/setapprover.h
+        view/bookingService/setapprover.ui
+        module/scanner/InventoryAlert.cpp
+        module/scanner/InventoryAlert.h
+        service/taskManager/timerTaskManager.cpp
+        service/taskManager/timerTaskManager.h
 )
 target_link_libraries(LabNexus
         Qt::Core
         Qt::Gui
         Qt::Widgets
         Qt::Sql
+        dwmapi
+        dbghelp
 )
 target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(LabNexus PRIVATE pch.h)
@@ -124,6 +151,7 @@ target_link_libraries(TestLogs PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Test
+        dbghelp
 )
 target_include_directories(TestLogs PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestLogs PRIVATE pch.h)
@@ -136,12 +164,14 @@ add_executable(TestDB
         service/database/databasePathProvidor.cpp
         service/database/databaseManager.cpp
         module/data/data_UserControl.cpp
+        module/data/data_mail.cpp
 )
 target_link_libraries(TestDB PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Test
         Qt::Sql
+        dbghelp
 )
 target_include_directories(TestDB PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestDB PRIVATE pch.h)
@@ -155,13 +185,14 @@ add_executable(TestBooking
         service/database/databaseManager.cpp
         module/data/data_UserControl.cpp
         module/data/data_Booking.cpp
-        tests/test_booking.cpp
+        module/data/data_mail.cpp
 )
 target_link_libraries(TestBooking PRIVATE
         Qt::Core
         Qt::Widgets
         Qt::Test
         Qt::Sql
+        dbghelp
 )
 target_include_directories(TestBooking PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestBooking PRIVATE pch.h)
@@ -181,6 +212,7 @@ target_link_libraries(TestMail PRIVATE
         Qt::Widgets
         Qt::Test
         Qt::Sql
+        dbghelp
 )
 target_include_directories(TestMail PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestMail PRIVATE pch.h)
@@ -192,7 +224,7 @@ add_executable(TestEquipmentManage tests/test_equipment_manage.cpp
         module/data/data_EquipmentManage.cpp
 )
 
-target_link_libraries(TestEquipmentManage PRIVATE Qt6::Core Qt6::Sql Qt6::Test Qt6::Widgets)
+target_link_libraries(TestEquipmentManage PRIVATE Qt6::Core Qt6::Sql Qt6::Test Qt6::Widgets dbghelp)
 target_include_directories(TestEquipmentManage PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(TestEquipmentManage PRIVATE pch.h)
 add_test(NAME TestEquipmentManage COMMAND TestEquipmentManage)

@@ -9,9 +9,10 @@
 #include <QDateTime>
 #include <QString>
 #include <QVariant>
+#include "module/data/data_EquipmentManage.h"
 
 namespace data::Booking {
-    inline static QString path = "./booking.db";
+    inline QString path = "./booking.db";
 
     /**
      * @brief 删除预订数据库。
@@ -34,6 +35,16 @@ namespace data::Booking {
     void createBookingTimeTable();
 
     void createBookingApprovalTable();
+
+    /********************/
+    bool createBookingARecord(int userId, const QDateTime &createDate,
+                             int equipmentClassId, int equipmentId,
+                             const QDateTime &requestStartTime, const QDateTime &requestEndTime,
+                             const QString &approvalStatus, int approverId);
+
+    bool createBookingARecord(QString typeName);
+
+    /********************/
 
     /**
      * @brief 预订记录结构，用于模型展示
@@ -77,7 +88,7 @@ namespace data::Booking {
     /**
      * @brief 创建一个完整的预订记录
      */
-    bool createFullBookingRecord(int bookingId, int userId, const QDateTime &createDate,
+    bool createFullBookingRecord(int userId, const QDateTime &createDate,
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId);
