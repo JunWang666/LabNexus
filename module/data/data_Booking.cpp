@@ -6,10 +6,10 @@
 
 namespace data::Booking {
     void dropDB() {
-        QFile dbFile(path);
+        QFile dbFile(service::Path::booking());
         if (dbFile.exists()) {
             if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功" << path;
+                log(LogLevel::INFO) << "数据库文件删除成功" << service::Path::booking();
             } else {
                 log(LogLevel::ERR) << "数据库文件删除失败";
             }
@@ -19,11 +19,11 @@ namespace data::Booking {
     }
 
     void buildDB() {
-        QFile dbFile(path);
+        QFile dbFile(service::Path::booking());
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功" << path;
+                log(service::LogLevel::INFO) << "数据库文件创建成功" << service::Path::booking();
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
@@ -40,7 +40,7 @@ namespace data::Booking {
 
     // 表1：申请基本信息表
     void createBookingInfoTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_info")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_info (
@@ -59,7 +59,7 @@ namespace data::Booking {
 
     // 表2：目标设备表
     void createBookingEquipmentTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_equipment")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_equipment (
@@ -80,7 +80,7 @@ namespace data::Booking {
 
     // 表3：时间表
     void createBookingTimeTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_time")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_time (
@@ -101,7 +101,7 @@ namespace data::Booking {
 
     // 表4：审批状态表
     void createBookingApprovalTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_approval")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_approval (
@@ -124,7 +124,7 @@ namespace data::Booking {
         const QDateTime &requestStartTime, const QDateTime &requestEndTime, const QString &approvalStatus,
         int approverId) {
         // 实例化你的数据库管理器
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "创建预订记录失败：无法连接到数据库。" << db.getLastError();
             return false;
@@ -191,7 +191,7 @@ namespace data::Booking {
 
 
     QList<fullBookingRecord> loadBookingFullRecords() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         QList<fullBookingRecord> records;
         QString queryStr = R"(
             SELECT bi.id,
@@ -245,7 +245,7 @@ namespace data::Booking {
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
 
         QString infoQuery = "INSERT INTO booking_info (user_id, create_date) VALUES (?, ?)";
         auto bookingId = db.executePreparedInsertAndGetId(infoQuery,

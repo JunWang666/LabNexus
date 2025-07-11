@@ -6,10 +6,10 @@
 
 namespace data::Equipment {
     void dropDB() {
-        QFile dbFile(path);
+        QFile dbFile(service::Path::equipment());
         if (dbFile.exists()) {
             if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功" << path;
+                log(LogLevel::INFO) << "数据库文件删除成功" << service::Path::equipment();
             } else {
                 log(LogLevel::ERR) << "数据库文件删除失败";
             }
@@ -19,11 +19,11 @@ namespace data::Equipment {
     }
 
     void buildDB() {
-        QFile dbFile(path);
+        QFile dbFile(service::Path::equipment());
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功" << path;
+                log(service::LogLevel::INFO) << "数据库文件创建成功" << service::Path::equipment();
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
@@ -40,7 +40,7 @@ namespace data::Equipment {
      */
     QList<fullEquipmentRecord> loadFullEquipmentRecords() {
         QList<fullEquipmentRecord> records;
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::equipment());
 
         // 使用 JOIN 查询将实例表和类别表关联起来
         // i 是 instance 的别名, c 是 class 的别名
@@ -75,7 +75,7 @@ namespace data::Equipment {
     }
 
     bool updateEquipmentOnReturn(int id) {
-        service::DatabaseManager db("./equipment.db");
+        service::DatabaseManager db(service::Path::equipment());
         QString queryString = R"(
         UPDATE equipment_instance
         SET status = ?, rentId = ?
@@ -90,7 +90,7 @@ namespace data::Equipment {
     }
 
     bool updateEquipmentOnRepair(int id, const QString &status) {
-        service::DatabaseManager db("./equipment.db");
+        service::DatabaseManager db(service::Path::equipment());
         QString queryString = R"(
         UPDATE equipment_instance
         SET status = ? WHERE id = ?)";
@@ -118,7 +118,7 @@ namespace data::Equipment {
 
     EquipmentIds getEquipmentIdsByName(const QString &devName) {
         EquipmentIds result;
-        service::DatabaseManager db("./equipment.db");
+        service::DatabaseManager db(service::Path::equipment());
         if (!db.isConnected()) {
             return result; // 返回无效的ID
         }
@@ -141,7 +141,7 @@ namespace data::Equipment {
 
     namespace EquipmentClass {
         void createEquipmentClassTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             if (!db.tableExists("equipment_class")) {
                 QString createTableQuery = R"(
                     CREATE TABLE equipment_class (
@@ -162,7 +162,7 @@ namespace data::Equipment {
         }
 
         QString getEquNameFromEquClassId(int classId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             QString queryString = QString(R"(
             SELECT name FROM equipment_class WHERE id = %1
         )").arg(classId);
@@ -174,7 +174,7 @@ namespace data::Equipment {
         }
 
         int getEquCountFromEquClassId(int classId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             QString queryString = QString(R"(
                     SELECT usable_amount FROM equipment_class WHERE id = %1
                 )").arg(classId);
@@ -188,7 +188,7 @@ namespace data::Equipment {
 
     namespace EquipmentInstnace {
         void createEquipmentInstanceTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             if (!db.tableExists("equipment_instance")) {
                 QString createTableQuery = R"(
                 CREATE TABLE equipment_instance (

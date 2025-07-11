@@ -5,12 +5,13 @@
 
 #ifndef DATA_MAIL_H
 #define DATA_MAIL_H
+#include "pch.h"
 #include <QList>
 #include <QString>
 #include <QDateTime>
 
 namespace data::mail {
-    inline QString path = "mail.db";
+    inline QString path = service::Path::mail();
 
     struct Mail {
         int id;

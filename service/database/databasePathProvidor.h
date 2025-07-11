@@ -5,9 +5,15 @@
 #ifndef DATABASEPATHPROVIDOR_H
 #define DATABASEPATHPROVIDOR_H
 
-namespace service {
-    class databasePathProvidor {
-    };
-} // service
+namespace service::Path {
+    void init();
+    inline QString booking();
+    inline QString equipment();
+    inline QString mail();
+    inline QString user();
+    inline QString base();
+    inline QString debuglog();
+    inline QString datalog();
+}
 
 #endif //DATABASEPATHPROVIDOR_H

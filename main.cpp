@@ -21,6 +21,30 @@ void setup_tasks() {
     });
 }
 
+void initDB() {
+    data::mail::buildDB();
+    data::UserControl::buildDB();
+    // 创建用户组
+    if (auto r = data::UserControl::permission::createGroup("Student", "学生组"); !r) {
+        log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
+    }
+    if (auto r = data::UserControl::permission::createGroup("Teacher", "教师组"); !r) {
+        log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
+    }
+    if (auto r = data::UserControl::permission::createGroup("Admin", "系统管理员组"); !r) {
+        log(LogLevel::ERR) << "创建组 Admin 失败, 错误码:" << static_cast<int>(r.error());
+    }
+    if (auto r = data::UserControl::permission::createGroup("System", "系统预留账号"); !r) {
+        log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
+    }
+    data::mail::registerSystemUser();
+    data::UserControl::Login::createNewUser("0","Admin","Admin",
+                                            data::UserControl::permission::searchGroupIdByName("Admin").first());
+    data::Booking::buildDB();
+    data::Equipment::buildDB();
+    data::mail::findSystemUser();
+}
+
 int main(int argc, char *argv[]) {
     service::logger::instance().setLogFile(
         QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
@@ -31,25 +55,20 @@ int main(int argc, char *argv[]) {
 
     QApplication a(argc, argv);
 
-    data::UserControl::buildDB();
-    data::Booking::buildDB();
-    data::mail::buildDB();
-    data::Equipment::buildDB();
+    initDB();
 
-    QFile styleFile(":/styles/fluent.qss");
-    if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
-        QString styleSheet = QLatin1String(styleFile.readAll());
-        a.setStyleSheet(styleSheet);
-        styleFile.close();
-    } else {
-        log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
-    }
+    // QFile styleFile(":/styles/fluent.qss");
+    // if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
+    //     QString styleSheet = QLatin1String(styleFile.readAll());
+    //     a.setStyleSheet(styleSheet);
+    //     styleFile.close();
+    // } else {
+    //     log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
+    // }
 
     view::login::loginPage b;
-    view::equipment::equipment_home c;
 
     b.show();
-    c.show();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();

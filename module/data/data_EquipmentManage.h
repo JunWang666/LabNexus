@@ -11,7 +11,7 @@
 #include <QList>
 
 namespace data::Equipment {
-    inline QString path = "./equipment.db";
+    inline QString path = service::Path::equipment();
 
     /**
      * @brief 删除设备管理数据库。

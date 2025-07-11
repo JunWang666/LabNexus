@@ -35,5 +35,6 @@
 #include <QTimer>
 #include "module/scanner/InventoryAlert.h"
 #include "service/taskManager/timerTaskManager.h"
+#include "service/database/databasePathProvidor.h"
 
 #endif //PCH_H
