@@ -23,12 +23,6 @@ add_executable(LabNexus main.cpp
         view/bookingService/booking_home.cpp
         view/bookingService/booking_home.h
         view/bookingService/booking_home.ui
-        view/inventoryManage/inventory_home.cpp
-        view/inventoryManage/inventory_home.h
-        view/inventoryManage/inventory_home.ui
-        view/equipmentManage/equipment_home.cpp
-        view/equipmentManage/equipment_home.h
-        view/equipmentManage/equipment_home.ui
         view/equipmentManage/kaddmanage.cpp
         view/equipmentManage/kaddmanage.h
         view/equipmentManage/kaddmanage.ui
@@ -127,6 +121,9 @@ add_executable(LabNexus main.cpp
         module/scanner/InventoryAlert.h
         service/taskManager/timerTaskManager.cpp
         service/taskManager/timerTaskManager.h
+        view/RegisterCenter/checknewuser.cpp
+        view/RegisterCenter/checknewuser.h
+        view/RegisterCenter/checknewuser.ui
 )
 target_link_libraries(LabNexus
         Qt::Core

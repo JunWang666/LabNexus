@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     service::logger::instance().setLogFile(
         QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
     service::logger::instance().setDataLogFile("log/data.log");
-    service::logger::instance().setLevel(LogLevel::DEBUG);
+    service::logger::instance().setLevel(LogLevel::WARN);
     service::logger::instance().enableStackTrace(false);
     service::log() << "程序启动";
 

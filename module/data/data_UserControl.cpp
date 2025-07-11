@@ -29,7 +29,6 @@ namespace data::UserControl {
             } else {
                 log(service::LogLevel::ERR) << "数据库文件创建失败";
             }
-
             Login::createUserTable();
             permission::createGroupTable();
             permission::createUserGroupTable();
