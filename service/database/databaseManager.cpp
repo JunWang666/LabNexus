@@ -298,18 +298,4 @@ namespace service {
         }
     }
 
-    // 移除查询跟踪功能的实现，因为它们不再需要
-    void DatabaseManager::registerQuery(QSqlQuery *query) {
-        // 空实现，保持接口兼容性
-        Q_UNUSED(query)
-    }
-
-    void DatabaseManager::unregisterQuery(QSqlQuery *query) {
-        // 空实现，保持接口兼容性
-        Q_UNUSED(query)
-    }
-
-    void DatabaseManager::clearAllQueries() {
-        // 空实现，保持接口兼容性
-    }
 }

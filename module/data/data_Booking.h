@@ -4,15 +4,16 @@
 
 #ifndef DATA_BOOKING_H
 #define DATA_BOOKING_H
-
+#include "pch.h"
 #include <QList>
 #include <QDateTime>
 #include <QString>
 #include <QVariant>
 #include "module/data/data_EquipmentManage.h"
 
+
 namespace data::Booking {
-    inline QString path = "./booking.db";
+    inline QString path = service::Path::booking();
 
     /**
      * @brief 删除预订数据库。

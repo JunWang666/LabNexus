@@ -4,13 +4,15 @@
 
 #ifndef USERCONTROL_H
 #define USERCONTROL_H
+
 #include <expected>
-#include<pch.h>
+#include "pch.h"
 #include <QMap>
 #include "service/database/databaseManager.h"
+#include "service/database/databasePathProvidor.h"
 
 namespace data::UserControl {
-    inline QString path = "./user.db";
+    inline QString path = service::Path::user();
 
     enum class UserControlError {
         UserNotFound,
