@@ -13,7 +13,7 @@ set(CMAKE_AUTOUIC ON)
 # 3. 查找所有需要的Qt模块
 find_package(Qt6 COMPONENTS Core Gui Widgets Sql Test REQUIRED)
 
-# 4. 定义共享源码文件列表 (除 main.cpp 和 tests/*.cpp 之外的所有文件)
+# 4. 定义共享源码文件列表
 set(SHARED_SOURCES
         pch.h
         service/logger/logger.cpp
@@ -89,9 +89,6 @@ set(SHARED_SOURCES
         module/model/ApprovalStatusDelegate.h
         module/model/RepairStatusDelegate.cpp
         module/model/RepairStatusDelegate.h
-        view/loginPage/style.qrc
-        assets/style/style.qrc
-        assets/style/style_res.qrc
         module/data/data_mail.h
         module/data/data_mail.cpp
         view/messageCenter/messagewindow.ui
@@ -123,42 +120,50 @@ set(SHARED_SOURCES
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 
+# 管理所有QRC资源文件
+set(QRC_FILES
+        view/loginPage/style.qrc
+        assets/style/style.qrc
+        assets/style/style_res.qrc
+)
+
 # 5. 定义库的集合，方便重用
 set(CORE_LIBS Qt::Core Qt::Gui Qt::Widgets Qt::Sql dwmapi dbghelp)
 set(TEST_LIBS ${CORE_LIBS} Qt::Test)
 set(PCH_FILE "pch.h")
 
-# 6. 配置共享代码的OBJECT库 (这是解决问题的核心)
+# 6. 配置共享代码的OBJECT库
 add_library(LabNexus_Objects OBJECT ${SHARED_SOURCES})
 
-# 为对象库自身配置编译选项 (PRIVATE 表示仅自己使用，不传递给消费者)
+# 为对象库自身配置编译选项 (PRIVATE 表示仅自己使用)
 target_link_libraries(LabNexus_Objects PRIVATE ${CORE_LIBS})
 target_include_directories(LabNexus_Objects PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(LabNexus_Objects PRIVATE ${PCH_FILE})
 
-# 7. 配置主程序 (明确指定所有配置)
-add_executable(LabNexus main.cpp $<TARGET_OBJECTS:LabNexus_Objects>)
-
+# 7. 配置主程序
+add_executable(LabNexus main.cpp $<TARGET_OBJECTS:LabNexus_Objects> ${QRC_FILES})
 target_link_libraries(LabNexus PRIVATE ${CORE_LIBS})
 target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
 target_precompile_headers(LabNexus PRIVATE ${PCH_FILE})
+
 
 # 8. 使用函数添加所有测试
 enable_testing()
 
 function(add_labnexus_test TARGET_NAME)
-    # 1. 创建可执行文件，使用传入的 TARGET_NAME 拼接源文件名
+    # 1. 创建可执行文件，并直接添加QRC资源文件
     add_executable(${TARGET_NAME}
             "tests/${TARGET_NAME}.cpp"
             $<TARGET_OBJECTS:LabNexus_Objects>
+            ${QRC_FILES}
     )
     # 2. 链接测试需要的库
     target_link_libraries(${TARGET_NAME} PRIVATE ${TEST_LIBS})
 
-    # 3. 添加头文件目录 (这是之前函数版缺失的关键步骤)
+    # 3. 添加头文件目录
     target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
 
-    # 4. 启用预编译头 (这也是之前函数版缺失的关键步骤)
+    # 4. 启用预编译头
     target_precompile_headers(${TARGET_NAME} PRIVATE ${PCH_FILE})
 
     # 5. 添加到CTest测试集
@@ -173,7 +178,7 @@ add_labnexus_test(test_mail)
 add_labnexus_test(test_equipment_manage)
 
 
-# 9. 配置Windows平台运行所需的DLL自动部署 (最佳实践：调用windeployqt)
+# 9. 配置Windows平台运行所需的DLL自动部署
 if(WIN32)
     # --- 定义所有需要部署的可执行文件 ---
     set(ALL_EXECUTABLES
@@ -191,10 +196,10 @@ if(WIN32)
 
         add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E echo "Running windeployqt for ${TARGET_EXE}..."
-                COMMAND Qt6::windeployqt # <-- 使用Qt6提供的windeployqt工具
+                COMMAND Qt6::windeployqt
                 # -- 基本选项 --
-                --dir "$<TARGET_FILE_DIR:${TARGET_EXE}>" # 指定输出目录为exe所在目录
-                --pdb # 同时复制调试符号（如果有）
+                --dir "$<TARGET_FILE_DIR:${TARGET_EXE}>"
+                --pdb
 
                 # -- 精简输出，移除不常用的组件 --
                 --no-translations
