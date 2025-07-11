@@ -11,6 +11,7 @@ namespace view::Order {
 SetApprover::SetApprover(QString&theTeacherId,QWidget *parent) :
     QDialog(parent), ui(new Ui::SetApprover),teacherId(theTeacherId) {
     ui->setupUi(this);
+    this->setWindowTitle("指定老师");
 }
 
 SetApprover::~SetApprover() {

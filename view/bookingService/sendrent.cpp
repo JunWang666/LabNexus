@@ -17,6 +17,7 @@ namespace view::Order {
     m_equipmentClassId(equipmentClassId) // 存储传入的ClassID
     {
         ui->setupUi(this);
+        this->setWindowTitle("申请设备");
         this->setAttribute(Qt::WA_DeleteOnClose,false);
         ui->nameLineEdit->setText(name);//设置姓名
         ui->LineEditNo->setText(id);//设置学号
@@ -35,6 +36,7 @@ SendRent::SendRent(const QString &name,const QString & id,QWidget *parent) :
     QDialog(parent), ui(new Ui::SendRent) {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose,false);
+    this->setWindowTitle("申请设备");
     ui->nameLineEdit->setText(name);//设置姓名
     ui->LineEditNo->setText(id);//设置学号
     ui->nameLineEdit->setReadOnly(true);//设置只读
