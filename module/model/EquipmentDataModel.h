@@ -20,7 +20,7 @@ class EquipmentDataModel : public QAbstractTableModel {
             Col_RentId,
             Col_Status,
             Col_InDate,
-            Col_Classroom,  // 新增：所在仪器类
+            // Col_Classroom,  // 新增：所在仪器类
             Col_Count // 列的总数
         };
     public:
