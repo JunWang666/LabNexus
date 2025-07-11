@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>view::Order::Apply</class>
@@ -280,4 +279,3 @@ QGroupBox::title {
   <slot>on_btnClose_clicked()</slot>
  </slots>
 </ui>
-
