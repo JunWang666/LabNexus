@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by gouzuang on 25-7-7.
 //
 
@@ -92,6 +92,5 @@ namespace data::Booking {
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId);
-}
-
+    }
 #endif //DATA_BOOKING_H

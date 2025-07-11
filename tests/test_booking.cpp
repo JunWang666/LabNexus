@@ -1,4 +1,4 @@
-#include <QTest>
+﻿#include <QTest>
 #include "../module/data/data_Booking.h"
 #include "../module/data/data_UserControl.h"
 #include "../service/logger/logger.h"
