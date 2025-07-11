@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>view::homepage::administratorHomepage</class>
-    <widget class="QWidget" name="view::homepage::administratorHomepage">
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>974</width>
-                <height>823</height>
-            </rect>
-        </property>
-        <property name="windowTitle">
-            <string>管理员主页 - 实验室设备管理系统</string>
-        </property>
-        <property name="styleSheet">
-            <string notr="true">*{
+ <class>view::homepage::administratorHomepage</class>
+ <widget class="QWidget" name="view::homepage::administratorHomepage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>968</width>
+    <height>810</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>管理员主页 - 实验室设备管理系统</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">*{
                 background-color: rgb(255, 255, 255);
                 }
 
@@ -105,215 +105,215 @@
                 font: 20pt &quot;Microsoft YaHei UI&quot;;
                 }
             </string>
-        </property>
-        <widget class="QFrame" name="frame">
-            <property name="geometry">
-                <rect>
-                    <x>-10</x>
-                    <y>20</y>
-                    <width>891</width>
-                    <height>661</height>
-                </rect>
-            </property>
-            <property name="frameShape">
-                <enum>QFrame::Shape::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>QFrame::Shadow::Raised</enum>
-            </property>
-            <widget class="QFrame" name="frame_2">
-                <property name="geometry">
-                    <rect>
-                        <x>40</x>
-                        <y>40</y>
-                        <width>201</width>
-                        <height>581</height>
-                    </rect>
-                </property>
-                <property name="frameShape">
-                    <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                    <enum>QFrame::Shadow::Raised</enum>
-                </property>
-                <widget class="QPushButton" name="messageButton_2">
-                    <property name="geometry">
-                        <rect>
-                            <x>30</x>
-                            <y>110</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>消息</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" name="Button">
-                    <property name="geometry">
-                        <rect>
-                            <x>30</x>
-                            <y>170</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>事务</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" name="Button2">
-                    <property name="geometry">
-                        <rect>
-                            <x>30</x>
-                            <y>240</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>账户管理</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" name="welcomeLabel">
-                    <property name="geometry">
-                        <rect>
-                            <x>10</x>
-                            <y>20</y>
-                            <width>181</width>
-                            <height>61</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot;
+  </property>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>20</y>
+     <width>891</width>
+     <height>661</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>40</y>
+      <width>201</width>
+      <height>581</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="messageButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>消息</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Button">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>170</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>事务</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Button2">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>240</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>账户管理</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="welcomeLabel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>181</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot;
                             font-size:20pt;&quot;&gt;你好！&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
                         </string>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QFrame" name="frame_3">
-                <property name="geometry">
-                    <rect>
-                        <x>290</x>
-                        <y>40</y>
-                        <width>561</width>
-                        <height>221</height>
-                    </rect>
-                </property>
-                <property name="frameShape">
-                    <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                    <enum>QFrame::Shadow::Raised</enum>
-                </property>
-                <widget class="QPushButton" name="equipmentManageButton">
-                    <property name="geometry">
-                        <rect>
-                            <x>60</x>
-                            <y>50</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>管理</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" name="approvalButton">
-                    <property name="geometry">
-                        <rect>
-                            <x>340</x>
-                            <y>50</y>
-                            <width>131</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>审批</string>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QFrame" name="frame_4">
-                <property name="geometry">
-                    <rect>
-                        <x>290</x>
-                        <y>40</y>
-                        <width>561</width>
-                        <height>221</height>
-                    </rect>
-                </property>
-                <property name="frameShape">
-                    <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                    <enum>QFrame::Shadow::Raised</enum>
-                </property>
-                <widget class="QPushButton" name="editProfileButton_2">
-                    <property name="geometry">
-                        <rect>
-                            <x>330</x>
-                            <y>50</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>修改个人信息</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" name="logoutButton">
-                    <property name="geometry">
-                        <rect>
-                            <x>60</x>
-                            <y>140</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>退出登录</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton" name="userManageButton">
-                    <property name="geometry">
-                        <rect>
-                            <x>60</x>
-                            <y>50</y>
-                            <width>141</width>
-                            <height>31</height>
-                        </rect>
-                    </property>
-                    <property name="styleSheet">
-                        <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-                    </property>
-                    <property name="text">
-                        <string>用户管理</string>
-                    </property>
-                </widget>
-            </widget>
-        </widget>
+     </property>
     </widget>
-    <resources/>
-    <connections/>
+   </widget>
+   <widget class="QFrame" name="frame_3">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>40</y>
+      <width>561</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="equipmentManageButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>管理</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="approvalButton">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>50</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>审批</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_4">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>40</y>
+      <width>561</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="editProfileButton_2">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>修改个人信息</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="logoutButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>140</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>退出登录</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="userManageButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>用户管理</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>

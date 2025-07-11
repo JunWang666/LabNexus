@@ -27,7 +27,6 @@ namespace data::Equipment {
      */
     void buildDB();
 
-    /*************/
     struct fullEquipmentRecord {
         int id;
         QString type;
@@ -50,10 +49,6 @@ namespace data::Equipment {
     bool updateEquipmentOnRepair(int id,const QString & status);
     QStringList getEquipmentOnStatus(const QString & status);
     EquipmentIds getEquipmentIdsByName(const QString & devName);
-    /*************/
-
-
-
 
 
     namespace EquipmentClass {

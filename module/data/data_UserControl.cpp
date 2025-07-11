@@ -46,6 +46,8 @@ namespace data::UserControl {
             if (auto r = permission::createGroup("System", "系统预留账号"); !r) {
                 log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
             }
+            Login::createNewUser("0","Admin","Admin",
+                                                    permission::searchGroupIdByName("Admin").first());
         } else {
             log(service::LogLevel::INFO) << "数据库文件已存在";
         }
