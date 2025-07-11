@@ -6,6 +6,8 @@
 #define ADMINISTRATORHOMEPAGE_H
 
 #include "pch.h"
+#include "view/bookingService/apply.h"
+#include "view/bookingService/managercheck.h"
 
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
@@ -32,12 +34,18 @@ namespace view::homepage {
         void on_editProfileButton_clicked(); // 修改个人信息
         void on_logoutButton_clicked(); // 退出登录
         void on_messageButton_clicked(); // 消息
-
+        void on_Button_clicked();
+        void on_Button2_clicked();
     private:
         Ui::administratorHomepage *ui;
         QString A_name; // 管理员姓名
         QString A_ID; // 管理员ID
+        QPoint mouseOffset;
+        view::Order::ManagerCheck *orderCheck;
 
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
         void setupUI(); // 初始化界面
     };
 } // view::homepage

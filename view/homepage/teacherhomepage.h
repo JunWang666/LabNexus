@@ -6,6 +6,9 @@
 #define TEACHERHOMEPAGE_H
 
 #include "pch.h"
+#include "view/bookingService/apply.h"
+#include "view/bookingService/booking_home.h"
+#include "view/bookingService/rentteacher.h"
 
 namespace view::homepage {
     QT_BEGIN_NAMESPACE
@@ -33,12 +36,18 @@ namespace view::homepage {
         void on_approvalButton_clicked(); // 审批
         void on_logoutButton_clicked(); // 退出登录
         void on_messageButton_clicked(); // 消息
-
+        void on_Button_clicked();
+        void on_Button2_clicked();
     private:
         Ui::teacherHomepage *ui;
         QString T_name; // 教师姓名
         QString T_ID; // 教师ID
+        QPoint mouseOffset;
+        view::Order::RentTeacher *rentTeacher;
 
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
         void setupUI(); // 初始化界面
     };
 } // view::homepage

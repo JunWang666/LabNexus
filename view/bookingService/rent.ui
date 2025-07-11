@@ -13,6 +13,159 @@
   <property name="windowTitle">
    <string>Rent</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget, QDialog {
+    background-color: #f4f6f8; /* 浅灰色背景，比纯白更柔和 */
+    font-family: &quot;Microsoft YaHei UI&quot;, &quot;Segoe UI&quot;, &quot;Sans-serif&quot;;
+    color: #34495e; /* 深灰蓝文字颜色 */
+}
+
+/*
+ * 框架样式
+*/
+QFrame {
+    background-color: #ffffff; /* 卡片和主要区域使用白色背景 */
+    border-radius: 8px; /* 圆角 */
+    border: 1px solid #dfe4ea; /* 浅灰色边框 */
+}
+
+/* 清除嵌套QFrame的背景和边框，避免不必要的“盒子” */
+QFrame QFrame {
+    background-color: transparent;
+    border: none;
+}
+
+/*
+ * 按钮样式
+*/
+QPushButton {
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    outline: none;
+}
+
+QPushButton:hover {
+    opacity: 0.9;
+}
+
+/* 主要按钮 (确定, 发送, 催一催等) */
+QPushButton#btnSend, QPushButton#btnSet, QPushButton#btnRush, QPushButton#btnReturn {
+    background-color: #3498db; /* 主题蓝 */
+    color: white;
+    border: none;
+}
+QPushButton#btnSend:pressed, QPushButton#btnSet:pressed, QPushButton#btnRush:pressed, QPushButton#btnReturn:pressed {
+    background-color: #2980b9; /* 按下时加深 */
+}
+
+/* 次要按钮 (取消, 关闭) */
+QPushButton#btnCancel, QPushButton#btnClose, QPushButton#btnCheck {
+    background-color: #ffffff;
+    color: #3498db;
+    border: 1px solid #3498db;
+}
+QPushButton#btnCancel:hover, QPushButton#btnClose:hover, QPushButton#btnCheck:hover {
+    background-color: #f0f8ff; /* 悬停时淡蓝色背景 */
+}
+QPushButton#btnCancel:pressed, QPushButton#btnClose:pressed, QPushButton#btnCheck:pressed {
+    background-color: #e0f0ff; /* 按下时加深 */
+}
+
+
+/*
+ * 输入控件
+*/
+QLineEdit, QComboBox, QDateTimeEdit {
+    background-color: #ffffff;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    padding: 6px;
+    color: #34495e;
+}
+
+QLineEdit:focus, QComboBox:focus, QDateTimeEdit:focus {
+    border: 1px solid #3498db; /* 聚焦时边框变蓝 */
+}
+
+QLineEdit[readOnly=&quot;true&quot;] {
+    background-color: #ecf0f1; /*只读输入框使用不同背景色*/
+    color: #7f8c8d;
+    border: 1px solid #bdc3c7;
+}
+
+/*
+ * ComboBox下拉箭头样式
+*/
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+QComboBox::down-arrow {
+    image: url(:/icons/down_arrow.png); /* 建议使用资源文件中的图标 */
+}
+
+/*
+ * 表格视图
+*/
+QTableView {
+    background-color: #ffffff;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    gridline-color: #e5e7e9; /* 网格线颜色 */
+}
+
+QTableView::item {
+    padding: 5px;
+}
+
+QHeaderView::section {
+    background-color: #eaf2f8;
+    color: #34495e;
+    padding: 6px;
+    border: none;
+    border-bottom: 1px solid #dfe4ea;
+    font-weight: bold;
+}
+
+/*
+ * 列表视图
+*/
+QListWidget {
+    background-color: #ffffff;
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+}
+QListWidget::item {
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+QListWidget::item:hover {
+    background-color: #f8f9fa;
+}
+QListWidget::item:selected {
+    background-color: #3498db;
+    color: white;
+    border-bottom-color: #3498db;
+}
+
+/*
+ * 组合框 (GroupBox)
+*/
+QGroupBox {
+    border: 1px solid #dfe4ea;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0 10px;
+    background-color: #f4f6f8; /* 与主背景色一致，制造标题“刻”在边框上的效果 */
+    font-weight: bold;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QFrame" name="frame">
@@ -22,97 +175,219 @@
      <property name="frameShadow">
       <enum>QFrame::Shadow::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QFrame" name="frame_2">
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+       <widget class="QListWidget" name="pageListWidget">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QTableView" name="stuRentTableView"/>
-         </item>
-        </layout>
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame_3">
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="currentIndex">
+         <number>2</number>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnSend">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>发送申请</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnCheck">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>查看我的申请</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        <widget class="QWidget" name="sendPage">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QFrame" name="frame_4">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QFrame" name="frame_2">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_2">
+                <item>
+                 <widget class="QTableView" name="stuRentTableView"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_3">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btnSend">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>发送申请</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btnCheck">
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>查看我的申请</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="rapairPage">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QFrame" name="frame_5">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QTableView" name="repairTableView"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="returnPage">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QFrame" name="frame_6">
+            <property name="frameShape">
+             <enum>QFrame::Shape::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <widget class="QTableView" name="returnTableView"/>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_7">
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btnReturn">
+                  <property name="text">
+                   <string>归还</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -121,42 +396,10 @@
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnSend</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::Rent</receiver>
-   <slot>on_btnSend_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>235</x>
-     <y>481</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>250</x>
-     <y>533</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnCheck</sender>
-   <signal>clicked()</signal>
-   <receiver>view::Order::Rent</receiver>
-   <slot>on_btnCheck_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>458</x>
-     <y>474</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>455</x>
-     <y>552</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>on_btnSend_clicked()</slot>
   <slot>on_btnCheck_clicked()</slot>
+  <slot>on_btnReturn_clicked()</slot>
  </slots>
 </ui>

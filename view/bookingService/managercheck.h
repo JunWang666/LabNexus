@@ -7,7 +7,8 @@
 
 #include <QWidget>
 #include "module/model/BookingDataModel.h"
-
+#include "module/model/filterproxymdel.h"
+#include "module/model/ApprovalStatusDelegate.h"
 namespace view::Order {
 QT_BEGIN_NAMESPACE
 namespace Ui { class ManagerCheck; }
@@ -27,6 +28,7 @@ public slots:
 private:
     Ui::ManagerCheck *ui;
     dataModel::BookingDataModel *model;
+    fliterModel::FilterProxyMdel * fliterModel;
 };
 } // view::Order
 

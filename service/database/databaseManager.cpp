@@ -6,16 +6,27 @@
 #include <QFileInfo>
 #include <QSqlError>
 #include <QUuid>
+#include <QThread>
+#include <QCoreApplication>
 
 namespace service {
-    DatabaseManager::DatabaseManager(const QString &databasePath)
+    DatabaseManager::DatabaseManager(const QString &databasePath,
+                                     const QString &driverName,
+                                     const QString &hostName,
+                                     quint16 port,
+                                     const QString &userName,
+                                     const QString &password)
         : m_databasePath(databasePath)
+          , m_driverName(driverName)
+          , m_hostName(hostName)
+          , m_port(port)
+          , m_userName(userName)
+          , m_password(password)
           , m_connected(false) {
         initialize();
         if (!setupAndConnect()) {
             qDebug() << "Failed to connect to database during construction:" << m_lastError;
         }
-
     }
 
     DatabaseManager::~DatabaseManager() {
@@ -28,15 +39,23 @@ namespace service {
     }
 
     void DatabaseManager::cleanup() {
+        // 设置连接状态为假，阻止新的查询
+        m_connected = false;
+
         // 如果连接对象有效且是打开状态，则关闭
         if (m_database.isValid() && m_database.isOpen()) {
             m_database.close();
         }
-        m_connected = false;
 
-        // 从全局连接列表中移除此连接
-        if (QSqlDatabase::contains(m_connectionName)) {
-            QSqlDatabase::removeDatabase(m_connectionName);
+        // 清空数据库对象，这会释放所有内部资源
+        m_database = QSqlDatabase();
+
+        // 只有在应用程序仍在运行时才尝试移除连接
+        // 在程序退出时，静态对象析构顺序不确定，Qt可能已经开始清理
+        if (QCoreApplication::instance() && !QCoreApplication::instance()->closingDown()) {
+            if (QSqlDatabase::contains(m_connectionName)) {
+                QSqlDatabase::removeDatabase(m_connectionName);
+            }
         }
     }
 
@@ -45,21 +64,29 @@ namespace service {
     }
 
     bool DatabaseManager::setupAndConnect() {
-        if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
-            m_lastError = "SQLite driver is not available";
+        if (!QSqlDatabase::isDriverAvailable(m_driverName)) {
+            m_lastError = QString("%1 driver is not available").arg(m_driverName);
             return false;
         }
 
-        m_database = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
+        m_database = QSqlDatabase::addDatabase(m_driverName, m_connectionName);
 
-        QFileInfo fileInfo(m_databasePath);
-        QDir dir = fileInfo.absoluteDir();
-        if (!dir.exists() && !dir.mkpath(".")) {
-            m_lastError = QString("Failed to create directory: %1").arg(dir.absolutePath());
-            return false;
+        if (m_driverName == QLatin1String("QSQLITE")) {
+            QFileInfo fileInfo(m_databasePath);
+            QDir dir = fileInfo.absoluteDir();
+            if (!dir.exists() && !dir.mkpath(".")) {
+                m_lastError = QString("Failed to create directory: %1").arg(dir.absolutePath());
+                return false;
+            }
+            m_database.setDatabaseName(m_databasePath);
+        } else {
+            // other SQL databases: m_databasePath as database name
+            m_database.setHostName(m_hostName);
+            if (m_port) m_database.setPort(m_port);
+            m_database.setUserName(m_userName);
+            m_database.setPassword(m_password);
+            m_database.setDatabaseName(m_databasePath);
         }
-
-        m_database.setDatabaseName(m_databasePath);
 
         if (!m_database.open()) {
             m_lastError = m_database.lastError().text();
@@ -80,6 +107,7 @@ namespace service {
     }
 
     QSqlQuery DatabaseManager::executeQuery(const QString &queryString) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
             return QSqlQuery(m_database);
@@ -91,7 +119,7 @@ namespace service {
         } else {
             m_lastError.clear();
         }
-        return query; // 返回一个副本，生命周期由调用者管理
+        return query;
     }
 
     // 执行非查询语句
@@ -149,6 +177,7 @@ namespace service {
 
     // 执行预处理查询
     QSqlQuery DatabaseManager::executePreparedQuery(const QString &queryString, const QVariantList &parameters) {
+        //log(LogLevel::INFO)<<"注意：正在使用过时的数据库查询接口";
         if (!isConnected()) {
             m_lastError = "Database is not connected.";
             return QSqlQuery(m_database);
@@ -215,6 +244,36 @@ namespace service {
         return m_database.record(tableName);
     }
 
+    int DatabaseManager::executePreparedInsertAndGetId(const QString &queryString, const QVariantList &parameters) {
+        if (!isConnected()) {
+            m_lastError = "Database is not connected.";
+            log(LogLevel::ERR) << m_lastError;
+        }
+
+        QSqlQuery query(m_database);
+        query.prepare(queryString);
+        for (const QVariant &param: parameters) {
+            query.addBindValue(param);
+        }
+
+        if (query.exec()) {
+            m_lastError.clear();
+            QVariant lastId = query.lastInsertId();
+            if (lastId.isValid()) {
+                return lastId.toLongLong();
+            } else {
+                m_lastError =
+                        "Query executed successfully, but failed to retrieve last insert ID. The driver may not support this feature or the table may not have an auto-incrementing primary key.";
+                log(LogLevel::ERR) << m_lastError;
+                return -1;
+            }
+        } else {
+            m_lastError = query.lastError().text();
+            log(LogLevel::ERR) << "Insert query execution failed:" << m_lastError;
+            return -1;
+        }
+    }
+
     // 批量执行
     bool DatabaseManager::executeBatch(const QStringList &queries) {
         if (!beginTransaction()) return false;
@@ -239,4 +298,18 @@ namespace service {
         }
     }
 
+    // 移除查询跟踪功能的实现，因为它们不再需要
+    void DatabaseManager::registerQuery(QSqlQuery *query) {
+        // 空实现，保持接口兼容性
+        Q_UNUSED(query)
+    }
+
+    void DatabaseManager::unregisterQuery(QSqlQuery *query) {
+        // 空实现，保持接口兼容性
+        Q_UNUSED(query)
+    }
+
+    void DatabaseManager::clearAllQueries() {
+        // 空实现，保持接口兼容性
+    }
 }

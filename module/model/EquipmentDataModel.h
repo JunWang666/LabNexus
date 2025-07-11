@@ -16,6 +16,8 @@ class EquipmentDataModel : public QAbstractTableModel {
             Col_ID,
             Col_Name,
             Col_Type,
+            Col_ClassId,
+            Col_RentId,
             Col_Status,
             Col_InDate,
             Col_Classroom,  // 新增：所在仪器类

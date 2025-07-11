@@ -3,6 +3,9 @@
 //
 
 #include "data_mail.h"
+
+#include <dwmapi.h>
+
 #include "pch.h"
 
 #include <QFile>
@@ -21,6 +24,26 @@ namespace data::mail {
         }
     }
 
+    void registerSystemUser() {
+        data::UserControl::Login::createNewUser("-1", "库存预警", "huidbauiuicbabiabduiab", "System");
+        data::UserControl::Login::createNewUser("-2", "LabNexus团队", "bcfuiasbiasuibcviuab", "System");
+    }
+
+    void findSystemUser() {
+        std::vector<QString> searchIds = {"-1","-2"};
+        for (QString id : searchIds) {
+            auto userNameResult = data::UserControl::UserInfo::getUserNameByIdNumber(id);
+            auto id2 = data::UserControl::Login::foundUserIdByIdNumber(id);
+            if (userNameResult and id2.has_value()) {
+                data::mail::systemReservedAccounts.insert(userNameResult.value(),id2.value());
+                log(LogLevel::INFO) << "学工号: " << id << "，用户名: " << userNameResult.value();
+            } else {
+                log(LogLevel::ERR) << "查找学工号为 " << id << " 的用户名失败";
+            }
+        }
+        log(LogLevel::DEBUG)<<data::mail::systemReservedAccounts;
+    }
+
     void buildDB() {
         QFile dbFile(path);
         if (!dbFile.exists()) {
@@ -32,9 +55,12 @@ namespace data::mail {
                 return;
             }
             createMailTable();
+            registerSystemUser();
         } else {
             log(LogLevel::INFO) << "数据库文件已存在";
         }
+
+        findSystemUser();
     }
 
     void createMailTable() {
@@ -83,14 +109,15 @@ namespace data::mail {
             VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, 0, ?)
         )";
 
-        if (db.executePreparedNonQuery(insertQuery, {senderId, receiverId, subject, content, extra_data})) {
+        // 保证 extra_data 为空时传递空字符串，避免违反 NOT NULL 约束
+        QString extra = extra_data.isEmpty() ? "" : extra_data;
+        if (db.executePreparedNonQuery(insertQuery, {senderId, receiverId, subject, content, extra})) {
             log(service::LogLevel::DATA) << "邮件发送成功: " << subject;
         } else {
             log(service::LogLevel::ERR) << "发送邮件失败: " << db.getLastError();
         }
     }
 
-    // 私有辅助函数，用于将查询结果转换为Mail对象
     static Mail createMailFromRecord(const QVariantMap &record) {
         Mail mail;
         mail.id = record["id"].toInt();
@@ -107,7 +134,7 @@ namespace data::mail {
     QList<Mail> getAllMails(int receiverId, int page, int pageSize) {
         service::DatabaseManager db(path);
         QList<Mail> mails;
-
+        log(LogLevel::INFO) << "获取邮件: 接收者ID: " << receiverId << ", 页码: " << page << ", 每页大小: " << pageSize;
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return mails;
@@ -139,6 +166,7 @@ namespace data::mail {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return mails;
         }
+        log(LogLevel::INFO) << "获取未读邮件: 接收者ID: " << receiverId << ", 页码: " << page << ", 每页大小: " << pageSize;
 
         int offset = (page - 1) * pageSize;
         QString selectQuery = R"(
@@ -156,6 +184,25 @@ namespace data::mail {
         }
 
         return mails;
+    }
+
+    Mail getMailById(int mailId) {
+        service::DatabaseManager db(path);
+        if (!db.isConnected()) {
+            log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
+            return Mail();
+        }
+        QString selectQuery = R"(
+            SELECT id, sender_id, receiver_id, subject, content, send_date, status, extra_data
+            FROM mail
+            WHERE id = ?
+        )";
+        auto results = db.executePreparedQueryAndFetchAll(selectQuery, {mailId});
+        if (!results.isEmpty()) {
+            return createMailFromRecord(results.first());
+        }
+        log(service::LogLevel::ERR) << "未找到邮件: ID = " << mailId;
+        return Mail();
     }
 
     int getMailCount(int receiverId) {
@@ -191,4 +238,21 @@ namespace data::mail {
 
         return 0;
     }
+
+    bool setMailRead(int mailId) {
+        service::DatabaseManager db(path);
+        if (!db.isConnected()) {
+            log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
+            return false;
+        }
+        QString updateQuery = "UPDATE mail SET status = 1 WHERE id = ?";
+        if (db.executePreparedNonQuery(updateQuery, {mailId})) {
+            log(service::LogLevel::DATA) << "邮件已标记为已读: ID = " << mailId;
+            return true;
+        } else {
+            log(service::LogLevel::ERR) << "标记邮件为已读失败: ID = " << mailId << ", 错误: " << db.getLastError();
+            return false;
+        }
+    }
+
 }
