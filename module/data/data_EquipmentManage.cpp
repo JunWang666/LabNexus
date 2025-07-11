@@ -195,7 +195,7 @@ namespace data::Equipment {
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
                         class_id INTEGER NOT NULL,
-                        status TEXT NOT NULL DEFAULT 'useable',
+                        status TEXT NOT NULL DEFAULT '可用',
                         rentId INTEGER,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE

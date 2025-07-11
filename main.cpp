@@ -3,6 +3,8 @@
 #include "pch.h"
 #include "module/data/data_Booking.h"
 #include <QTableView>
+#include <qtimezone.h>
+
 #include "module/data/data_mail.h"
 #include "module/model/BookingDataModel.h"
 #include "view/bookingService/booking_home.h"
@@ -12,7 +14,6 @@
 #include "view/loginPage/registerpage.h"
 #include "view/messageCenter/messagewindow.h"
 #include "view/equipmentManage/equipment_home.h"
-
 
 void setup_tasks() {
     // 后台定时每1分钟扫描库存告警

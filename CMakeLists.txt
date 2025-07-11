@@ -124,6 +124,7 @@ add_executable(LabNexus main.cpp
         view/RegisterCenter/checknewuser.cpp
         view/RegisterCenter/checknewuser.h
         view/RegisterCenter/checknewuser.ui
+        service/stastic/staticdata.h
 )
 target_link_libraries(LabNexus
         Qt::Core
