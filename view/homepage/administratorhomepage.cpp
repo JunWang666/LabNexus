@@ -62,7 +62,7 @@ namespace view::homepage {
 
         // TODO: 打开审批页面
         if (!orderCheck) {
-            orderCheck = new Order::ManagerCheck(this);
+            orderCheck = new Order::ManagerCheck();
         }
         orderCheck->show();
         // QMessageBox::information(this, "审批管理",
