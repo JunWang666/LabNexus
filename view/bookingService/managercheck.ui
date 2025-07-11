@@ -259,4 +259,3 @@ QGroupBox::title {
   <slot>on_btnClose_clicked()</slot>
  </slots>
 </ui>
-

@@ -455,4 +455,3 @@ QGroupBox::title {
   <slot>on_btnReturn_cliccked()</slot>
  </slots>
 </ui>
-
