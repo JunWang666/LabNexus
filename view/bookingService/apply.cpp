@@ -54,7 +54,7 @@ void Apply::setUpModel() {
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ActualStartDate);
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ActualEndDate);
     ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverID);
-    ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
+    // ui->applyTableView->hideColumn(dataModel::BookingDataModel::Col_ApproverName);
     //设置不可更改
     ui->applyTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
