@@ -89,7 +89,7 @@ namespace data::Equipment {
         return success;
     }
 
-    bool updateEquipmentOnRepair(int id, const QString &status) {
+    bool updateEquipmentOnStatus(int id, const QString &status) {
         service::DatabaseManager db(service::Path::equipment());
         QString queryString = R"(
         UPDATE equipment_instance
@@ -103,13 +103,28 @@ namespace data::Equipment {
         return success;
     }
 
+    bool updateEquipmentOnLoan(int equipmentId, int borrowerId) {
+        service::DatabaseManager db(service::Path::equipment());
+        QString queryString = R"(
+        UPDATE equipment_instance
+        SET  rentId = ?
+        WHERE id = ?)";
+        QVariantList params;
+        params <<  borrowerId << equipmentId;
+        bool success = db.executePreparedNonQuery(queryString, params);
+        if (!success) {
+            log(LogLevel::ERR) << "更新设备借出状态失败:" << db.getLastError();
+        }
+        return success;
+    }
+
     QStringList getEquipmentOnStatus(const QString &status) {
         QStringList list;
         QList<fullEquipmentRecord> records;
         records = loadFullEquipmentRecords();
         for (const auto &record: records) {
             if (record.status == status) {
-                list.append(record.type);
+                list.append(record.name);
             }
         }
         return list;
@@ -123,7 +138,7 @@ namespace data::Equipment {
             return result; // 返回无效的ID
         }
 
-        QString queryString = "SELECT id, equipment_class_id FROM equipment WHERE name = ?";
+        QString queryString = "SELECT id, class_id FROM equipment_instance WHERE name = ?";
         QVariantList params = {devName};
 
         // 使用你已有的 executePreparedQueryAndFetchAll 函数

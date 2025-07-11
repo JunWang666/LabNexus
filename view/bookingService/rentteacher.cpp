@@ -71,8 +71,8 @@ void RentTeacher::loadData() {
 
     modelRequest->fetchData();
     //只显示学生
-    requestFilterProxyMdel->setGroupColunm(dataModel::BookingDataModel::Col_Count);
-    requestFilterProxyMdel->setGroupFilter("Student");
+    // requestFilterProxyMdel->setGroupColunm(dataModel::BookingDataModel::Col_UserGroup);
+    // requestFilterProxyMdel->setGroupFilter("Student");
 
     modelRepair->fetchData();
     //只显示可用
@@ -102,6 +102,7 @@ void RentTeacher::setUpModel_device() {
 
 void RentTeacher::setUpModel_request() {
     modelRequest = new dataModel::BookingDataModel(this);
+    modelRequest->setCurrentUserId(id.toInt(),name);
     requestFilterProxyMdel = new fliterModel::FilterProxyMdel(this);
     requestFilterProxyMdel->setSourceModel(modelRequest);
     //设置模型
@@ -198,7 +199,7 @@ void RentTeacher::on_btnSend_clicked()
 
 void RentTeacher::on_btnCheck_clicked()
 {
-    apply = new Apply();
+    apply = new Apply(name,id);
     apply->show();
 }
 

@@ -49,6 +49,9 @@ namespace dataModel {
 
         Qt::ItemFlags flags(const QModelIndex &index) const override;
 
+        //获取id
+        void setCurrentUserId(int id,const QString& name);
+
     public slots:
         // --- 自定义公共槽函数，用于控制模型行为 ---
         void fetchData(); // 从DAL加载/刷新数据的命令
@@ -56,6 +59,9 @@ namespace dataModel {
     private:
         // 存储从数据库加载的记录
         QList<data::Booking::fullBookingRecord> m_records;
+
+        int approvalId = -1;//传入的审批人的id
+        QString approverName = "";//传入的审批人的姓名
     };
 }
 

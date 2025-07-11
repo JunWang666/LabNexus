@@ -44,7 +44,10 @@ namespace data::Booking {
                              const QString &approvalStatus, int approverId);
 
     bool createBookingARecord(QString typeName);
+    bool updateBookingOnstatus(int id,const QString& status, int approvalId);
 
+    //决策函数
+    bool processApprovalTransaction(int bookingId, int equipmentId, int borrowerId ,int approverId);
     /********************/
 
     /**
@@ -52,6 +55,7 @@ namespace data::Booking {
      */
     struct fullBookingRecord {
         int id;
+        int equipmentId;
         int userId;
         QString userName;
         QString userGroup;

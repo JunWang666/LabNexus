@@ -266,6 +266,8 @@ namespace data::UserControl {
          * @throws std::runtime_error 如果更新用户名失败，则抛出此异常。
          */
         void changeUserName(int userId, const QString &newName);
+
+        QMap<int,QString> loadUsersMap();
     }
 }
 
