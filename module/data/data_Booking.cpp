@@ -188,6 +188,61 @@ namespace data::Booking {
         }
     }
 
+    bool updateBookingOnstatus(int id, const QString &status,int approvalId) {
+        service::DatabaseManager db(service::Path::booking());
+        QString queryString = R"(
+        UPDATE booking_approval
+        SET approval_status = ? , approval_time = ? , approver_id = ? WHERE booking_id = ?)";
+        QVariantList parmas;
+        parmas << status << QDateTime::currentDateTime() << approvalId << id;
+        bool success = db.executePreparedNonQuery(queryString, parmas);
+        if (!success) {
+            log(LogLevel::ERR) << "修改失败" << db.getLastError();
+        }
+        return success;
+    }
+
+    bool processApprovalTransaction(int bookingId, int equipmentId, int borrowerId, int approverId) {
+        service::DatabaseManager db(service::Path::booking());
+        if (!db.beginTransaction()) {
+            log(LogLevel::ERR) << "审批事务开启失败: " << db.getLastError();
+            return false;
+        }
+        if (!data::Equipment::updateEquipmentOnLoan(equipmentId, borrowerId)) {
+            log(LogLevel::ERR) << "更新设备借出人失败，回滚事务。";
+            db.rollbackTransaction();
+            return false;
+        }
+        if (!data::Equipment::updateEquipmentOnStatus(equipmentId, "借出")) {
+            log(LogLevel::ERR) << "更新设备状态失败，回滚事务。";
+            db.rollbackTransaction();
+            return false;
+        }
+        if (!updateBookingOnstatus(bookingId,"同意",approverId)) {
+            log(LogLevel::ERR) << "更新当前申请状态失败，回滚事务。";
+            db.rollbackTransaction();
+            return false;
+        }
+        QString findOthersQuery = R"(
+            SELECT booking_id FROM booking_approval
+            WHERE approval_status = '待审批' AND booking_id IN (
+                SELECT booking_id FROM booking_equipment WHERE equipment_id = ?
+            ) AND booking_id != ?
+        )";
+        QVariantList findParams = {equipmentId, bookingId};
+        auto otherBookings = db.executePreparedQueryAndFetchAll(findOthersQuery, findParams);
+        for (const auto& row : otherBookings) {
+            int otherBookingId = row["booking_id"].toInt();
+            // 拒绝其他申请，审批人ID可以设为0或当前审批人ID，表示系统自动拒绝
+            if (!updateBookingOnstatus(otherBookingId, "拒绝", 0)) {
+                log(LogLevel::ERR) << "自动拒绝其他申请失败 (ID: " << otherBookingId << ")，回滚事务。";
+                db.rollbackTransaction();
+                return false;
+            }
+        }
+        return db.commitTransaction();
+
+    }
 
 
     QList<fullBookingRecord> loadBookingFullRecords() {
@@ -215,6 +270,7 @@ namespace data::Booking {
         for (const auto &row: results) {
             fullBookingRecord record;
             record.id = row["id"].toInt();
+            record.equipmentId = row["equipment_id"].toInt();
             record.userId = row["user_id"].toInt();
             record.createDate = row["create_date"].toDateTime();
             record.requestStartDate = row["request_start_time"].toDateTime();
