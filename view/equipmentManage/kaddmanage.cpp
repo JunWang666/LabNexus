@@ -18,7 +18,7 @@ kaddmanage::~kaddmanage() {
 
 void kaddmanage::loadClassrooms() {
     service::DatabaseManager db(data::Equipment::path);
-    QString query = "SELECT id, name FROM classroom"; // 假设教室信息存储在 classroom 表
+    QString query = "SELECT id, name"; // 假设教室信息存储在 classroom 表
     auto results = db.executeQueryAndFetchAll(query); // 从数据库查询教室数据
 
     ui->comboBox->clear(); // 清空下拉框原有内容
@@ -94,11 +94,11 @@ void kaddmanage::on_addButton_clicked() {
                                            : baseNumber;
 
         // 步骤1：检查设备编号是否已存在（避免冲突）
-        QString checkQuery = QString(R"(
-            SELECT COUNT(*) AS count FROM equipment_instance
-            WHERE equipment_number = '%1'
-        )").arg(finalEquipmentNumber);
-        auto checkResult = db.executeQueryAndFetchAll(checkQuery);
+        // QString checkQuery = QString(R"(
+        //     SELECT COUNT(*) AS count FROM equipment_instance
+        //     WHERE equipment_number = '%1'
+        // )").arg(finalEquipmentNumber);
+        // auto checkResult = db.executeQueryAndFetchAll(checkQuery);
 
 
         // 步骤2：插入新记录（使用数据库自增id，不手动指定）

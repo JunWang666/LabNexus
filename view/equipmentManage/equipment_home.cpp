@@ -13,13 +13,33 @@
 #include "module/data/data_Booking.h"
 #include "module/data/data_EquipmentManage.h"
 #include <QStringConverter> // Qt 6 需包含
-
+#include <QStandardItemModel>
+#include <QStandardItem>
 namespace view::equipment {
 equipment_home::equipment_home(QWidget *parent) : QWidget(parent), ui(new view::equipment::Ui::equipment_home) {
     ui->setupUi(this);
      data::Equipment::buildDB();
     data::Equipment::EquipmentClass::createEquipmentClassTable();
      data::Equipment::EquipmentInstnace::createEquipmentInstanceTable();
+    QList<data::Equipment::fullEquipmentRecord> records = data::Equipment::loadFullEquipmentRecords();
+     QStandardItemModel *model = new QStandardItemModel(this);
+
+     // 设置列数和表头
+     model->setColumnCount(6);
+     model->setHorizontalHeaderLabels(QStringList() << "ID"<<"设备名称"<<"状态"<<"创建时间"<<"类别ID"<< "类别名称");
+     for (int row = 0; row < records.size(); ++row) {
+         const auto &record = records[row];
+
+         model->setItem(row, 0, new QStandardItem(QString::number(record.id)));
+         model->setItem(row, 1, new QStandardItem(record.name));
+         model->setItem(row, 2, new QStandardItem(record.status));
+         model->setItem(row, 3, new QStandardItem(record.inDate.toString("yyyy-MM-dd")));
+         model->setItem(row, 4, new QStandardItem(QString::number(record.class_id)));
+         model->setItem(row,5,new QStandardItem(record.type));
+     }
+
+     ui->tableView->setModel(model);
+     ui->tableView->resizeColumnsToContents();
 
 }
 
