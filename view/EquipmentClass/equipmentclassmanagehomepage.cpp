@@ -15,6 +15,7 @@ EquipmentClassManageHomepage::EquipmentClassManageHomepage(QWidget *parent) :
     QWidget(parent), ui(new Ui::EquipmentClassManageHomepage) {
     ui->setupUi(this);
     initializeUI();
+    service::style::setMica(this);
 
     // --- 分页逻辑初始化 ---
     m_currentPage = 1;
@@ -63,6 +64,8 @@ void EquipmentClassManageHomepage::loadEquipmentClasses(int page) {
 
     // 加载完数据后更新分页控件
     updatePaginationControls();
+
+    ui->label_num->setNum(data::Equipment::EquipmentClass::getEquClassCount());
 }
 
 
@@ -78,6 +81,16 @@ void EquipmentClassManageHomepage::on_nextButton_clicked() {
         m_currentPage++;
         loadEquipmentClasses(m_currentPage);
     }
+}
+
+void EquipmentClassManageHomepage::on_addButton_clicked() {
+    view::EquipmentClass::EquipmentClassDetail *detail = new view::EquipmentClass::EquipmentClassDetail();
+    service::MutiWindow::manager().addWindow(detail);
+    detail->show();
+}
+
+void EquipmentClassManageHomepage::on_refreshButton_clicked() {
+    loadEquipmentClasses();
 }
 
 void EquipmentClassManageHomepage::updatePaginationControls() {

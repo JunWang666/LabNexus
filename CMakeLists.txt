@@ -117,6 +117,9 @@ set(SHARED_SOURCES
         service/stastic/staticdata.h
         service/stastic/sharedFunctions.cpp
         service/stastic/sharedFunctions.h
+        view/EquipmentClass/equipmentclassdetail.cpp
+        view/EquipmentClass/equipmentclassdetail.h
+        view/EquipmentClass/equipmentclassdetail.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 

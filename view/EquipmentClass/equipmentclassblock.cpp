@@ -14,8 +14,9 @@ namespace view::EquipmentClass {
     }
 
     EquipmentClassBlock::EquipmentClassBlock(const data::Equipment::EquipmentClass::EquipmentClassRecord &record,
-                                             QWidget *parent): ui(new Ui::EquipmentClassBlock) {
+                                             QWidget *parent): ui(new Ui::EquipmentClassBlock),record(record) {
         ui->setupUi(this);
+        service::style::setMica(this);
         // 1. 设置仪器名称
         ui->label_name->setText(record.name);
 
@@ -24,9 +25,9 @@ namespace view::EquipmentClass {
 
         // 3. 拼接总数、可用数量和预警数量字符串
         QString dataText = QStringLiteral("总数: %1 | 可用: %2 | 预警阈值: %3")
-                               .arg(record.total_amount)
-                               .arg(record.usable_amount)
-                               .arg(record.alarm_amount);
+                .arg(record.total_amount)
+                .arg(record.usable_amount)
+                .arg(record.alarm_amount);
 
         // 4. 设置数据标签
         ui->label_data->setText(dataText);
@@ -34,5 +35,11 @@ namespace view::EquipmentClass {
 
     EquipmentClassBlock::~EquipmentClassBlock() {
         delete ui;
+    }
+
+    void EquipmentClassBlock::on_frame_clicked() {
+        view::EquipmentClass::EquipmentClassDetail *detail = new view::EquipmentClass::EquipmentClassDetail(record.id);
+        service::MutiWindow::manager().addWindow(detail);
+        detail->show();
     }
 } // view::EquipmentClass

@@ -29,6 +29,8 @@ namespace view::EquipmentClass {
     private slots:
         void on_prevButton_clicked();
         void on_nextButton_clicked();
+        void on_addButton_clicked();
+        void on_refreshButton_clicked();
 
     private:
         Ui::EquipmentClassManageHomepage *ui;

@@ -7,24 +7,36 @@
 
 #include <QWidget>
 
+#include "equipmentclassdetail.h"
 #include "module/data/data_EquipmentManage.h"
 
 namespace view::EquipmentClass {
-QT_BEGIN_NAMESPACE
-namespace Ui { class EquipmentClassBlock; }
-QT_END_NAMESPACE
+    QT_BEGIN_NAMESPACE
 
-class EquipmentClassBlock : public QWidget {
-Q_OBJECT
+    namespace Ui {
+        class EquipmentClassBlock;
+    }
 
-public:
-    explicit EquipmentClassBlock(QWidget *parent = nullptr);
-    explicit EquipmentClassBlock(const data::Equipment::EquipmentClass::EquipmentClassRecord & record,QWidget *parent = nullptr);
-    ~EquipmentClassBlock() override;
+    QT_END_NAMESPACE
 
-private:
-    Ui::EquipmentClassBlock *ui;
-};
+    class EquipmentClassBlock : public QWidget {
+        Q_OBJECT
+
+    public:
+        explicit EquipmentClassBlock(QWidget *parent = nullptr);
+
+        explicit EquipmentClassBlock(const data::Equipment::EquipmentClass::EquipmentClassRecord &record,
+                                     QWidget *parent = nullptr);
+
+        ~EquipmentClassBlock() override;
+
+    public slots:
+        void on_frame_clicked();
+
+    private:
+        Ui::EquipmentClassBlock *ui;
+        data::Equipment::EquipmentClass::EquipmentClassRecord record;
+    };
 } // view::EquipmentClass
 
 #endif //EQUIPMENTCLASSBLOCK_H
