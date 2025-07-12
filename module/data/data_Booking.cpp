@@ -6,35 +6,23 @@
 
 namespace data::Booking {
     void dropDB() {
-        QFile dbFile(service::Path::booking());
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功" << service::Path::booking();
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        service::DatabaseManager db(service::Path::booking());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_info");
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_equipment");
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_time");
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_approval");
+            log(LogLevel::INFO) << "数据库表删除成功 (booking_info, booking_equipment, booking_time, booking_approval)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
     void buildDB() {
-        QFile dbFile(service::Path::booking());
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功" << service::Path::booking();
-            } else {
-                log(service::LogLevel::ERR) << "数据库文件创建失败";
-            }
-
-            createBookingApprovalTable();
-            createBookingEquipmentTable();
-            createBookingInfoTable();
-            createBookingTimeTable();
-        } else {
-            log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
+        createBookingApprovalTable();
+        createBookingEquipmentTable();
+        createBookingInfoTable();
+        createBookingTimeTable();
     }
 
 

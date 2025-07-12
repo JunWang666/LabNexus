@@ -8,38 +8,37 @@
 
 namespace data::UserControl {
     void dropDB() {
-        QFile dbFile(service::Path::user());
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功";
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        // 兼容 MuSQL 场景，尝试删除数据库表而不是物理文件
+        service::DatabaseManager db(service::Path::user());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS users");
+            db.executeNonQuery("DROP TABLE IF EXISTS groups");
+            db.executeNonQuery("DROP TABLE IF EXISTS user_groups");
+            log(LogLevel::INFO) << "数据库表删除成功 (users, groups, user_groups)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
     void buildDB() {
-        QFile dbFile(service::Path::user());
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功";
-            } else {
-                log(service::LogLevel::ERR) << "数据库文件创建失败";
-            }
-            Login::createUserTable();
-            permission::createGroupTable();
-            permission::createUserGroupTable();
-        } else {
-            log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
+        // 兼容 MuSQL 场景，不检测物理文件，直接尝试建表和创建默认用户
+        Login::createUserTable();
+        permission::createGroupTable();
+        permission::createUserGroupTable();
+
+        // 每次都尝试创建默认组和用户
         QStringList builtInGroupNames = {"Student", "Teacher", "Admin", "System"};
         for (const auto &groupName: builtInGroupNames) {
             auto ids = permission::searchGroupIdByName(groupName);
             if (!ids.isEmpty()) {
                 builtInGroupIds.insert(groupName, ids.first());
+            } else {
+                // 如果组不存在则创建
+                permission::createGroup(groupName, groupName + " group");
+                auto newIds = permission::searchGroupIdByName(groupName);
+                if (!newIds.isEmpty()) {
+                    builtInGroupIds.insert(groupName, newIds.first());
+                }
             }
         }
     }

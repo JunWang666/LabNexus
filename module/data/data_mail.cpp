@@ -14,15 +14,12 @@
 
 namespace data::mail {
     void dropDB() {
-        QFile dbFile(service::Path::mail());
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功";
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        service::DatabaseManager db(service::Path::mail());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS mail");
+            log(LogLevel::INFO) << "数据库表删除成功 (mail)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
@@ -47,20 +44,7 @@ namespace data::mail {
     }
 
     void buildDB() {
-        QFile dbFile(service::Path::mail());
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(LogLevel::INFO) << "邮件数据库文件创建成功";
-            } else {
-                log(LogLevel::ERR) << "数据库文件创建失败";
-                return;
-            }
-            createMailTable();
-
-        } else {
-            log(LogLevel::INFO) << "数据库文件已存在";
-        }
+        createMailTable();
     }
 
     void createMailTable() {

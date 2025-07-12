@@ -6,32 +6,19 @@
 
 namespace data::Equipment {
     void dropDB() {
-        QFile dbFile(service::Path::equipment());
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功" << service::Path::equipment();
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        service::DatabaseManager db(service::Path::equipment());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS equipment_instance");
+            db.executeNonQuery("DROP TABLE IF EXISTS equipment_class");
+            log(LogLevel::INFO) << "数据库表删除成功 (equipment_instance, equipment_class)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
     void buildDB() {
-        QFile dbFile(service::Path::equipment());
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功" << service::Path::equipment();
-            } else {
-                log(service::LogLevel::ERR) << "数据库文件创建失败";
-            }
-            EquipmentClass::createEquipmentClassTable();
-            EquipmentInstnace::createEquipmentInstanceTable();
-        } else {
-            log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
+        EquipmentClass::createEquipmentClassTable();
+        EquipmentInstnace::createEquipmentInstanceTable();
     }
 
     /**
