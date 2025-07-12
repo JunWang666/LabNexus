@@ -11,7 +11,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 # 3. 查找所有需要的Qt模块
-find_package(Qt6 COMPONENTS Core Gui Widgets Sql Test REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui Widgets Sql Test QuickWidgets REQUIRED)
+
+# 5. 定义库的集合，方便重用
+set(CORE_LIBS Qt::Core Qt::Gui Qt::Widgets Qt::Sql dwmapi dbghelp Qt::QuickWidgets)
+set(TEST_LIBS ${CORE_LIBS} Qt::Test)
+set(PCH_FILE "pch.h")
 
 # 4. 定义共享源码文件列表
 set(SHARED_SOURCES
@@ -129,6 +134,10 @@ set(SHARED_SOURCES
         view/EquipmentClass/equipmentclassblock.cpp
         view/EquipmentClass/equipmentclassblock.h
         view/EquipmentClass/equipmentclassblock.ui
+        view/SplashScreen/SplashScreen.qml
+        view/SplashScreen/splashscreen.cpp
+        view/SplashScreen/splashscreen.h
+        view/SplashScreen/splashscreen.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 
@@ -137,12 +146,8 @@ set(QRC_FILES
         view/loginPage/style.qrc
         assets/style/style.qrc
         assets/style/style_res.qrc
+        view/SplashScreen/SplashScreen.qrc
 )
-
-# 5. 定义库的集合，方便重用
-set(CORE_LIBS Qt::Core Qt::Gui Qt::Widgets Qt::Sql dwmapi dbghelp)
-set(TEST_LIBS ${CORE_LIBS} Qt::Test)
-set(PCH_FILE "pch.h")
 
 # 6. 配置共享代码的OBJECT库
 add_library(LabNexus_Objects OBJECT ${SHARED_SOURCES})
@@ -212,12 +217,7 @@ if(WIN32)
                 # -- 基本选项 --
                 --dir "$<TARGET_FILE_DIR:${TARGET_EXE}>"
                 --pdb
-
-                # -- 精简输出，移除不常用的组件 --
-                --no-translations
-                --no-opengl-sw
-                --no-svg
-                --no-system-d3d-compiler
+                --qmldir "${CMAKE_SOURCE_DIR}/view/SplashScreen"
 
                 # 指定要分析的exe文件
                 "$<TARGET_FILE:${TARGET_EXE}>"
