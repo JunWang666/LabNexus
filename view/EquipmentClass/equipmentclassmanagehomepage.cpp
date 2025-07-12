@@ -42,6 +42,8 @@ void EquipmentClassManageHomepage::loadEquipmentClasses(int page) {
     // 从数据库获取设备分类数据
     auto records = data::Equipment::EquipmentClass::getEquClassList(page, m_itemsPerPage);
 
+    ui->scrollAreaWidgetContents->setUpdatesEnabled(false);
+
     auto *layout = qobject_cast<QVBoxLayout *>(ui->scrollAreaWidgetContents->layout());
     if (!layout) {
         // 如果布局不存在，则创建一个新的
@@ -63,8 +65,8 @@ void EquipmentClassManageHomepage::loadEquipmentClasses(int page) {
     }
 
     // 加载完数据后更新分页控件
+    ui->scrollAreaWidgetContents->setUpdatesEnabled(true);
     updatePaginationControls();
-
     ui->label_num->setNum(data::Equipment::EquipmentClass::getEquClassCount());
 }
 
