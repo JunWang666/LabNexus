@@ -65,12 +65,12 @@ namespace data::UserControl {
             service::DatabaseManager db(service::Path::user());
             log(service::LogLevel::INFO) << "开始验证用户密码: " << idNumber;
             QString query = R"(
-                    SELECT id, password, status FROM users WHERE id_number = ?
+                    SELECT id, password, status FROM users WHERE id_number = ? AND status != 'Deleted'
                 )";
             auto results = db.executePreparedQueryAndFetchAll(query, {idNumber});
 
             if (results.isEmpty()) {
-                log(service::LogLevel::ERR) << "登录失败。用户不存在: " << idNumber;
+                log(service::LogLevel::ERR) << "登录失败。用户不存在或已删除: " << idNumber;
                 return std::unexpected(UserControlError::UserNotFound);
             }
 
@@ -171,7 +171,7 @@ namespace data::UserControl {
 
         std::expected<int, UserControlError> foundUserIdByIdNumber(const QString &idNumber) {
             service::DatabaseManager db(service::Path::user());
-            QString query = "SELECT id FROM users WHERE id_number = ?";
+            QString query = "SELECT id FROM users WHERE id_number = ? AND status != 'Deleted'";
             auto results = db.executePreparedQueryAndFetchAll(query, {idNumber});
             if (results.isEmpty()) {
                 return std::unexpected(UserControlError::UserNotFound);
@@ -336,7 +336,7 @@ namespace data::UserControl {
                 SELECT g.name
                 FROM groups g
                 JOIN user_groups ug ON g.id = ug.group_id
-                WHERE ug.user_id = ?
+                WHERE ug.user_id = ? AND g.status != 'Deleted' AND ug.status != 'Deleted'
             )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
             QStringList groupNames;
@@ -352,7 +352,7 @@ namespace data::UserControl {
                 SELECT g.id
                 FROM groups g
                 JOIN user_groups ug ON g.id = ug.group_id
-                WHERE ug.user_id = ?
+                WHERE ug.user_id = ? AND g.status != 'Deleted' AND ug.status != 'Deleted'
             )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
             QList<int> groupIds;
@@ -366,7 +366,7 @@ namespace data::UserControl {
             QList<int> groupIds;
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                SELECT id FROM groups WHERE name LIKE ?
+                SELECT id FROM groups WHERE name LIKE ? AND status != 'Deleted'
             )";
             auto results = db.executePreparedQueryAndFetchAll(query, {"%" + groupName + "%"});
             for (const auto &row: results) {
@@ -416,7 +416,7 @@ namespace data::UserControl {
         QList<int> getAllGroupId() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM groups
+                  SELECT id FROM groups WHERE status != 'Deleted'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
             QList<int> groupIds;
@@ -430,7 +430,7 @@ namespace data::UserControl {
     namespace UserInfo {
         std::expected<QString, UserInfoError> getUserNameById(int userId) {
             service::DatabaseManager db(service::Path::user());
-            QString query = "SELECT username FROM users WHERE id = ?";
+            QString query = "SELECT username FROM users WHERE id = ? AND status != 'Deleted'";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
 
             if (results.isEmpty()) {
@@ -442,7 +442,7 @@ namespace data::UserControl {
 
         std::expected<QString, UserInfoError> getUserNameByIdNumber(QString IdNumber) {
             service::DatabaseManager db(service::Path::user());
-            QString query = "SELECT username FROM users WHERE id_number = ?";
+            QString query = "SELECT username FROM users WHERE id_number = ? AND status != 'Deleted'";
             auto results = db.executePreparedQueryAndFetchAll(query, {IdNumber});
 
             if (results.isEmpty()) {
@@ -468,7 +468,7 @@ namespace data::UserControl {
         QMap<int, QString> loadUsersMap() {
             QMap<int ,QString> usersMap;
             service::DatabaseManager db(service::Path::user());
-            QString query = R"(SELECT id_number,username FROM users)";
+            QString query = R"(SELECT id_number,username FROM users WHERE status != 'Deleted')";
             auto results = db.executeQueryAndFetchAll(query);
             for (const auto &row : results) {
                 usersMap[row["id_number"].toInt()] = row["username"].toString();
@@ -484,6 +484,7 @@ namespace data::UserControl {
                 FROM groups g
                 JOIN user_groups ug ON g.id = ug.group_id
                 JOIN users u ON ug.user_id = u.id
+                WHERE g.status != 'Deleted' AND ug.status != 'Deleted' AND u.status != 'Deleted'
             )";
             auto results = db.executeQueryAndFetchAll(query);
             for (const auto &row : results) {

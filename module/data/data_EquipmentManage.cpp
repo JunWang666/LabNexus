@@ -155,7 +155,8 @@ namespace data::Equipment {
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         total_amount INTEGER NOT NULL DEFAULT 0,
                         usable_amount INTEGER NOT NULL DEFAULT 0,
-                        alarm_amount INTEGER NOT NULL DEFAULT 0
+                        alarm_amount INTEGER NOT NULL DEFAULT 0,
+                        status TEXT NOT NULL DEFAULT 'Allright'
                     )
                 )";
                 db.executeNonQuery(createTableQuery);
@@ -168,7 +169,7 @@ namespace data::Equipment {
         QString getEquNameFromEquClassId(int classId) {
             service::DatabaseManager db(service::Path::equipment());
             QString queryString = QString(R"(
-            SELECT name FROM equipment_class WHERE id = %1
+            SELECT name FROM equipment_class WHERE id = %1 AND status != 'deleted'
         )").arg(classId);
             auto results = db.executeQueryAndFetchAll(queryString);
             if (!results.isEmpty()) {
@@ -180,7 +181,7 @@ namespace data::Equipment {
         int getEquCountFromEquClassId(int classId) {
             service::DatabaseManager db(service::Path::equipment());
             QString queryString = QString(R"(
-                    SELECT usable_amount FROM equipment_class WHERE id = %1
+                    SELECT usable_amount FROM equipment_class WHERE id = %1 AND status != 'deleted'
                 )").arg(classId);
             auto results = db.executeQueryAndFetchAll(queryString);
             if (!results.isEmpty()) {
@@ -191,7 +192,7 @@ namespace data::Equipment {
 
         int getEquClassPageCount(int pageSize) {
             service::DatabaseManager db(service::Path::equipment());
-            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class";
+            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class WHERE status != 'deleted'";
             auto results = db.executeQueryAndFetchAll(queryString);
             if (!results.isEmpty()) {
                 int total = results.first()["total"].toInt();
@@ -202,7 +203,7 @@ namespace data::Equipment {
 
         int getEquClassCount() {
             service::DatabaseManager db(service::Path::equipment());
-            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class";
+            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class WHERE status != 'deleted'";
             auto results = db.executeQueryAndFetchAll(queryString);
             if (!results.isEmpty()) {
                 int total = results.first()["total"].toInt();
@@ -224,6 +225,7 @@ namespace data::Equipment {
                     alarm_amount
                 FROM
                     equipment_class
+                WHERE status != 'deleted'
                 LIMIT ? OFFSET ?
                 )";
 
@@ -252,7 +254,7 @@ namespace data::Equipment {
             QString queryString = R"(
                 SELECT id, name, description, created_at, total_amount, usable_amount, alarm_amount
                 FROM equipment_class
-                WHERE id = ?
+                WHERE id = ? AND status != 'deleted'
             )";
 
             auto results = db.executePreparedQueryAndFetchAll(queryString, {classId});
@@ -334,8 +336,8 @@ namespace data::Equipment {
         int addEquipmentClass(const EquipmentClassRecord &record) {
             service::DatabaseManager db(service::Path::equipment());
             QString queryString = R"(
-                INSERT INTO equipment_class (name, description, alarm_amount)
-                VALUES (?, ?, ?)
+                INSERT INTO equipment_class (name, description, alarm_amount, status)
+                VALUES (?, ?, ?, 'Allright')
             )";
 
             QVariantList params;
@@ -350,6 +352,18 @@ namespace data::Equipment {
             }
 
             return newId;
+        }
+        // 新增：删除设备类别（软删除，设置status为deleted）
+        bool deleteEquipmentClass(int classId) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                UPDATE equipment_class SET status = 'deleted' WHERE id = ?
+            )";
+            bool success = db.executePreparedNonQuery(queryString, {classId});
+            if (!success) {
+                log(LogLevel::ERR) << "删除设备类别失败:" << db.getLastError();
+            }
+            return success;
         }
     }
 
