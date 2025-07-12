@@ -201,6 +201,53 @@ namespace data::Equipment {
             }
             return 0;
         }
+
+        int getEquClassPageCount(int pageSize) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class";
+            auto results = db.executeQueryAndFetchAll(queryString);
+            if (!results.isEmpty()) {
+                int total = results.first()["total"].toInt();
+                return (total + pageSize - 1) / pageSize;
+            }
+            return 0;
+        }
+
+        QList<EquipmentClassRecord> getEquClassList(int page, int pageSize) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                SELECT
+                    id,
+                    name,
+                    description,
+                    created_at,
+                    total_amount,
+                    usable_amount,
+                    alarm_amount
+                FROM
+                    equipment_class
+                LIMIT ? OFFSET ?
+                )";
+
+            QVariantList params;
+            params << pageSize << (page - 1) * pageSize;
+
+            auto results = db.executePreparedQueryAndFetchAll(queryString, params);
+
+            QList<EquipmentClassRecord> records;
+            for (const auto &row: results) {
+                EquipmentClassRecord rec;
+                rec.id = row["id"].toInt();
+                rec.name = row["name"].toString();
+                rec.description = row["description"].toString();
+                rec.created_at = row["created_at"].toDateTime();
+                rec.total_amount = row["total_amount"].toInt();
+                rec.usable_amount = row["usable_amount"].toInt();
+                rec.alarm_amount = row["alarm_amount"].toInt();
+                records.append(rec);
+            }
+            return records;
+        }
     }
 
     namespace EquipmentInstnace {

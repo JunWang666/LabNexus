@@ -12,7 +12,11 @@ namespace service::Path {
         QStringList paths = { booking(), equipment(), mail(), user(), base(), debuglog(), datalog() };
         for (const QString& path : paths) {
             if (!dir.exists(path)) {
-                qDebug() << "路径不存在:" << path;
+                if (dir.mkpath(path)) {
+                    qDebug() << "已创建路径:" << path;
+                } else {
+                    qDebug() << "创建路径失败:" << path;
+                }
             }
         }
     }

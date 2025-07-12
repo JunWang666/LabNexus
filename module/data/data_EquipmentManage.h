@@ -53,6 +53,16 @@ namespace data::Equipment {
 
 
     namespace EquipmentClass {
+        struct EquipmentClassRecord {
+            int id;
+            QString name;
+            QString description;
+            QDateTime created_at;
+            int total_amount;
+            int usable_amount;
+            int alarm_amount;
+        };
+
         /**
          * @brief 创建设备表。
          *
@@ -63,6 +73,9 @@ namespace data::Equipment {
         QString getEquNameFromEquClassId(int classId);
 
         int getEquCountFromEquClassId(int classId);
+
+        int getEquClassPageCount(int pageSize = 10);
+        QList<EquipmentClassRecord> getEquClassList(int page = 1, int pageSize = 10);
     }
 
     namespace EquipmentInstnace {

@@ -10,6 +10,8 @@
 #include "service/stastic/sharedFunctions.h"
 #include "view/bookingService/booking_home.h"
 #include "view/bookingService/rent.h"
+#include "view/EquipmentClass/equipmentclassblock.h"
+#include "view/EquipmentClass/equipmentclassmanagehomepage.h"
 #include "view/homepage/teacherhomepage.h"
 #include "view/loginPage/loginpage.h"
 #include "view/loginPage/registerpage.h"
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
     //     log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     // }
 
-    view::login::loginPage b;
+    view::EquipmentClass::EquipmentClassManageHomepage b;
 
     b.show();
 
