@@ -12,6 +12,8 @@ namespace view {
         {
             ui->setupUi(this);
 
+            service::style::setMica(this);
+
             // 设置窗口属性
             setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
             setAttribute(Qt::WA_TranslucentBackground);
