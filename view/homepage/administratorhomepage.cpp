@@ -11,7 +11,7 @@
 #include "service/logger/logger.h"
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <view/equipmentManage/equipment_home.h>
+#include "view/equipmentManage/equipment_home.h"
 #include "view/messageCenter/messagewindow.h"
 
 namespace view::homepage {

@@ -40,7 +40,7 @@ void kaddmanage::loadClassrooms() {
 // 初始化状态下拉框（原逻辑）
 void kaddmanage::initStatusOptions() {
     ui->comboBox_2->clear();
-    ui->comboBox_2->addItems({"可用", "维修中", "借出","delete"});
+    ui->comboBox_2->addItems({"可用", "维修中", "借出"});
     ui->comboBox_2->setCurrentText("可用");
 }
 
