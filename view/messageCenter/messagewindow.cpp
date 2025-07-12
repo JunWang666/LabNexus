@@ -9,6 +9,8 @@
 #include "module/data/data_UserControl.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
+
+#include "service/stastic/staticdata.h"
 #include "service/styleHelper/MicaHelper.h"
 
 namespace view::messageCenter {

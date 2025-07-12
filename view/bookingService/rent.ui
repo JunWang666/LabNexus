@@ -15,28 +15,26 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget, QDialog {
-    background-color: #f4f6f8; /* 浅灰色背景，比纯白更柔和 */
+    background-color: #f4f6f8;
     font-family: &quot;Microsoft YaHei UI&quot;, &quot;Segoe UI&quot;, &quot;Sans-serif&quot;;
-    color: #34495e; /* 深灰蓝文字颜色 */
+    color: #34495e;
 }
 
 /*
- * 框架样式
+ * 框架样式 (无变动)
 */
 QFrame {
-    background-color: #ffffff; /* 卡片和主要区域使用白色背景 */
-    border-radius: 8px; /* 圆角 */
-    border: 1px solid #dfe4ea; /* 浅灰色边框 */
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #dfe4ea;
 }
-
-/* 清除嵌套QFrame的背景和边框，避免不必要的“盒子” */
 QFrame QFrame {
     background-color: transparent;
     border: none;
 }
 
 /*
- * 按钮样式
+ * 按钮样式 (无变动)
 */
 QPushButton {
     border-radius: 4px;
@@ -45,81 +43,127 @@ QPushButton {
     font-weight: bold;
     outline: none;
 }
-
 QPushButton:hover {
     opacity: 0.9;
 }
-
-/* 主要按钮 (确定, 发送, 催一催等) */
 QPushButton#btnSend, QPushButton#btnSet, QPushButton#btnRush, QPushButton#btnReturn {
-    background-color: #3498db; /* 主题蓝 */
+    background-color: #3498db;
     color: white;
     border: none;
 }
 QPushButton#btnSend:pressed, QPushButton#btnSet:pressed, QPushButton#btnRush:pressed, QPushButton#btnReturn:pressed {
-    background-color: #2980b9; /* 按下时加深 */
+    background-color: #2980b9;
 }
-
-/* 次要按钮 (取消, 关闭) */
 QPushButton#btnCancel, QPushButton#btnClose, QPushButton#btnCheck {
     background-color: #ffffff;
     color: #3498db;
     border: 1px solid #3498db;
 }
 QPushButton#btnCancel:hover, QPushButton#btnClose:hover, QPushButton#btnCheck:hover {
-    background-color: #f0f8ff; /* 悬停时淡蓝色背景 */
+    background-color: #f0f8ff;
 }
 QPushButton#btnCancel:pressed, QPushButton#btnClose:pressed, QPushButton#btnCheck:pressed {
-    background-color: #e0f0ff; /* 按下时加深 */
+    background-color: #e0f0ff;
 }
 
-
 /*
- * 输入控件
+ * 输入控件 (将 QComboBox 分离出去)
 */
-QLineEdit, QComboBox, QDateTimeEdit {
+QLineEdit, QDateTimeEdit {
     background-color: #ffffff;
     border: 1px solid #bdc3c7;
     border-radius: 4px;
     padding: 6px;
     color: #34495e;
 }
-
-QLineEdit:focus, QComboBox:focus, QDateTimeEdit:focus {
-    border: 1px solid #3498db; /* 聚焦时边框变蓝 */
+QLineEdit:focus, QDateTimeEdit:focus {
+    border: 1px solid #3498db;
 }
-
 QLineEdit[readOnly=&quot;true&quot;] {
-    background-color: #ecf0f1; /*只读输入框使用不同背景色*/
+    background-color: #ecf0f1;
     color: #7f8c8d;
     border: 1px solid #bdc3c7;
 }
 
 /*
- * ComboBox下拉箭头样式
+ * =========================================
+ * ComboBox 样式 (核心修正区域)
+ * =========================================
 */
-QComboBox::drop-down {
-    border: none;
-    width: 20px;
+
+/* 1. 定义 ComboBox 主体框的样式 */
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    padding: 6px; /* 此内边距仅应用于主体框，不影响下拉项 */
+    color: #34495e;
 }
+
+/* 2. 定义下拉列表（弹出视图）的容器样式 */
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    border: 1px solid #dfe4ea;
+    border-radius: 4px;
+    outline: 0px; /* 去除下拉列表的焦点边框 */
+}
+
+/* 3. 定义下拉列表中每一个条目的样式 */
+QComboBox::item {
+    padding: 8px 10px; /* 为下拉项设置独立的内边距 */
+    min-height: 22px;   /* 保证每个条目有足够的高度 */
+    border: none; /* 确保条目自身没有边框 */
+}
+
+/* 4. 定义下拉项被选中和悬停时的样式 */
+QComboBox::item:selected {
+    background-color: #3498db;
+    color: white;
+}
+QComboBox::item:hover {
+    background-color: #eaf5ff;
+    color: #34495e;
+}
+
+/* 5. 定义下拉箭头按钮的样式 */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 25px;
+    border-left-width: 1px;
+    border-left-color: #bdc3c7;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
 QComboBox::down-arrow {
-    image: url(:/icons/down_arrow.png); /* 建议使用资源文件中的图标 */
+    /* 为获得最佳效果, 建议使用16x16的png图标, 并通过Qt资源文件(.qrc)引用 */
+    /* image: url(:/icons/arrow_down.png); */ 
+    width: 14px;
+    height: 14px;
+}
+
+QComboBox:focus {
+    border: 1px solid #3498db;
 }
 
 /*
- * 表格视图
+ * =========================================
+ * 其他样式 (无变动)
+ * =========================================
 */
+
+/* 表格视图 */
 QTableView {
     background-color: #ffffff;
     border: 1px solid #dfe4ea;
     border-radius: 8px;
-    gridline-color: #e5e7e9; /* 网格线颜色 */
+    gridline-color: #e5e7e9;
 }
-
 QTableView::item {
     padding: 5px;
 }
-
 QHeaderView::section {
     background-color: #eaf2f8;
     color: #34495e;
@@ -129,9 +173,7 @@ QHeaderView::section {
     font-weight: bold;
 }
 
-/*
- * 列表视图
-*/
+/* 列表视图 */
 QListWidget {
     background-color: #ffffff;
     border: 1px solid #dfe4ea;
@@ -150,9 +192,7 @@ QListWidget::item:selected {
     border-bottom-color: #3498db;
 }
 
-/*
- * 组合框 (GroupBox)
-*/
+/* 组合框 (GroupBox) */
 QGroupBox {
     border: 1px solid #dfe4ea;
     border-radius: 8px;
@@ -162,7 +202,7 @@ QGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top center;
     padding: 0 10px;
-    background-color: #f4f6f8; /* 与主背景色一致，制造标题“刻”在边框上的效果 */
+    background-color: #f4f6f8;
     font-weight: bold;
 }</string>
   </property>

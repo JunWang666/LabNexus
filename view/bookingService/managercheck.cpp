@@ -17,6 +17,15 @@ ManagerCheck::ManagerCheck(QWidget *parent) :
     loadData();
 }
 
+ManagerCheck::ManagerCheck(const QString &name, const QString &id, QWidget *parent) :
+    QWidget(parent),ui(new Ui::ManagerCheck) , id(id), name(name){
+    ui->setupUi(this);
+    this->setWindowTitle("审批");
+    this->setAttribute(Qt::WA_DeleteOnClose,false);
+    setUpModel();
+    loadData();
+}
+
 ManagerCheck::~ManagerCheck() {
     delete ui;
 }
@@ -28,6 +37,7 @@ void ManagerCheck::loadData() {
 void ManagerCheck::setUpModel() {
     //初始化模型
     model = new dataModel::BookingDataModel(this);
+    model->setCurrentUserId(id.toInt(),name);
     fliterModel = new fliterModel::FilterProxyMdel(this);
     fliterModel->setSourceModel(model);
     //设置模型

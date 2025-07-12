@@ -10,9 +10,11 @@
 
 #include <QFile>
 
+#include "service/stastic/staticdata.h"
+
 namespace data::mail {
     void dropDB() {
-        QFile dbFile(path);
+        QFile dbFile(service::Path::mail());
         if (dbFile.exists()) {
             if (dbFile.remove()) {
                 log(LogLevel::INFO) << "数据库文件删除成功";
@@ -45,7 +47,7 @@ namespace data::mail {
     }
 
     void buildDB() {
-        QFile dbFile(path);
+        QFile dbFile(service::Path::mail());
         if (!dbFile.exists()) {
             if (dbFile.open(QIODevice::WriteOnly)) {
                 dbFile.close();
@@ -55,16 +57,14 @@ namespace data::mail {
                 return;
             }
             createMailTable();
-            registerSystemUser();
+
         } else {
             log(LogLevel::INFO) << "数据库文件已存在";
         }
-
-        findSystemUser();
     }
 
     void createMailTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return;
@@ -98,7 +98,7 @@ namespace data::mail {
 
     void send_mail(int senderId, int receiverId, const QString &subject, const QString &content,
                    const QString &extra_data) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return;
@@ -106,7 +106,7 @@ namespace data::mail {
 
         QString insertQuery = R"(
             INSERT INTO mail (sender_id, receiver_id, subject, content, send_date, status, extra_data)
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, 0, ?)
+            VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'), 0, ?)
         )";
 
         // 保证 extra_data 为空时传递空字符串，避免违反 NOT NULL 约束
@@ -126,13 +126,14 @@ namespace data::mail {
         mail.subject = record["subject"].toString();
         mail.content = record["content"].toString();
         mail.send_date = QDateTime::fromString(record["send_date"].toString(), Qt::ISODate);
+        mail.send_date = mail.send_date.toTimeZone(service::ApplicationTimeZone);
         mail.status = record["status"].toInt();
         mail.extra_data = record["extra_data"].toString();
         return mail;
     }
 
     QList<Mail> getAllMails(int receiverId, int page, int pageSize) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         QList<Mail> mails;
         log(LogLevel::INFO) << "获取邮件: 接收者ID: " << receiverId << ", 页码: " << page << ", 每页大小: " << pageSize;
         if (!db.isConnected()) {
@@ -159,7 +160,7 @@ namespace data::mail {
     }
 
     QList<Mail> getUnreadMails(int receiverId, int page, int pageSize) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         QList<Mail> mails;
 
         if (!db.isConnected()) {
@@ -187,7 +188,7 @@ namespace data::mail {
     }
 
     Mail getMailById(int mailId) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return Mail();
@@ -206,7 +207,7 @@ namespace data::mail {
     }
 
     int getMailCount(int receiverId) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return 0;
@@ -223,7 +224,7 @@ namespace data::mail {
     }
 
     int getUnreadMailCount(int receiverId) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return 0;
@@ -240,7 +241,7 @@ namespace data::mail {
     }
 
     bool setMailRead(int mailId) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::mail());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "数据库连接失败: " << db.getLastError();
             return false;

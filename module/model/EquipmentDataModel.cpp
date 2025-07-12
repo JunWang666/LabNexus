@@ -65,7 +65,7 @@ namespace dataModel{
             case Col_RentId: record.rentId = value.toInt(); break;
             default: return false;
         }
-        bool success = data::Equipment::updateEquipmentOnRepair(record.id,record.status);
+        bool success = data::Equipment::updateEquipmentOnStatus(record.id,record.status);
         if (success) {
             emit dataChanged(index, index);
             return true;
