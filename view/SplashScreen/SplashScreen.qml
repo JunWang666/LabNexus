@@ -7,123 +7,188 @@ Rectangle {
     height: 400
     color: "transparent"
 
-    // 粒子层
+    // 谷歌风格几何图形背景（空心/边框，无缝横向慢速滚动）
     Item {
+        id: geoBackground
         anchors.fill: parent
+
+        property int cols: 8
+        property int rows: 7
+        property real offset: 0
+
+        NumberAnimation on offset {
+            from: 0
+            to: splashScreen.width
+            duration: 60000
+            running: true
+            loops: Animation.Infinite
+        }
+
         Repeater {
-            model: 15
-            Rectangle {
-                width: 16
-                height: 16
-                radius: width / 2
-                color: Qt.rgba(Math.random(), 0.7, 1.0, 0.12 + Math.random()*0.18)
-                x: Math.random() * splashScreen.width
-                y: Math.random() * splashScreen.height
-                SequentialAnimation on y {
-                    loops: Animation.Infinite
-                    NumberAnimation { to: splashScreen.height; duration: 3400 + Math.random()*1200; easing.type: Easing.InOutQuad }
-                    NumberAnimation { to: 0; duration: 3400 + Math.random()*1200; easing.type: Easing.InOutQuad }
-                }
-                SequentialAnimation on x {
-                    loops: Animation.Infinite
-                    NumberAnimation { to: splashScreen.width; duration: 4200 + Math.random()*1200; easing.type: Easing.InOutQuad }
-                    NumberAnimation { to: 0; duration: 4200 + Math.random()*1200; easing.type: Easing.InOutQuad }
+            model: (geoBackground.cols + 1) * geoBackground.rows
+            delegate: Item {
+                property int col: index % (geoBackground.cols + 1)
+                property int row: Math.floor(index / (geoBackground.cols + 1))
+                width: splashScreen.width / geoBackground.cols
+                height: splashScreen.height / geoBackground.rows
+                // 横向无缝平移，y不变
+                x: ((col * width - geoBackground.offset) % splashScreen.width)
+                y: row * height
+
+                property int shapeType: (row + col) % 3
+
+                Canvas {
+                    anchors.fill: parent
+                    opacity: 0.28
+                    onPaint: {
+                        var ctx = getContext("2d")
+                        ctx.reset()
+                        var w = width
+                        var h = height
+                        ctx.lineWidth = 2.2
+                        ctx.strokeStyle = (parent.shapeType === 0) ? "#2196f3" :
+                            (parent.shapeType === 1) ? "#43a047" : "#fbc02d"
+                        ctx.globalAlpha = 0.8
+                        if (parent.shapeType === 0) { // 六边形
+                            ctx.beginPath()
+                            for(var i=0; i<6; ++i) {
+                                var angle = Math.PI/3 * i - Math.PI/2
+                                var x = w/2 + Math.cos(angle)*w*0.36
+                                var y = h/2 + Math.sin(angle)*h*0.36
+                                if(i===0) ctx.moveTo(x,y)
+                                else ctx.lineTo(x,y)
+                            }
+                            ctx.closePath()
+                            ctx.stroke()
+                        } else if (parent.shapeType === 1) { // 三角形
+                            ctx.beginPath()
+                            ctx.moveTo(w*0.15, h*0.85)
+                            ctx.lineTo(w*0.5, h*0.18)
+                            ctx.lineTo(w*0.85, h*0.85)
+                            ctx.closePath()
+                            ctx.stroke()
+                        } else { // 圆形
+                            ctx.beginPath()
+                            ctx.arc(w/2, h/2, w*0.33, 0, Math.PI*2)
+                            ctx.closePath()
+                            ctx.stroke()
+                        }
+                    }
                 }
             }
         }
     }
 
-    // 动画拼接 LabNexus 字母
+    // Logo动画：从左到右出现，再从左到右消失，循环
     Row {
         id: logoRow
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 80
-        spacing: 4
+        anchors.topMargin: 110
+        spacing: 0
 
         property int animIndex: 0
+        property int fadeIndex: -1
+        property bool fading: false
 
-        Component.onCompleted: letterAnim.start()
-
-        function letterColor(idx) {
-            // 用渐变蓝色
-            var colors = ["#30cfff", "#30eaff", "#30ffff", "#30dfff", "#30ceff", "#30bfff", "#30aaff", "#3088ff"]
-            return colors[idx % colors.length];
+        function restartAnimation() {
+            animIndex = 0
+            fading = false
+            fadeIndex = -1
+            letterAnim.start()
         }
+
+        Component.onCompleted: restartAnimation()
 
         Repeater {
             id: letterRepeater
             model: "LabNexus".length
             delegate: Item {
-                width: 44; height: 60
+                width: 38
+                height: 60
+                property int letterIdx: index
 
-                // 字母
                 Text {
                     id: letterText
                     text: "LabNexus".charAt(index)
-                    font.pixelSize: 48
+                    font.pixelSize: 44
                     font.bold: true
-                    font.family: "Orbitron, 'Segoe UI', 'Arial Black', Arial, sans-serif"
-                    color: logoRow.letterColor(index)
-                    opacity: 0
-                    scale: 2.0
+                    font.family: "Segoe UI, Arial, sans-serif"
+                    color: "#1673ff"
+                    opacity: (logoRow.fading
+                        ? (logoRow.fadeIndex > letterIdx ? 0
+                            : logoRow.fadeIndex === letterIdx ? fadeAnim.currentValue : 1)
+                        : (logoRow.animIndex >= letterIdx ? 1 : 0))
+                    scale: (logoRow.animIndex === letterIdx && !logoRow.fading) ? scaleAnim.currentValue : 1
                     anchors.centerIn: parent
 
-                    // 入场动画，依次拼接每个字母
-                    SequentialAnimation {
-                        id: showAnim
-                        running: logoRow.animIndex >= index
-                        PropertyAnimation { target: letterText; property: "opacity"; from: 0; to: 1; duration: 200 }
-                        PropertyAnimation { target: letterText; property: "scale"; from: 2.0; to: 1.0; duration: 320; easing.type: Easing.OutBack }
-                        PauseAnimation { duration: 80 }
-                        NumberAnimation { target: letterText; property: "scale"; from: 1.0; to: 1.08; duration: 240; easing.type: Easing.InOutQuad; loops: Animation.Infinite; }
+                    NumberAnimation on scale {
+                        id: scaleAnim
+                        from: 1.0
+                        to: 1.18
+                        duration: 120
+                        easing.type: Easing.OutBack
+                        running: logoRow.animIndex === letterIdx && !logoRow.fading
+                        onStopped: scale = 1.0
+                    }
+
+                    NumberAnimation on opacity {
+                        id: fadeAnim
+                        from: 1
+                        to: 0
+                        duration: 70
+                        running: logoRow.fading && logoRow.fadeIndex === letterIdx
                     }
                 }
             }
         }
 
-        // 控制字母拼接动画顺序
         Timer {
             id: letterAnim
-            interval: 260
+            interval: 80 // 速度调节
             repeat: true
             running: false
             onTriggered: {
-                if (logoRow.animIndex < "LabNexus".length-1) {
-                    logoRow.animIndex += 1
+                if (!logoRow.fading) {
+                    if (logoRow.animIndex < "LabNexus".length-1) {
+                        logoRow.animIndex += 1
+                    } else {
+                        logoRow.fading = true
+                        logoRow.fadeIndex = 0
+                    }
                 } else {
-                    // 无限循环拼接动画（可选，如果只拼一次可以注释掉）
-                    // logoRow.animIndex = 0
-                    // letterAnim.restart()
-                    letterAnim.stop()
+                    if (logoRow.fadeIndex < "LabNexus".length-1) {
+                        logoRow.fadeIndex += 1
+                    } else {
+                        logoRow.restartAnimation()
+                    }
                 }
             }
         }
     }
 
-    // 渐变光线条
     Rectangle {
-        width: parent.width * 0.7
-        height: 12
+        width: parent.width * 0.6
+        height: 10
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: logoRow.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 12
         radius: 6
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#00eaff00" }
-            GradientStop { position: 0.5; color: "#00eaff" }
-            GradientStop { position: 1.0; color: "#00eaff00" }
+            GradientStop { position: 0.0; color: "#1673ff00" }
+            GradientStop { position: 0.5; color: "#1673ff88" }
+            GradientStop { position: 1.0; color: "#1673ff00" }
         }
-        opacity: 0.7
+        opacity: 0.6
     }
 
     Text {
         text: "Initializing LabNexus..."
-        font.pixelSize: 18
+        font.pixelSize: 16
         color: "#ffffff"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 48
-        opacity: 0.85
+        opacity: 0.82
     }
 }

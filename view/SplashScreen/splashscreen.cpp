@@ -38,11 +38,6 @@ namespace view {
             int y = (screenGeometry.height() - this->height()) / 2;
             this->move(x, y);
 
-            // 初始化并启动定时器
-            closingTimer = new QTimer(this);
-            connect(closingTimer, &QTimer::timeout, this, &SplashScreen::closeSplashScreen);
-            // 启动定时器，例如3秒后关闭启动屏幕
-            closingTimer->start(3000); // 3000毫秒 = 3秒
         }
 
         SplashScreen::~SplashScreen()
