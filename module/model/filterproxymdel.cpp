@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Nana7mi_ on 25-7-8.
 //
 
@@ -26,6 +26,10 @@ void FilterProxyMdel::setGroupColunm(int column) {
     m_groupColumn = column;
 }
 
+void FilterProxyMdel::setNameColunm(int column){
+    m_nameColumn = column;
+}
+
 void FilterProxyMdel::setUserIdFilter(int userId) {
     m_filterUserId = userId;
     invalidateFilter(); // 应用新的过滤规则
@@ -33,6 +37,11 @@ void FilterProxyMdel::setUserIdFilter(int userId) {
 
 void FilterProxyMdel::setStatusFilter(const QString &status) {
     m_filterStatus = status;
+    invalidateFilter(); // 应用新的过滤规则
+}
+
+void FilterProxyMdel::setnameFilter(const QString &name) {
+    m_filtername = name;
     invalidateFilter(); // 应用新的过滤规则
 }
 
@@ -45,6 +54,7 @@ void FilterProxyMdel::clearFilters() {
     m_filterUserId = -1;
     m_filterStatus.clear();
     m_filterGroup.clear();
+    m_filtername.clear();
     invalidateFilter();
 }
 
@@ -63,11 +73,17 @@ void FilterProxyMdel::clearGroupFilter() {
     invalidateFilter();
 }
 
+void FilterProxyMdel::clearnameFilter() {
+    m_filtername.clear();  // 将仪器名设置为空，即“未激活”
+    invalidateFilter();
+}
+
 bool FilterProxyMdel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
     // 默认认为所有检查都通过
     bool userIdMatch = true;
     bool statusMatch = true;
     bool groupMatch = true;
+    bool nameMatch =true;
 
     // 检查用户ID过滤器是否激活
     if (m_filterUserId != -1 && m_userIdColumn != -1) {
@@ -85,7 +101,12 @@ bool FilterProxyMdel::filterAcceptsRow(int source_row, const QModelIndex &source
         groupMatch = (sourceModel()->data(index).toString() == m_filterGroup);
     }
 
+    if (!m_filtername.isEmpty() && m_nameColumn != -1) {
+        QModelIndex index = sourceModel()->index(source_row, m_nameColumn, source_parent);
+        nameMatch = (sourceModel()->data(index).toString() == m_filtername);
+    }
+
     // 只有所有激活的过滤器条件都满足的行才会被显示（AND 逻辑）
-    return userIdMatch && statusMatch && groupMatch;
+    return userIdMatch && statusMatch && groupMatch && nameMatch;
 }
 } // fliterModel

@@ -1,6 +1,8 @@
-#ifndef KCHANGEMANAGE_H
+﻿#ifndef KCHANGEMANAGE_H
 #define KCHANGEMANAGE_H
 
+#include "module/model/EquipmentDataModel.h"
+#include "module/model/filterproxymdel.h"
 #include "pch.h"
 
 namespace view::equipment {
@@ -17,18 +19,25 @@ class kchangemanage : public QDialog {
 
 public:
     explicit kchangemanage(QWidget *parent = nullptr);
+    void setModel(QAbstractItemModel *model); // 声明setModel
     ~kchangemanage() override;
 
+signals:
+    void dataChanged(); // 通知主界面刷新设备列表
+
 private slots:
-    void on_find_clicked();
-    void on_change_clicked();
     void on_deleteButton_clicked();
-    void on_next_clicked();
-    void on_before_clicked();
-    void on_cancelButton_clicked();
+
+    void on_changeButton_clicked();
+
+    void on_statusButton_clicked();
 
 private:
+
     Ui::kchangemanage *ui;
+    dataModel::EquipmentDataModel *modelRent ;
+    fliterModel::FilterProxyMdel *rentFilterProxyMdel;
+
 };
 
 } // view::equipment
