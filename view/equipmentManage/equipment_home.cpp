@@ -26,9 +26,9 @@ namespace view::equipment {
 equipment_home::equipment_home(QWidget *parent) : QWidget(parent), ui(new view::equipment::Ui::equipment_home)
 {
     ui->setupUi(this);
-     data::Equipment::buildDB();
-     data::Equipment::EquipmentClass::createEquipmentClassTable();
-     data::Equipment::EquipmentInstnace::createEquipmentInstanceTable();
+     // data::Equipment::buildDB();
+     // data::Equipment::EquipmentClass::createEquipmentClassTable();
+     // data::Equipment::EquipmentInstnace::createEquipmentInstanceTable();
 
 
      //初始化模型
@@ -71,12 +71,12 @@ void equipment_home::on_kadd_clicked() //添加器材
     // 创建对话框并设置父对象（自动内存管理）
     kaddmanage *dialog = new kaddmanage(this);
 
-    // 连接对话框的dataAdded信号到主界面的刷新函数（on_kreall_clicked）
+    //连接对话框的dataAdded信号到主界面的刷新函数（on_kreall_clicked）
     connect(dialog, &kaddmanage::dataAdded, this, [this]() {
         on_kreall_clicked(); // 调用整理库数据功能，刷新tableView
     });
 
-    // 显示对话框（模态或非模态均可，此处用show()非模态）
+    //显示对话框（模态或非模态均可，此处用show()非模态）
     dialog->show();
 
 
@@ -337,6 +337,30 @@ void equipment_home::on_searchbtn_clicked() //索引
     ui->tableView->viewport()->update();
     }
 
+    void equipment_home::on_zreturn_clicked()
+    {
+        //给视图指定模型
+        modelRent->fetchData();
+        rentFilterProxyMdel->setSourceModel(modelRent);
+
+
+        ui->tableView->setModel(rentFilterProxyMdel);
+        ui->tableView->hideColumn(dataModel::EquipmentDataModel::Col_ID);
+        ui->tableView->hideColumn(dataModel::EquipmentDataModel::Col_Count);
+        ui->tableView->hideColumn(dataModel::EquipmentDataModel::Col_RentId);
+        ui->tableView->hideColumn(dataModel::EquipmentDataModel::Col_ClassId);
+
+        // 调整列宽以显示数据
+        ui->tableView->resizeColumnsToContents();
+        ui->tableView->horizontalHeader()->setStretchLastSection(true);
+
+
+
+
+        // 调试信息
+        qDebug() << "Model row count:" << modelRent->rowCount();
+        qDebug() << "Model column count:" << modelRent->columnCount();
     }
+}
 
 

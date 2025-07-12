@@ -85,7 +85,7 @@
                   <item>
                    <widget class="QLabel" name="expclass">
                     <property name="text">
-                     <string>仪器类别</string>
+                     <string>设备名称</string>
                     </property>
                    </widget>
                   </item>
@@ -107,7 +107,7 @@
                   <item>
                    <widget class="QLabel" name="expstate">
                     <property name="text">
-                     <string>仪器状态</string>
+                     <string>状态</string>
                     </property>
                    </widget>
                   </item>
@@ -228,7 +228,7 @@
          <item row="2" column="5">
           <widget class="QPushButton" name="zreturn">
            <property name="text">
-            <string>回到主界面</string>
+            <string>还原</string>
            </property>
           </widget>
          </item>

@@ -42,6 +42,8 @@ private slots:
     void on_blacklist_clicked();    // 查看黑名单
     void on_searchbtn_clicked();    // 搜索功能
 
+    void on_zreturn_clicked();
+
 private:
     view::equipment::Ui::equipment_home *ui;
     dataModel::EquipmentDataModel *modelRent;        // 数据模型

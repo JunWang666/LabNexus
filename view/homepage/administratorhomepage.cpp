@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by gouzuang on 25-7-7.
 //
 
@@ -49,6 +49,7 @@ namespace view::homepage {
     void administratorHomepage::on_equipmentManageButton_clicked() {
         service::log() << "管理员 " << A_name << " 点击了器材管理按钮";
         view::equipment::equipment_home *c=new view::equipment::equipment_home();
+        service::MutiWindow::manager().addWindow(c);
         c->show();
         // TODO: 打开设备管理页面
         // auto *equipmentPage = new view::equipment::equipment_home();

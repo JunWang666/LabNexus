@@ -153,3 +153,60 @@ void kchangemanage::on_changeButton_clicked() {
     }
 }
 
+
+void kchangemanage::on_statusButton_clicked()
+{
+    // 获取当前选中行
+    QModelIndex proxyIndex = ui->tableView_change->currentIndex();
+    if (!proxyIndex.isValid()) {
+        QMessageBox::warning(this, "操作失败", "请先选择要修改的设备");
+        return;
+    }
+
+    // 映射到源模型索引
+    QModelIndex sourceIndex = rentFilterProxyMdel->mapToSource(proxyIndex);
+    int row = sourceIndex.row();
+
+    // 获取当前设备名称
+    QString currentName = modelRent->index(row, dataModel::EquipmentDataModel::Col_Status).data().toString();
+
+    // 弹出输入对话框获取新名称
+    bool ok;
+    QString newName = QInputDialog::getText(
+        this,
+        "修改状态",
+        "请输入新状态:",
+        QLineEdit::Normal,
+        currentName,
+        &ok
+        );
+
+    if (!ok || newName.isEmpty()) return; // 用户取消或输入为空
+
+    // 获取设备ID
+    int equipmentId = modelRent->index(row, dataModel::EquipmentDataModel::Col_ID).data().toInt();
+
+    // 更新数据库
+    service::DatabaseManager db(data::Equipment::path);
+    QString escapedName = newName.replace("'", "''");
+    QString query = QString("UPDATE equipment_instance SET name = '%1' WHERE id = %2")
+                        .arg(escapedName).arg(equipmentId);
+
+    if (db.executeNonQuery(query)) {
+        QMessageBox::information(this, "成功", "设备状态已更新");
+        modelRent->fetchData(); // 刷新模型数据
+
+        QFile file("kchange_log.txt");
+        if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+            file.write(QString(query)
+                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
+                           .toUtf8());
+            file.close();
+        }
+
+        emit dataChanged(); // 通知其他界面
+    } else {
+        QMessageBox::critical(this, "失败", "更新失败: " + db.getLastError());
+    }
+}
+

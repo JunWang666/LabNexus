@@ -30,6 +30,8 @@ private slots:
 
     void on_changeButton_clicked();
 
+    void on_statusButton_clicked();
+
 private:
 
     Ui::kchangemanage *ui;
