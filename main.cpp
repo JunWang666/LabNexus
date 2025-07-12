@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
     view::EquipmentClass::EquipmentClassManageHomepage b;
     b.show();
-    //splash.close();
+    splash.close();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
