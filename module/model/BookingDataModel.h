@@ -55,7 +55,8 @@ namespace dataModel {
     public slots:
         // --- 自定义公共槽函数，用于控制模型行为 ---
         void fetchData(); // 从DAL加载/刷新数据的命令
-
+    signals:
+        void approvalStatusChanged();
     private:
         // 存储从数据库加载的记录
         QList<data::Booking::fullBookingRecord> m_records;
