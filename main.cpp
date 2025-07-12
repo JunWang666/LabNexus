@@ -46,10 +46,8 @@ int main(int argc, char *argv[]) {
     }
 
     view::login::loginPage b;
-    view::equipment::equipment_home c;
 
     b.show();
-    c.show();
 
 
     setup_tasks();

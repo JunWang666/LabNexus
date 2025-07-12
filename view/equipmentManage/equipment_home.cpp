@@ -73,7 +73,8 @@ void equipment_home::on_kadd_clicked() //添加器材
 
     //连接对话框的dataAdded信号到主界面的刷新函数（on_kreall_clicked）
     connect(dialog, &kaddmanage::dataAdded, this, [this]() {
-        on_kreall_clicked(); // 调用整理库数据功能，刷新tableView
+        // on_kreall_clicked(); // 调用整理库数据功能，刷新tableView
+        modelRent->fetchData();
     });
 
     //显示对话框（模态或非模态均可，此处用show()非模态）
