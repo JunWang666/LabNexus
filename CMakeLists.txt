@@ -138,6 +138,9 @@ set(SHARED_SOURCES
         view/SplashScreen/splashscreen.cpp
         view/SplashScreen/splashscreen.h
         view/SplashScreen/splashscreen.ui
+        view/RegisterCenter/checkuserblock.cpp
+        view/RegisterCenter/checkuserblock.h
+        view/RegisterCenter/checkuserblock.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 

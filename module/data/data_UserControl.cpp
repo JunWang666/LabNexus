@@ -79,6 +79,12 @@ namespace data::UserControl {
             QString storedPassword = row["password"].toString();
             QString status = row["status"].toString();
 
+            bool issys = permission::isUserInGroup(userId, "System");
+            if (issys) {
+                log(service::LogLevel::ERR) << "登录失败。用户属于系统: " << idNumber;
+                return std::unexpected(UserControlError::UserNotFound);
+            }
+
             if (status != "AllRight") {
                 log(service::LogLevel::ERR) << "登录失败。用户状态异常: " << idNumber << " status: " << status;
                 return std::unexpected(UserControlError::UserNotFound);
@@ -491,6 +497,128 @@ namespace data::UserControl {
                 groupsMap[row["id_number"].toInt()] = row["name"].toString();
             }
             return groupsMap;
+        }
+    }
+    namespace check {
+        QList<int> getAllUserId(int page, int pageSize) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                  SELECT id FROM users WHERE status != 'Deleted' AND id NOT LIKE '-%'
+                    ORDER BY created_at DESC
+                    LIMIT ? OFFSET ?
+              )";
+            QVariantList params;
+            params << pageSize << (page - 1) * pageSize;
+
+            auto results = db.executePreparedQueryAndFetchAll(query, params);
+            QList<int> userIds;
+            for (const auto &row: results) {
+                userIds.append(row["id"].toInt());
+            }
+            return userIds;
+        }
+
+        QList<int> getUncheckedUserId(int page, int pageSize) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                  SELECT id FROM users WHERE status == 'Unchecked' AND id NOT LIKE '-%'
+                    ORDER BY created_at DESC
+                    LIMIT ? OFFSET ?
+              )";
+            int offset = (page - 1) * pageSize;
+            auto results = db.executePreparedQueryAndFetchAll(query, {pageSize, offset});
+            QList<int> userIds;
+            for (const auto &row: results) {
+                userIds.append(row["id"].toInt());
+            }
+            return userIds;
+        }
+
+        QList<int> getAllUserId() {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                  SELECT id FROM users WHERE status != 'Deleted' AND id NOT LIKE '-%'
+              )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {});
+            QList<int> userIds;
+            for (const auto &row: results) {
+                userIds.append(row["id"].toInt());
+            }
+            return userIds;
+        }
+
+        QList<int> getUncheckedUserId() {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                   SELECT id FROM users WHERE status == 'Unchecked' AND id NOT LIKE '-%'
+              )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {});
+            QList<int> userIds;
+            for (const auto &row: results) {
+                userIds.append(row["id"].toInt());
+            }
+            return userIds;
+        }
+
+        int getUncheckedUserCount() {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                   SELECT COUNT(*) as count FROM users WHERE status == 'Unchecked'
+              )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {});
+
+            if (!results.isEmpty()) {
+                return results.first()["count"].toInt();
+            }
+
+            return 0;
+        }
+
+        int getAllUserCount() {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                   SELECT COUNT(*) as count FROM users WHERE status != 'Deleted'
+              )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {});
+
+            if (!results.isEmpty()) {
+                return results.first()["count"].toInt();
+            }
+
+            return 0;
+        }
+
+        bool allowUserRegister(int userId) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                UPDATE users SET status = 'AllRight' WHERE id = ? AND status = 'Unchecked'
+            )";
+            if (!db.executePreparedNonQuery(query, {userId})) {
+                return false;
+            }
+            return true;
+        }
+
+        bool banUser(int userId) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                UPDATE users SET status = 'Banned' WHERE id = ?
+            )";
+            if (!db.executePreparedNonQuery(query, {userId})) {
+                return false;
+            }
+            return true;
+        }
+
+        bool unbanUser(int userId) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                UPDATE users SET status = 'AllRight' WHERE id = ? AND status = 'Banned'
+            )";
+            if (!db.executePreparedNonQuery(query, {userId})) {
+                return false;
+            }
+            return true;
         }
     }
 }

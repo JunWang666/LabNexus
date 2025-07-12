@@ -31,8 +31,6 @@ EquipmentClassManageHomepage::~EquipmentClassManageHomepage() {
 }
 
 void EquipmentClassManageHomepage::initializeUI() {
-    // 假设你的.ui文件中QScrollArea内的QWidget的objectName是scrollAreaWidgetContents
-    // 这与MessageWindow中的messageBoxAreaItem是类似作用
     auto *layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
     layout->setSpacing(5);
     layout->setAlignment(Qt::AlignTop);
@@ -92,6 +90,7 @@ void EquipmentClassManageHomepage::on_addButton_clicked() {
 }
 
 void EquipmentClassManageHomepage::on_refreshButton_clicked() {
+    m_totalPages = data::UserControl::check::getAllUserCount() / m_itemsPerPage + 1;
     loadEquipmentClasses();
 }
 

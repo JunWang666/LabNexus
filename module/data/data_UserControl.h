@@ -270,6 +270,17 @@ namespace data::UserControl {
         QMap<int,QString> loadUsersMap();
         QMap<int,QString> loadGroupsMap();
     }
+    namespace check {
+        QList<int> getAllUserId(int page = 1, int itemsPerPage = 10);
+        QList<int> getUncheckedUserId(int page = 1, int itemsPerPage = 10);
+        QList<int> getAllUserId();
+        QList<int> getUncheckedUserId();
+        int getUncheckedUserCount();
+        int getAllUserCount();
+        bool allowUserRegister(int userId);
+        bool banUser(int userId);
+        bool unbanUser(int userId);
+    }
 }
 
 

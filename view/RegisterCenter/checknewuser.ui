@@ -6,45 +6,148 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>476</height>
+    <width>555</width>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>CheckNewUser</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/* ---- 整体页面背景 ---- */
+QWidget#view--EquipmentClass--EquipmentClassManageHomepage {
+    background-color: #FAFAFA; /* 使用一个非常柔和的灰白色作为背景 */
+}
+
+/* ---- 全局标签和标题 ---- */
+QLabel {
+    background-color: transparent;
+    color: #1F1F1F;
+    font-family: &quot;Segoe UI Variable&quot;, &quot;Microsoft YaHei UI&quot;;
+}
+
+/* 主标题，增加一些底部间距 */
+QLabel#label_Title {
+    padding-bottom: 10px;
+}
+
+
+/* ---- 信息卡片 ---- */
+
+/* 中间层(frame_2)增加淡色背景、圆角和内边距 */
+QFrame#frame_2 {
+    background-color: #F6F6F6; /* 一个非常非常淡的灰色 */
+    border: none;
+    border-radius: 8px;        /* 圆角比内层卡片稍大，形成包裹感 */
+    padding: 2px;              /* 关键：增加一点内边距，让背景色能露出来 */
+}
+
+/* 将卡片样式应用到最内层的 frame_4 */
+QFrame#frame_4,QFrame#frame_5 {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5; /* 微妙的边框，增加立体感 */
+    border-radius: 6px;
+    padding: 10px;
+}
+
+
+/* ---- 操作栏 (新建、翻页) ---- */
+QFrame#frame_3 {
+    background-color: transparent;
+    border: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+
+QPushButton#pushButton:hover {
+    background-color: #1185E5;
+}
+QPushButton#pushButton:pressed {
+    background-color: #006ABC;
+}
+
+
+/* ---- 翻页按钮 (次要操作按钮) ---- */
+QPushButton#prevButton, QPushButton#nextButton {
+    background-color: transparent;
+    color: #3B3B3B;
+    border: 0px solid #E5E5E5;
+    border-radius: 4px;
+    font-weight: 600;
+    /* 固定大小，使其看起来更像图标按钮 */
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
+}
+QPushButton#prevButton:hover, QPushButton#nextButton:hover {
+    background-color: #E5E5E5;
+    border-color: #D0D0D0;
+}
+QPushButton#prevButton:pressed, QPushButton#nextButton:pressed {
+    background-color: #D0D0D0;
+    border-color: #C2C2C2;
+    color: #1F1F1F;
+}
+
+/* 页码标签 */
+QLabel#pageLabel {
+    font-weight: 600;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+
+/* ---- 滚动区域 ---- */
+QScrollArea#messageBoxArea {
+    background-color: transparent;
+    border: none; /* 移除滚动区域自身的边框 */
+}
+
+/* 滚动区域的内容QWidget，也设为透明，让里面的卡片自己决定背景 */
+QWidget#scrollAreaWidgetContents {
+    background-color: transparent;
+}
+
+
+/* ---- 全局滚动条美化 ---- */
+QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 8px;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: #D0D0D0;
+    border-radius: 4px;
+    min-height: 25px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #A0A0A0;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="label_Title">
+     <property name="font">
+      <font>
+       <family>Segoe UI Variable</family>
+       <pointsize>20</pointsize>
+       <italic>false</italic>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string>注册管理</string>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item>
@@ -57,9 +160,225 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QFrame" name="frame_4">
+        <property name="minimumSize">
+         <size>
+          <width>75</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_num">
+           <property name="font">
+            <font>
+             <family>Segoe UI Variable</family>
+             <pointsize>16</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <family>Segoe UI Variable</family>
+             <pointsize>12</pointsize>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>总数</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="frame_5">
+        <property name="minimumSize">
+         <size>
+          <width>75</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Shape::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Raised</enum>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_num_2">
+           <property name="font">
+            <font>
+             <family>Segoe UI Variable</family>
+             <pointsize>16</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="font">
+            <font>
+             <family>Segoe UI Variable</family>
+             <pointsize>12</pointsize>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>待审批</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_3">
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="addButton">
+        <property name="styleSheet">
+         <string notr="true">/* ---- “新建”按钮 (主操作按钮) ---- */
+QPushButton {
+    background-color: #0078D4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 10pt;
+}</string>
+        </property>
         <property name="text">
-         <string>PushButton</string>
+         <string>新建</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="refreshButton">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 10pt;
+}</string>
+        </property>
+        <property name="text">
+         <string>刷新</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="prevButton">
+        <property name="text">
+         <string>&lt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="pageLabel">
+        <property name="text">
+         <string>1 / 5</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="nextButton">
+        <property name="text">
+         <string>&gt;</string>
         </property>
        </widget>
       </item>
@@ -67,7 +386,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QScrollArea" name="messageBoxArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -76,8 +395,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>380</width>
-        <height>320</height>
+        <width>537</width>
+        <height>426</height>
        </rect>
       </property>
      </widget>

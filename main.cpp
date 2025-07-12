@@ -19,6 +19,7 @@
 #include "view/loginPage/registerpage.h"
 #include "view/messageCenter/messagewindow.h"
 #include "view/equipmentManage/equipment_home.h"
+#include "view/RegisterCenter/checknewuser.h"
 #include "view/SplashScreen/splashscreen.h"
 
 void setup_tasks() {
@@ -32,8 +33,8 @@ void setup_tasks() {
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    view::SplashScreen::SplashScreen splash;
-    splash.show();
+    //view::SplashScreen::SplashScreen splash;
+    //splash.show();
 
 
     service::logger::instance().setLogFile(
@@ -54,9 +55,9 @@ int main(int argc, char *argv[]) {
     //     log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     // }
 
-    view::EquipmentClass::EquipmentClassManageHomepage b;
+    view::RegisterCenter::CheckNewUser b;
     b.show();
-    splash.close();
+    //splash.close();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
