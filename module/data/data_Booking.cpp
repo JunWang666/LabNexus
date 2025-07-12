@@ -188,8 +188,7 @@ namespace data::Booking {
         }
     }
 
-    bool updateBookingOnstatus(int id, const QString &status,int approvalId) {
-        service::DatabaseManager db(service::Path::booking());
+    bool updateBookingOnstatus(service::DatabaseManager &db,int id, const QString &status,int approvalId) {
         QString queryString = R"(
         UPDATE booking_approval
         SET approval_status = ? , approval_time = ? , approver_id = ? WHERE booking_id = ?)";
@@ -218,7 +217,7 @@ namespace data::Booking {
             db.rollbackTransaction();
             return false;
         }
-        if (!updateBookingOnstatus(bookingId,"同意",approverId)) {
+        if (!updateBookingOnstatus(db,bookingId,"同意",approverId)) {
             log(LogLevel::ERR) << "更新当前申请状态失败，回滚事务。";
             db.rollbackTransaction();
             return false;
@@ -234,7 +233,7 @@ namespace data::Booking {
         for (const auto& row : otherBookings) {
             int otherBookingId = row["booking_id"].toInt();
             // 拒绝其他申请，审批人ID可以设为0或当前审批人ID，表示系统自动拒绝
-            if (!updateBookingOnstatus(otherBookingId, "拒绝", 0)) {
+            if (!updateBookingOnstatus(db,otherBookingId, "拒绝", 0)) {
                 log(LogLevel::ERR) << "自动拒绝其他申请失败 (ID: " << otherBookingId << ")，回滚事务。";
                 db.rollbackTransaction();
                 return false;
