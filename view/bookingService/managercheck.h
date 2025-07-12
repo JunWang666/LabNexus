@@ -19,6 +19,7 @@ Q_OBJECT
 
 public:
     explicit ManagerCheck(QWidget *parent = nullptr);
+    explicit ManagerCheck(const QString& name,const QString& id,QWidget *parent = nullptr);
     ~ManagerCheck() override;
     void loadData();
     void setUpModel();
@@ -29,6 +30,9 @@ private:
     Ui::ManagerCheck *ui;
     dataModel::BookingDataModel *model;
     fliterModel::FilterProxyMdel * fliterModel;
+
+    QString id;
+    QString name;
 };
 } // view::Order
 

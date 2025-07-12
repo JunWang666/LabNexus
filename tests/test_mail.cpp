@@ -2,6 +2,7 @@
 #include "module/data/data_mail.h"
 #include "module/data/data_UserControl.h"
 #include "service/logger/logger.h"
+#include "service/stastic/sharedFunctions.h"
 
 class TestMail : public QObject {
     Q_OBJECT
@@ -21,6 +22,8 @@ void TestMail::initTestCase() {
     data::mail::dropDB();
     data::UserControl::buildDB();
     data::mail::buildDB();
+    service::initDB();
+
 
     auto senderResult = data::UserControl::Login::createNewUser("sender_id", "sender", "password", "Student");
     QVERIFY(senderResult.has_value());

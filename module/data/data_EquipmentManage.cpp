@@ -6,32 +6,19 @@
 
 namespace data::Equipment {
     void dropDB() {
-        QFile dbFile(path);
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功" << path;
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        service::DatabaseManager db(service::Path::equipment());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS equipment_instance");
+            db.executeNonQuery("DROP TABLE IF EXISTS equipment_class");
+            log(LogLevel::INFO) << "数据库表删除成功 (equipment_instance, equipment_class)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
     void buildDB() {
-        QFile dbFile(path);
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功" << path;
-            } else {
-                log(service::LogLevel::ERR) << "数据库文件创建失败";
-            }
-            EquipmentClass::createEquipmentClassTable();
-            EquipmentInstnace::createEquipmentInstanceTable();
-        } else {
-            log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
+        EquipmentClass::createEquipmentClassTable();
+        EquipmentInstnace::createEquipmentInstanceTable();
     }
 
     /**
@@ -40,7 +27,7 @@ namespace data::Equipment {
      */
     QList<fullEquipmentRecord> loadFullEquipmentRecords() {
         QList<fullEquipmentRecord> records;
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::equipment());
 
         // 使用 JOIN 查询将实例表和类别表关联起来
         // i 是 instance 的别名, c 是 class 的别名
@@ -77,7 +64,7 @@ namespace data::Equipment {
     }
 
     bool updateEquipmentOnReturn(int id) {
-        service::DatabaseManager db("./equipment.db");
+        service::DatabaseManager db(service::Path::equipment());
         QString queryString = R"(
         UPDATE equipment_instance
         SET status = ?, rentId = ?
@@ -91,8 +78,8 @@ namespace data::Equipment {
         return success;
     }
 
-    bool updateEquipmentOnRepair(int id, const QString &status) {
-        service::DatabaseManager db("./equipment.db");
+    bool updateEquipmentOnStatus(int id, const QString &status) {
+        service::DatabaseManager db(service::Path::equipment());
         QString queryString = R"(
         UPDATE equipment_instance
         SET status = ? WHERE id = ?)";
@@ -105,13 +92,28 @@ namespace data::Equipment {
         return success;
     }
 
+    bool updateEquipmentOnLoan(int equipmentId, int borrowerId) {
+        service::DatabaseManager db(service::Path::equipment());
+        QString queryString = R"(
+        UPDATE equipment_instance
+        SET  rentId = ?
+        WHERE id = ?)";
+        QVariantList params;
+        params <<  borrowerId << equipmentId;
+        bool success = db.executePreparedNonQuery(queryString, params);
+        if (!success) {
+            log(LogLevel::ERR) << "更新设备借出状态失败:" << db.getLastError();
+        }
+        return success;
+    }
+
     QStringList getEquipmentOnStatus(const QString &status) {
         QStringList list;
         QList<fullEquipmentRecord> records;
         records = loadFullEquipmentRecords();
         for (const auto &record: records) {
             if (record.status == status) {
-                list.append(record.type);
+                list.append(record.name);
             }
         }
         return list;
@@ -120,12 +122,12 @@ namespace data::Equipment {
 
     EquipmentIds getEquipmentIdsByName(const QString &devName) {
         EquipmentIds result;
-        service::DatabaseManager db("./equipment.db");
+        service::DatabaseManager db(service::Path::equipment());
         if (!db.isConnected()) {
             return result; // 返回无效的ID
         }
 
-        QString queryString = "SELECT id, equipment_class_id FROM equipment WHERE name = ?";
+        QString queryString = "SELECT id, class_id FROM equipment_instance WHERE name = ?";
         QVariantList params = {devName};
 
         // 使用你已有的 executePreparedQueryAndFetchAll 函数
@@ -143,7 +145,7 @@ namespace data::Equipment {
 
     namespace EquipmentClass {
         void createEquipmentClassTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             if (!db.tableExists("equipment_class")) {
                 QString createTableQuery = R"(
                     CREATE TABLE equipment_class (
@@ -153,7 +155,8 @@ namespace data::Equipment {
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         total_amount INTEGER NOT NULL DEFAULT 0,
                         usable_amount INTEGER NOT NULL DEFAULT 0,
-                        alarm_amount INTEGER NOT NULL DEFAULT 0
+                        alarm_amount INTEGER NOT NULL DEFAULT 0,
+                        status TEXT NOT NULL DEFAULT 'Allright'
                     )
                 )";
                 db.executeNonQuery(createTableQuery);
@@ -164,9 +167,9 @@ namespace data::Equipment {
         }
 
         QString getEquNameFromEquClassId(int classId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             QString queryString = QString(R"(
-            SELECT name FROM equipment_class WHERE id = %1
+            SELECT name FROM equipment_class WHERE id = %1 AND status != 'deleted'
         )").arg(classId);
             auto results = db.executeQueryAndFetchAll(queryString);
             if (!results.isEmpty()) {
@@ -176,9 +179,9 @@ namespace data::Equipment {
         }
 
         int getEquCountFromEquClassId(int classId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             QString queryString = QString(R"(
-                    SELECT usable_amount FROM equipment_class WHERE id = %1
+                    SELECT usable_amount FROM equipment_class WHERE id = %1 AND status != 'deleted'
                 )").arg(classId);
             auto results = db.executeQueryAndFetchAll(queryString);
             if (!results.isEmpty()) {
@@ -186,18 +189,194 @@ namespace data::Equipment {
             }
             return 0;
         }
+
+        int getEquClassPageCount(int pageSize) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class WHERE status != 'deleted'";
+            auto results = db.executeQueryAndFetchAll(queryString);
+            if (!results.isEmpty()) {
+                int total = results.first()["total"].toInt();
+                return (total + pageSize - 1) / pageSize;
+            }
+            return 0;
+        }
+
+        int getEquClassCount() {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = "SELECT COUNT(*) AS total FROM equipment_class WHERE status != 'deleted'";
+            auto results = db.executeQueryAndFetchAll(queryString);
+            if (!results.isEmpty()) {
+                int total = results.first()["total"].toInt();
+                return total;
+            }
+            return 0;
+        }
+
+        QList<EquipmentClassRecord> getEquClassList(int page, int pageSize) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                SELECT
+                    id,
+                    name,
+                    description,
+                    created_at,
+                    total_amount,
+                    usable_amount,
+                    alarm_amount
+                FROM
+                    equipment_class
+                WHERE status != 'deleted'
+                LIMIT ? OFFSET ?
+                )";
+
+            QVariantList params;
+            params << pageSize << (page - 1) * pageSize;
+
+            auto results = db.executePreparedQueryAndFetchAll(queryString, params);
+
+            QList<EquipmentClassRecord> records;
+            for (const auto &row: results) {
+                EquipmentClassRecord rec;
+                rec.id = row["id"].toInt();
+                rec.name = row["name"].toString();
+                rec.description = row["description"].toString();
+                rec.created_at = row["created_at"].toDateTime();
+                rec.total_amount = row["total_amount"].toInt();
+                rec.usable_amount = row["usable_amount"].toInt();
+                rec.alarm_amount = row["alarm_amount"].toInt();
+                records.append(rec);
+            }
+            return records;
+        }
+
+        EquipmentClassRecord getEquipmentClassById(int classId) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                SELECT id, name, description, created_at, total_amount, usable_amount, alarm_amount
+                FROM equipment_class
+                WHERE id = ? AND status != 'deleted'
+            )";
+
+            auto results = db.executePreparedQueryAndFetchAll(queryString, {classId});
+
+            EquipmentClassRecord rec;
+            rec.id = -1; // 默认为无效ID
+
+            if (!results.isEmpty()) {
+                const auto &row = results.first();
+                rec.id = row["id"].toInt();
+                rec.name = row["name"].toString();
+                rec.description = row["description"].toString();
+                rec.created_at = row["created_at"].toDateTime();
+                rec.total_amount = row["total_amount"].toInt();
+                rec.usable_amount = row["usable_amount"].toInt();
+                rec.alarm_amount = row["alarm_amount"].toInt();
+            }
+            return rec;
+        }
+
+        bool updateEquipmentClass(const EquipmentClassRecord &record) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                UPDATE equipment_class
+                SET name = ?, description = ?, alarm_amount = ?
+                WHERE id = ?
+            )";
+
+            QVariantList params;
+            params << record.name << record.description << record.alarm_amount << record.id;
+
+            bool success = db.executePreparedNonQuery(queryString, params);
+            if (!success) {
+                log(LogLevel::ERR) << "更新设备类别失败:" << db.getLastError();
+            }
+            return success;
+        }
+
+        bool recalculateClassCounts(int classId) {
+            service::DatabaseManager db(service::Path::equipment());
+            if (!db.isConnected()) {
+                log(LogLevel::ERR) << "数据库未连接，无法重新统计数量。";
+                return false;
+            }
+
+            // 1. 统计总数 (所有非“已删除”状态的设备实例)
+            QString totalQuery = "SELECT COUNT(*) FROM equipment_instance WHERE class_id = ? AND status != 'deleted'";
+            auto totalResult = db.executePreparedQueryAndFetchAll(totalQuery, {classId});
+            int totalAmount = 0;
+            if (!totalResult.isEmpty()) {
+                totalAmount = totalResult.first().value("COUNT(*)").toInt();
+            }
+
+            // 2. 统计可用数量 (状态为“可用”的设备实例)
+            QString usableQuery = "SELECT COUNT(*) FROM equipment_instance WHERE class_id = ? AND status = '可用'";
+            auto usableResult = db.executePreparedQueryAndFetchAll(usableQuery, {classId});
+            int usableAmount = 0;
+            if (!usableResult.isEmpty()) {
+                usableAmount = usableResult.first().value("COUNT(*)").toInt();
+            }
+
+            // 3. 将新的统计结果更新回 equipment_class 表
+            QString updateQuery = R"(
+                UPDATE equipment_class
+                SET total_amount = ?, usable_amount = ?
+                WHERE id = ?
+            )";
+            QVariantList params;
+            params << totalAmount << usableAmount << classId;
+
+            bool success = db.executePreparedNonQuery(updateQuery, params);
+            if (!success) {
+                log(LogLevel::ERR) << "更新设备类别的统计数量失败:" << db.getLastError();
+            }
+
+            return success;
+        }
+
+        int addEquipmentClass(const EquipmentClassRecord &record) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                INSERT INTO equipment_class (name, description, alarm_amount, status)
+                VALUES (?, ?, ?, 'Allright')
+            )";
+
+            QVariantList params;
+            params << record.name << record.description << record.alarm_amount;
+
+            // 直接调用快捷方法来执行插入并获取ID
+            int newId = db.executePreparedInsertAndGetId(queryString, params);
+
+            // 根据该函数的返回值判断是否成功。通常，失败会返回一个像-1这样的无效值。
+            if (newId == -1) {
+                log(LogLevel::ERR) << "添加新设备类别失败:" << db.getLastError();
+            }
+
+            return newId;
+        }
+        // 新增：删除设备类别（软删除，设置status为deleted）
+        bool deleteEquipmentClass(int classId) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                UPDATE equipment_class SET status = 'deleted' WHERE id = ?
+            )";
+            bool success = db.executePreparedNonQuery(queryString, {classId});
+            if (!success) {
+                log(LogLevel::ERR) << "删除设备类别失败:" << db.getLastError();
+            }
+            return success;
+        }
     }
 
     namespace EquipmentInstnace {
         void createEquipmentInstanceTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::equipment());
             if (!db.tableExists("equipment_instance")) {
                 QString createTableQuery = R"(
                 CREATE TABLE equipment_instance (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL,
                         class_id INTEGER NOT NULL,
-                        status TEXT NOT NULL DEFAULT 'useable',
+                        status TEXT NOT NULL DEFAULT '可用',
                         rentId INTEGER,
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (class_id) REFERENCES equipment_class (id) ON DELETE CASCADE
