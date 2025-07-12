@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by gouzuang on 25-7-7.
 //
 
@@ -26,7 +26,7 @@ namespace view::homepage {
 
         ~administratorHomepage() override;
 
-    private slots:
+    public slots:
         void on_equipmentManageButton_clicked(); // 器材管理
         void on_approvalButton_clicked(); // 审批
         void on_userManageButton_clicked(); // 用户管理
