@@ -70,7 +70,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>所在教室</string>
+         <string>仪器类</string>
         </property>
        </widget>
       </item>
@@ -111,7 +111,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>仪器类型</string>
+         <string>仪器名</string>
         </property>
        </widget>
       </item>

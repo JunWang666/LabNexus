@@ -57,6 +57,8 @@ namespace data::Equipment {
                 equipment_instance AS i
             JOIN
                 equipment_class AS c ON i.class_id = c.id
+            WHERE
+                i.status != 'delete'
         )";
 
         auto results = db.executeQueryAndFetchAll(queryString);

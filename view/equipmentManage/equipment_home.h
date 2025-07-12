@@ -7,6 +7,8 @@
 
 #include <QWidget>
 #include "module/data/data_EquipmentManage.h"
+#include "module/model/EquipmentDataModel.h"
+#include "view/bookingService/managercheck.h"
 
 namespace view::equipment {
 
@@ -42,6 +44,8 @@ private slots:
 
 private:
     view::equipment::Ui::equipment_home *ui;
+    dataModel::EquipmentDataModel *modelRent;        // 数据模型
+    fliterModel::FilterProxyMdel *rentFilterProxyMdel;
 };
 
 } // view::equipment
