@@ -17,18 +17,19 @@ namespace view {
         {
             Q_OBJECT
 
-        public:
+public:
             explicit SplashScreen(QWidget *parent = nullptr);
             ~SplashScreen();
 
             signals:
-                void splashFinished();
+                void splashScreenClosed(); // 定义一个信号，用于通知主程序启动屏幕已关闭
+
+        private slots:
+            void closeSplashScreen(); // Slot来处理关闭逻辑
 
         private:
-            // 指向UI的指针不变，因为它是由uic工具在全局Ui命名空间生成的
             Ui::SplashScreen *ui;
-
-            void startClosingTimer();
+            QTimer *closingTimer; // 定时器，用于延迟关闭
         };
 
     } // namespace SplashScreen

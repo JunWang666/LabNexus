@@ -4,6 +4,8 @@
 #include "module/data/data_Booking.h"
 #include <QTableView>
 #include <qtimezone.h>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 
 #include "module/data/data_mail.h"
 #include "module/model/BookingDataModel.h"
@@ -33,6 +35,7 @@ int main(int argc, char *argv[]) {
     view::SplashScreen::SplashScreen splash;
     splash.show();
 
+
     service::logger::instance().setLogFile(
         QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
     service::logger::instance().setDataLogFile("log/data.log");
@@ -52,8 +55,8 @@ int main(int argc, char *argv[]) {
     // }
 
     view::EquipmentClass::EquipmentClassManageHomepage b;
-
-    //b.show();
+    b.show();
+    splash.close();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
