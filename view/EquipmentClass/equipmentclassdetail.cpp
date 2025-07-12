@@ -21,7 +21,8 @@ namespace view::EquipmentClass {
 
         setWindowTitle("新建设备类别");
         ui->UpdateButton->setText("创建");
-        ui->UpdateButton->setEnabled(false); // 默认不可点击
+        ui->UpdateButton->setEnabled(false);
+        ui->message->setVisible(false);
 
         // 清空字段并设置默认值
         ui->EquName->clear();
@@ -43,6 +44,7 @@ namespace view::EquipmentClass {
         service::style::setMica(this);
 
         ui->UpdateButton->setEnabled(false);
+        ui->message->setVisible(false);
 
         // --- 1. 获取并填充设备类别的基本信息 ---
         data::Equipment::EquipmentClass::EquipmentClassRecord currentClass;
@@ -151,9 +153,9 @@ namespace view::EquipmentClass {
                 ui->TotalNum->setText(QString::number(m_originalRecord.total_amount));
 
                 ui->UsableNum->setText(QString::number(m_originalRecord.usable_amount));
-                QMessageBox::information(this, "成功", "信息更新与数量统计均已完成。");
+                show_message("信息更新与数量统计均已完成。");
             } else {
-                QMessageBox::critical(this, "严重错误", "数据已更新，但在刷新界面时无法重新获取数据。");
+                show_message("数据已尝试更新，但在刷新界面时无法重新获取数据。请手动确认更改已完成。");
             }
             ui->UpdateButton->setEnabled(false);
 
@@ -186,5 +188,13 @@ namespace view::EquipmentClass {
 
     void EquipmentClassDetail::check_can_create() {
         ui->UpdateButton->setEnabled(!ui->EquName->text().trimmed().isEmpty());
+    }
+
+    void EquipmentClassDetail::show_message(QString message, int timeout) {
+        ui->message->setText(message);
+        ui->message->setVisible(true);
+        QTimer::singleShot(timeout, this, [this]() {
+            ui->message->setVisible(false);
+        });
     }
 } // view::EquipmentClass

@@ -57,6 +57,7 @@ namespace view::EquipmentClass {
         int m_classId; // 存储当前页面的类别ID
         data::Equipment::EquipmentClass::EquipmentClassRecord m_originalRecord;
         int m_maxDescriptionHeight{};
+        void show_message(QString message, int timeout = 10000);
     };
 } // view::EquipmentClass
 

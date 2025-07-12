@@ -120,6 +120,15 @@ set(SHARED_SOURCES
         view/EquipmentClass/equipmentclassdetail.cpp
         view/EquipmentClass/equipmentclassdetail.h
         view/EquipmentClass/equipmentclassdetail.ui
+        view/EquipmentClass/equipmentinstancebutton.cpp
+        view/EquipmentClass/equipmentinstancebutton.h
+        view/EquipmentClass/equipmentinstancebutton.ui
+        view/EquipmentClass/equipmentclassmanagehomepage.cpp
+        view/EquipmentClass/equipmentclassmanagehomepage.h
+        view/EquipmentClass/equipmentclassmanagehomepage.ui
+        view/EquipmentClass/equipmentclassblock.cpp
+        view/EquipmentClass/equipmentclassblock.h
+        view/EquipmentClass/equipmentclassblock.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 
@@ -128,12 +137,6 @@ set(QRC_FILES
         view/loginPage/style.qrc
         assets/style/style.qrc
         assets/style/style_res.qrc
-        view/EquipmentClass/equipmentclassmanagehomepage.cpp
-        view/EquipmentClass/equipmentclassmanagehomepage.h
-        view/EquipmentClass/equipmentclassmanagehomepage.ui
-        view/EquipmentClass/equipmentclassblock.cpp
-        view/EquipmentClass/equipmentclassblock.h
-        view/EquipmentClass/equipmentclassblock.ui
 )
 
 # 5. 定义库的集合，方便重用
