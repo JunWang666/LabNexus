@@ -49,7 +49,7 @@ kchangemanage::~kchangemanage() {
     delete ui;
 }
 
-// 删除按钮功能 - 将选中行状态改为'delete'
+// 删除按钮功能 - 将选中行状态改为'deleted'
 void kchangemanage::on_deleteButton_clicked() {
     // 获取当前选中行
     QModelIndex proxyIndex = ui->tableView_change->currentIndex();
@@ -76,7 +76,7 @@ void kchangemanage::on_deleteButton_clicked() {
 
     // 更新数据库
     service::DatabaseManager db(data::Equipment::path);
-    QString query = QString("UPDATE equipment_instance SET status = 'delete' WHERE id = %1")
+    QString query = QString("UPDATE equipment_instance SET status = 'deleted' WHERE id = %1")
                         .arg(equipmentId);
 
     if (db.executeNonQuery(query)) {
