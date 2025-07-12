@@ -171,7 +171,7 @@ void Rent::on_btnSend_clicked()
 //点击查看按钮查看申请
 void Rent::on_btnCheck_clicked()
 {
-    checkApply = new Apply();
+    checkApply = new Apply(name,id);
     checkApply->show();
 }
 

@@ -5,6 +5,8 @@
 #include <Qt>
 #include "BookingDataModel.h"
 
+#include "EquipmentDataModel.h"
+
 namespace dataModel {
 
 
@@ -64,58 +66,34 @@ namespace dataModel {
     }
 
     bool BookingDataModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-        if (role != Qt::EditRole || !index.isValid())
+        if (role != Qt::EditRole || !index.isValid() || index.column() != Col_ApprovalStatus) {
             return false;
+        }
         auto &rec = m_records[index.row()];
-        const int col = index.column();
-        // determine which table to update
-        static const QStringList allFields = {
-            "id", "user_id", "user_name", "user_group", "create_date",
-            "request_start_time", "request_end_time", "actual_start_time", "actual_end_time",
-            "approval_status", "approval_time", "approver_id", "approver_name"
-        };
-        const QString &fieldName = allFields.at(col);
-        bool ok = false;
-        if (col > Col_Id && col <= Col_CreateDate) {
-            ok = data::Booking::updateBookingInfoField(rec.id, fieldName, value);
-        } else if (col >= Col_RequestStartDate && col <= Col_ActualEndDate) {
-            ok = data::Booking::updateBookingTimeField(rec.id, fieldName, value);
-        } else if (col >= Col_ApprovalStatus && col <= Col_ApproverName) {
-            ok = data::Booking::updateBookingApprovalField(rec.id, fieldName, value);
+        QString newStatus = value.toString();
+        if (rec.approvalStatus == newStatus) {
+            return false;
         }
-        if (ok) {
-            // update local record
-            switch (col) {
-                case Col_UserId: rec.userId = value.toInt();
-                    break;
-                case Col_UserName: rec.userName = value.toString();
-                    break;
-                case Col_UserGroup: rec.userGroup = value.toString();
-                    break;
-                case Col_CreateDate: rec.createDate = value.toDateTime();
-                    break;
-                case Col_RequestStartDate: rec.requestStartDate = value.toDateTime();
-                    break;
-                case Col_RequestEndDate: rec.requestEndDate = value.toDateTime();
-                    break;
-                case Col_ActualStartDate: rec.actualStartDate = value.toDateTime();
-                    break;
-                case Col_ActualEndDate: rec.actualEndDate = value.toDateTime();
-                    break;
-                case Col_ApprovalStatus: rec.approvalStatus = value.toString();
-                    break;
-                case Col_ApprovalDate: rec.approvalDate = value.toDateTime();
-                    break;
-                case Col_ApproverID: rec.approverID = value.toInt();
-                    break;
-                case Col_ApproverName: rec.approverName = value.toString();
-                    break;
-                default: break;
-            }
+        bool success = false;
+        if (newStatus == "同意") {
+            success = data::Booking::processApprovalTransaction(rec.id,rec.equipmentId,rec.userId,approvalId);
+            rec.approvalStatus = newStatus;
+            emit approvalStatusChanged();
             emit dataChanged(index, index);
-            return true;
         }
-        return false;
+        else {
+            service::DatabaseManager db(data::Booking::path);
+            success = data::Booking::updateBookingOnstatus(db,rec.id,rec.approvalStatus,approvalId);
+            if (success) {
+                rec.approvalStatus = newStatus;
+                rec.approverID = approvalId;
+                rec.approverName = approverName;
+                rec.approvalDate = QDateTime::currentDateTime();
+                emit approvalStatusChanged();
+                emit dataChanged(index, index.siblingAtColumn(Col_ApproverName));
+            }
+        }
+        return success;
     }
 
     Qt::ItemFlags BookingDataModel::flags(const QModelIndex &index) const {
@@ -127,9 +105,27 @@ namespace dataModel {
         return f;
     }
 
+    void BookingDataModel::setCurrentUserId(int id,const QString& name) {
+        approvalId = id;
+        approverName = name;
+    }
+
     void BookingDataModel::fetchData() {
         beginResetModel();
         m_records = data::Booking::loadBookingFullRecords();
+        QMap<int,QString> usersMap = data::UserControl::UserInfo::loadUsersMap();
+        QMap<int,QString> groupsMap = data::UserControl::UserInfo::loadGroupsMap();
+        for (auto & rec : m_records) {
+            if (usersMap.contains(rec.userId)) {
+                rec.userName = usersMap.value(rec.userId);
+            }
+            if (usersMap.contains(rec.approverID) && rec.approverID > 0) {
+                rec.approverName = usersMap.value(rec.approverID);
+            }
+            if (groupsMap.contains(rec.userId)) {
+                rec.userGroup = groupsMap.value(rec.userId);
+            }
+        }
         endResetModel();
     }
 } // namespace dataModel

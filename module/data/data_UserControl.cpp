@@ -8,61 +8,44 @@
 
 namespace data::UserControl {
     void dropDB() {
-        QFile dbFile(path);
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功";
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        // 兼容 MuSQL 场景，尝试删除数据库表而不是物理文件
+        service::DatabaseManager db(service::Path::user());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS users");
+            db.executeNonQuery("DROP TABLE IF EXISTS groups");
+            db.executeNonQuery("DROP TABLE IF EXISTS user_groups");
+            log(LogLevel::INFO) << "数据库表删除成功 (users, groups, user_groups)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
     void buildDB() {
-        QFile dbFile(path);
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功";
-            } else {
-                log(service::LogLevel::ERR) << "数据库文件创建失败";
-            }
+        // 兼容 MuSQL 场景，不检测物理文件，直接尝试建表和创建默认用户
+        Login::createUserTable();
+        permission::createGroupTable();
+        permission::createUserGroupTable();
 
-            Login::createUserTable();
-            permission::createGroupTable();
-            permission::createUserGroupTable();
-            // 创建用户组
-            if (auto r = permission::createGroup("Student", "学生组"); !r) {
-                log(LogLevel::ERR) << "创建组 Student 失败, 错误码:" << static_cast<int>(r.error());
-            }
-            if (auto r = permission::createGroup("Teacher", "教师组"); !r) {
-                log(LogLevel::ERR) << "创建组 Teacher 失败, 错误码:" << static_cast<int>(r.error());
-            }
-            if (auto r = permission::createGroup("Admin", "系统管理员组"); !r) {
-                log(LogLevel::ERR) << "创建组 Admin 失败, 错误码:" << static_cast<int>(r.error());
-            }
-            if (auto r = permission::createGroup("System", "系统预留账号"); !r) {
-                log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
-            }
-            Login::createNewUser("0","Admin","Admin",
-                                                    permission::searchGroupIdByName("Admin").first());
-        } else {
-            log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
+        // 每次都尝试创建默认组和用户
         QStringList builtInGroupNames = {"Student", "Teacher", "Admin", "System"};
         for (const auto &groupName: builtInGroupNames) {
             auto ids = permission::searchGroupIdByName(groupName);
             if (!ids.isEmpty()) {
                 builtInGroupIds.insert(groupName, ids.first());
+            } else {
+                // 如果组不存在则创建
+                permission::createGroup(groupName, groupName + " group");
+                auto newIds = permission::searchGroupIdByName(groupName);
+                if (!newIds.isEmpty()) {
+                    builtInGroupIds.insert(groupName, newIds.first());
+                }
             }
         }
     }
 
     namespace Login {
         void createUserTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("users")) {
                 QString createTableQuery = R"(
         CREATE TABLE users (
@@ -79,15 +62,15 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> isUserPasswordValid(const QString &idNumber, const QString &password) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             log(service::LogLevel::INFO) << "开始验证用户密码: " << idNumber;
             QString query = R"(
-                    SELECT id, password, status FROM users WHERE id_number = ?
+                    SELECT id, password, status FROM users WHERE id_number = ? AND status != 'Deleted'
                 )";
             auto results = db.executePreparedQueryAndFetchAll(query, {idNumber});
 
             if (results.isEmpty()) {
-                log(service::LogLevel::ERR) << "登录失败。用户不存在: " << idNumber;
+                log(service::LogLevel::ERR) << "登录失败。用户不存在或已删除: " << idNumber;
                 return std::unexpected(UserControlError::UserNotFound);
             }
 
@@ -113,7 +96,7 @@ namespace data::UserControl {
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
                                                            const QString &password) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("users")) {
                 log(service::LogLevel::ERR) << "用户表不存在";
                 throw std::runtime_error("User table does not exist.");
@@ -187,8 +170,8 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> foundUserIdByIdNumber(const QString &idNumber) {
-            service::DatabaseManager db(path);
-            QString query = "SELECT id FROM users WHERE id_number = ?";
+            service::DatabaseManager db(service::Path::user());
+            QString query = "SELECT id FROM users WHERE id_number = ? AND status != 'Deleted'";
             auto results = db.executePreparedQueryAndFetchAll(query, {idNumber});
             if (results.isEmpty()) {
                 return std::unexpected(UserControlError::UserNotFound);
@@ -198,7 +181,7 @@ namespace data::UserControl {
 
 
         std::expected<bool, UserControlError> deleteUserById(int userId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             // 检查用户是否存在
             QString checkQuery = R"(
                     SELECT id FROM users WHERE id = ?
@@ -226,7 +209,7 @@ namespace data::UserControl {
         }
 
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString updateQuery = R"(
                 UPDATE users
                 SET password = ?
@@ -242,7 +225,7 @@ namespace data::UserControl {
 
     namespace permission {
         void createGroupTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("groups")) {
                 QString createTableQuery = R"(
             CREATE TABLE groups(
@@ -258,7 +241,7 @@ namespace data::UserControl {
         }
 
         void createUserGroupTable() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("user_groups")) {
                 QString createUserGroupTableQuery = R"(
             CREATE TABLE user_groups(
@@ -276,7 +259,7 @@ namespace data::UserControl {
 
 
         std::expected<bool, UserControlError> createGroup(const QString &name, const QString &description) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("groups")) {
                 throw std::runtime_error("Group table does not exist.");
             }
@@ -315,7 +298,7 @@ namespace data::UserControl {
         }
 
         std::expected<bool, UserControlError> addUserToGroup(int userId, int groupId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             // 检查用户是否已经在该组中
             QString checkQuery = R"(
                 SELECT user_id FROM user_groups WHERE user_id = ? AND group_id = ?
@@ -348,12 +331,12 @@ namespace data::UserControl {
         }
 
         QStringList getUserInWhichGroupList(int userId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString query = R"(
                 SELECT g.name
                 FROM groups g
                 JOIN user_groups ug ON g.id = ug.group_id
-                WHERE ug.user_id = ?
+                WHERE ug.user_id = ? AND g.status != 'Deleted' AND ug.status != 'Deleted'
             )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
             QStringList groupNames;
@@ -364,12 +347,12 @@ namespace data::UserControl {
         }
 
         QList<int> getUserInWhichGroupIdList(int userId) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString query = R"(
                 SELECT g.id
                 FROM groups g
                 JOIN user_groups ug ON g.id = ug.group_id
-                WHERE ug.user_id = ?
+                WHERE ug.user_id = ? AND g.status != 'Deleted' AND ug.status != 'Deleted'
             )";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
             QList<int> groupIds;
@@ -381,9 +364,9 @@ namespace data::UserControl {
 
         QList<int> searchGroupIdByName(const QString &groupName) {
             QList<int> groupIds;
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                SELECT id FROM groups WHERE name LIKE ?
+                SELECT id FROM groups WHERE name LIKE ? AND status != 'Deleted'
             )";
             auto results = db.executePreparedQueryAndFetchAll(query, {"%" + groupName + "%"});
             for (const auto &row: results) {
@@ -403,7 +386,7 @@ namespace data::UserControl {
                 return;
             }
             int groupId = groupIds.first();
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString deleteQuery = R"(
                         DELETE FROM user_groups WHERE user_id = ? AND group_id = ?
                     )";
@@ -416,7 +399,7 @@ namespace data::UserControl {
 
 
         bool isUserInGroup(int userId, const QString &groupName) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString query = R"(
                 SELECT COUNT(*)
                 FROM user_groups ug
@@ -431,9 +414,9 @@ namespace data::UserControl {
         }
 
         QList<int> getAllGroupId() {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM groups
+                  SELECT id FROM groups WHERE status != 'Deleted'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
             QList<int> groupIds;
@@ -446,8 +429,8 @@ namespace data::UserControl {
 
     namespace UserInfo {
         std::expected<QString, UserInfoError> getUserNameById(int userId) {
-            service::DatabaseManager db(path);
-            QString query = "SELECT username FROM users WHERE id = ?";
+            service::DatabaseManager db(service::Path::user());
+            QString query = "SELECT username FROM users WHERE id = ? AND status != 'Deleted'";
             auto results = db.executePreparedQueryAndFetchAll(query, {userId});
 
             if (results.isEmpty()) {
@@ -458,8 +441,8 @@ namespace data::UserControl {
         }
 
         std::expected<QString, UserInfoError> getUserNameByIdNumber(QString IdNumber) {
-            service::DatabaseManager db(path);
-            QString query = "SELECT username FROM users WHERE id_number = ?";
+            service::DatabaseManager db(service::Path::user());
+            QString query = "SELECT username FROM users WHERE id_number = ? AND status != 'Deleted'";
             auto results = db.executePreparedQueryAndFetchAll(query, {IdNumber});
 
             if (results.isEmpty()) {
@@ -470,7 +453,7 @@ namespace data::UserControl {
         }
 
         void changeUserName(int userId, const QString &newName) {
-            service::DatabaseManager db(path);
+            service::DatabaseManager db(service::Path::user());
             QString updateQuery = R"(
                 UPDATE users
                 SET username = ?
@@ -480,6 +463,34 @@ namespace data::UserControl {
                 log(service::LogLevel::ERR) << "更新用户名失败: " << userId;
                 throw std::runtime_error("Failed to update username.");
             }
+        }
+
+        QMap<int, QString> loadUsersMap() {
+            QMap<int ,QString> usersMap;
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(SELECT id_number,username FROM users WHERE status != 'Deleted')";
+            auto results = db.executeQueryAndFetchAll(query);
+            for (const auto &row : results) {
+                usersMap[row["id_number"].toInt()] = row["username"].toString();
+            }
+            return usersMap;
+        }
+
+        QMap<int, QString> loadGroupsMap() {
+            QMap<int,QString> groupsMap;
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                SELECT g.name , u.id_number
+                FROM groups g
+                JOIN user_groups ug ON g.id = ug.group_id
+                JOIN users u ON ug.user_id = u.id
+                WHERE g.status != 'Deleted' AND ug.status != 'Deleted' AND u.status != 'Deleted'
+            )";
+            auto results = db.executeQueryAndFetchAll(query);
+            for (const auto &row : results) {
+                groupsMap[row["id_number"].toInt()] = row["name"].toString();
+            }
+            return groupsMap;
         }
     }
 }

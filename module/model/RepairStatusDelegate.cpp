@@ -5,7 +5,7 @@
 #include "RepairStatusDelegate.h"
 
 namespace delegateModel {
-    RepairStatusDelegate::RepairStatusDelegate(QObject *parent) {
+    RepairStatusDelegate::RepairStatusDelegate(QObject *parent) : QItemDelegate(parent){
 
     }
 

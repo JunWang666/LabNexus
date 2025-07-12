@@ -1,14 +1,14 @@
 //
 // Created by gouzuang on 25-7-10.
 //
-
+#include "pch.h"
 #include "InventoryAlert.h"
 #include "module/data/data_mail.h"
 
+
 namespace bot::InventoryAlert {
     void sendAlert() {
-            // 打开数据库
-            service::DatabaseManager db("./equipment.db");
+            service::DatabaseManager db(service::Path::equipment());
 
         QString query = R"(
             SELECT

@@ -1,34 +1,33 @@
-cmake_minimum_required(VERSION 3.30)
-
+# 1. 项目基础设置
+cmake_minimum_required(VERSION 3.25)
 project(LabNexus)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 2. 启用Qt的自动化功能
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 COMPONENTS
-        Core
-        Gui
-        Widgets
-        Sql
-        REQUIRED)
+# 3. 查找所有需要的Qt模块
+find_package(Qt6 COMPONENTS Core Gui Widgets Sql Test QuickWidgets REQUIRED)
 
-add_executable(LabNexus main.cpp
+# 5. 定义库的集合，方便重用
+set(CORE_LIBS Qt::Core Qt::Gui Qt::Widgets Qt::Sql dwmapi dbghelp Qt::QuickWidgets)
+set(TEST_LIBS ${CORE_LIBS} Qt::Test)
+set(PCH_FILE "pch.h")
+
+# 4. 定义共享源码文件列表
+set(SHARED_SOURCES
+        pch.h
         service/logger/logger.cpp
         service/logger/logger.h
-        pch.h
         service/database/databasePathProvidor.cpp
         service/database/databasePathProvidor.h
         view/bookingService/booking_home.cpp
         view/bookingService/booking_home.h
         view/bookingService/booking_home.ui
-        view/inventoryManage/inventory_home.cpp
-        view/inventoryManage/inventory_home.h
-        view/inventoryManage/inventory_home.ui
-        view/equipmentManage/equipment_home.cpp
-        view/equipmentManage/equipment_home.h
-        view/equipmentManage/equipment_home.ui
         view/equipmentManage/kaddmanage.cpp
         view/equipmentManage/kaddmanage.h
         view/equipmentManage/kaddmanage.ui
@@ -95,11 +94,6 @@ add_executable(LabNexus main.cpp
         module/model/ApprovalStatusDelegate.h
         module/model/RepairStatusDelegate.cpp
         module/model/RepairStatusDelegate.h
-        view/loginPage/style.qrc
-        assets/style/fluentDesign.qss
-        assets/style/style.qrc
-        assets/style/style_res.qrc
-        assets/style/blurredTranslucent.h
         module/data/data_mail.h
         module/data/data_mail.cpp
         view/messageCenter/messagewindow.ui
@@ -115,11 +109,6 @@ add_executable(LabNexus main.cpp
         view/messageCenter/messagedetailpage.cpp
         view/messageCenter/messagedetailpage.h
         view/messageCenter/messagedetailpage.ui
-        service/MutiWindow/MutiWindow.cpp
-        service/MutiWindow/MutiWindow.h
-        view/messageCenter/messagedetailpage.cpp
-        view/messageCenter/messagedetailpage.h
-        view/messageCenter/messagedetailpage.ui
         view/bookingService/setapprover.cpp
         view/bookingService/setapprover.h
         view/bookingService/setapprover.ui
@@ -127,185 +116,112 @@ add_executable(LabNexus main.cpp
         module/scanner/InventoryAlert.h
         service/taskManager/timerTaskManager.cpp
         service/taskManager/timerTaskManager.h
+        view/RegisterCenter/checknewuser.cpp
+        view/RegisterCenter/checknewuser.h
+        view/RegisterCenter/checknewuser.ui
+        service/stastic/staticdata.h
+        service/stastic/sharedFunctions.cpp
+        service/stastic/sharedFunctions.h
+        view/EquipmentClass/equipmentclassdetail.cpp
+        view/EquipmentClass/equipmentclassdetail.h
+        view/EquipmentClass/equipmentclassdetail.ui
+        view/EquipmentClass/equipmentinstancebutton.cpp
+        view/EquipmentClass/equipmentinstancebutton.h
+        view/EquipmentClass/equipmentinstancebutton.ui
+        view/EquipmentClass/equipmentclassmanagehomepage.cpp
+        view/EquipmentClass/equipmentclassmanagehomepage.h
+        view/EquipmentClass/equipmentclassmanagehomepage.ui
+        view/EquipmentClass/equipmentclassblock.cpp
+        view/EquipmentClass/equipmentclassblock.h
+        view/EquipmentClass/equipmentclassblock.ui
+        view/SplashScreen/SplashScreen.qml
+        view/SplashScreen/splashscreen.cpp
+        view/SplashScreen/splashscreen.h
+        view/SplashScreen/splashscreen.ui
 )
-target_link_libraries(LabNexus
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
-        Qt::Sql
-        dwmapi
-        dbghelp
+list(REMOVE_DUPLICATES SHARED_SOURCES)
+
+# 管理所有QRC资源文件
+set(QRC_FILES
+        view/loginPage/style.qrc
+        assets/style/style.qrc
+        assets/style/style_res.qrc
+        view/SplashScreen/SplashScreen.qrc
 )
+
+# 6. 配置共享代码的OBJECT库
+add_library(LabNexus_Objects OBJECT ${SHARED_SOURCES})
+
+# 为对象库自身配置编译选项 (PRIVATE 表示仅自己使用)
+target_link_libraries(LabNexus_Objects PRIVATE ${CORE_LIBS})
+target_include_directories(LabNexus_Objects PRIVATE ${PROJECT_SOURCE_DIR})
+target_precompile_headers(LabNexus_Objects PRIVATE ${PCH_FILE})
+
+# 7. 配置主程序
+add_executable(LabNexus main.cpp $<TARGET_OBJECTS:LabNexus_Objects> ${QRC_FILES})
+target_link_libraries(LabNexus PRIVATE ${CORE_LIBS})
 target_include_directories(LabNexus PRIVATE ${PROJECT_SOURCE_DIR})
-target_precompile_headers(LabNexus PRIVATE pch.h)
+target_precompile_headers(LabNexus PRIVATE ${PCH_FILE})
 
-# 添加 Qt Test 支持
-find_package(Qt6 COMPONENTS Test REQUIRED)
 
-# 日志测试
-add_executable(TestLogs
-        tests/test_logs.cpp
-        service/logger/logger.cpp
-)
-target_link_libraries(TestLogs PRIVATE
-        Qt::Core
-        Qt::Widgets
-        Qt::Test
-        dbghelp
-)
-target_include_directories(TestLogs PRIVATE ${PROJECT_SOURCE_DIR})
-target_precompile_headers(TestLogs PRIVATE pch.h)
-add_test(NAME TestLogs COMMAND TestLogs)
-
-# 数据库测试
-add_executable(TestDB
-        tests/test_db.cpp
-        service/logger/logger.cpp
-        service/database/databasePathProvidor.cpp
-        service/database/databaseManager.cpp
-        module/data/data_UserControl.cpp
-        module/data/data_mail.cpp
-)
-target_link_libraries(TestDB PRIVATE
-        Qt::Core
-        Qt::Widgets
-        Qt::Test
-        Qt::Sql
-        dbghelp
-)
-target_include_directories(TestDB PRIVATE ${PROJECT_SOURCE_DIR})
-target_precompile_headers(TestDB PRIVATE pch.h)
-add_test(NAME TestDB COMMAND TestDB)
-
-# 预订模块测试
-add_executable(TestBooking
-        tests/test_booking.cpp
-        service/logger/logger.cpp
-        service/database/databasePathProvidor.cpp
-        service/database/databaseManager.cpp
-        module/data/data_UserControl.cpp
-        module/data/data_Booking.cpp
-        module/data/data_mail.cpp
-)
-target_link_libraries(TestBooking PRIVATE
-        Qt::Core
-        Qt::Widgets
-        Qt::Test
-        Qt::Sql
-        dbghelp
-)
-target_include_directories(TestBooking PRIVATE ${PROJECT_SOURCE_DIR})
-target_precompile_headers(TestBooking PRIVATE pch.h)
-add_test(NAME TestBooking COMMAND TestBooking)
-
-# 邮件模块测试
-add_executable(TestMail
-        tests/test_mail.cpp
-        service/logger/logger.cpp
-        service/database/databasePathProvidor.cpp
-        service/database/databaseManager.cpp
-        module/data/data_UserControl.cpp
-        module/data/data_mail.cpp
-)
-target_link_libraries(TestMail PRIVATE
-        Qt::Core
-        Qt::Widgets
-        Qt::Test
-        Qt::Sql
-        dbghelp
-)
-target_include_directories(TestMail PRIVATE ${PROJECT_SOURCE_DIR})
-target_precompile_headers(TestMail PRIVATE pch.h)
-add_test(NAME TestMail COMMAND TestMail)
-
-add_executable(TestEquipmentManage tests/test_equipment_manage.cpp
-        service/logger/logger.cpp
-        service/database/databaseManager.cpp
-        module/data/data_EquipmentManage.cpp
-)
-
-target_link_libraries(TestEquipmentManage PRIVATE Qt6::Core Qt6::Sql Qt6::Test Qt6::Widgets dbghelp)
-target_include_directories(TestEquipmentManage PRIVATE ${PROJECT_SOURCE_DIR})
-target_precompile_headers(TestEquipmentManage PRIVATE pch.h)
-add_test(NAME TestEquipmentManage COMMAND TestEquipmentManage)
-
+# 8. 使用函数添加所有测试
 enable_testing()
 
-if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    set(DEBUG_SUFFIX)
-    if (MSVC AND CMAKE_BUILD_TYPE MATCHES "Debug")
-        set(DEBUG_SUFFIX "d")
-    endif ()
-    set(QT_INSTALL_PATH "${CMAKE_PREFIX_PATH}")
-    if (NOT EXISTS "${QT_INSTALL_PATH}/bin")
-        set(QT_INSTALL_PATH "${QT_INSTALL_PATH}/..")
-        if (NOT EXISTS "${QT_INSTALL_PATH}/bin")
-            set(QT_INSTALL_PATH "${QT_INSTALL_PATH}/..")
-        endif ()
-    endif ()
-    if (EXISTS "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E make_directory
-                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
-                "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
-                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
-    endif ()
-    foreach (QT_LIB Core Gui Widgets)
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
-                "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}${DEBUG_SUFFIX}.dll"
-                "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
-    endforeach (QT_LIB)
-endif ()
+function(add_labnexus_test TARGET_NAME)
+    # 1. 创建可执行文件，并直接添加QRC资源文件
+    add_executable(${TARGET_NAME}
+            "tests/${TARGET_NAME}.cpp"
+            $<TARGET_OBJECTS:LabNexus_Objects>
+            ${QRC_FILES}
+    )
+    # 2. 链接测试需要的库
+    target_link_libraries(${TARGET_NAME} PRIVATE ${TEST_LIBS})
 
-# 为测试目标复制 Qt6 测试库 DLL
-if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    foreach (target TestLogs TestDB TestBooking TestMail TestEquipmentManage)
-        add_custom_command(TARGET ${target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy
-                "${QT_INSTALL_PATH}/bin/Qt6Test${DEBUG_SUFFIX}.dll"
-                "$<TARGET_FILE_DIR:${target}>")
-    endforeach ()
-    add_custom_command(TARGET TestDB POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
-            "$<TARGET_FILE_DIR:TestDB>")
-    add_custom_command(TARGET TestBooking POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
-            "$<TARGET_FILE_DIR:TestBooking>")
-    add_custom_command(TARGET TestMail POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
-            "$<TARGET_FILE_DIR:TestMail>")
-    add_custom_command(TARGET TestEquipmentManage POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            "${QT_INSTALL_PATH}/bin/Qt6Sql${DEBUG_SUFFIX}.dll"
-            "$<TARGET_FILE_DIR:TestEquipmentManage>")
-    # 复制 Qt 平台插件供测试使用
-    if (EXISTS "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
-        foreach (target TestLogs TestDB TestBooking TestMail TestEquipmentManage)
-            add_custom_command(TARGET ${target} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E make_directory
-                    "$<TARGET_FILE_DIR:${target}>/plugins/platforms")
-            add_custom_command(TARGET ${target} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
-                    "$<TARGET_FILE_DIR:${target}>/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
-        endforeach ()
-    endif ()
-    # 复制 SQLite 驱动插件
-    if (EXISTS "${QT_INSTALL_PATH}/plugins/sqldrivers/qsqlite${DEBUG_SUFFIX}.dll")
-        foreach (target TestLogs TestDB TestBooking TestMail TestEquipmentManage)
-            add_custom_command(TARGET ${target} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E make_directory
-                    "$<TARGET_FILE_DIR:${target}>/plugins/sqldrivers")
-            add_custom_command(TARGET ${target} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    "${QT_INSTALL_PATH}/plugins/sqldrivers/qsqlite${DEBUG_SUFFIX}.dll"
-                    "$<TARGET_FILE_DIR:${target}>/plugins/sqldrivers/qsqlite.dll")
-        endforeach ()
-    endif ()
-endif ()
+    # 3. 添加头文件目录
+    target_include_directories(${TARGET_NAME} PRIVATE ${PROJECT_SOURCE_DIR})
+
+    # 4. 启用预编译头
+    target_precompile_headers(${TARGET_NAME} PRIVATE ${PCH_FILE})
+
+    # 5. 添加到CTest测试集
+    add_test(NAME ${TARGET_NAME} COMMAND ${TARGET_NAME})
+endfunction()
+
+# 依次调用函数来创建所有测试目标
+add_labnexus_test(test_logs)
+add_labnexus_test(test_db)
+add_labnexus_test(test_booking)
+add_labnexus_test(test_mail)
+add_labnexus_test(test_equipment_manage)
+
+
+# 9. 配置Windows平台运行所需的DLL自动部署
+if(WIN32)
+    # --- 定义所有需要部署的可执行文件 ---
+    set(ALL_EXECUTABLES
+            LabNexus
+            test_logs
+            test_db
+            test_booking
+            test_mail
+            test_equipment_manage
+    )
+
+    # --- 循环为每个可执行文件添加自动部署步骤 ---
+    foreach(TARGET_EXE IN LISTS ALL_EXECUTABLES)
+        message(STATUS "Configuring automatic deployment for ${TARGET_EXE} using windeployqt.")
+
+        add_custom_command(TARGET ${TARGET_EXE} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E echo "Running windeployqt for ${TARGET_EXE}..."
+                COMMAND Qt6::windeployqt
+                # -- 基本选项 --
+                --dir "$<TARGET_FILE_DIR:${TARGET_EXE}>"
+                --pdb
+                --qmldir "${CMAKE_SOURCE_DIR}/view/SplashScreen"
+
+                # 指定要分析的exe文件
+                "$<TARGET_FILE:${TARGET_EXE}>"
+                VERBATIM
+        )
+    endforeach()
+endif()

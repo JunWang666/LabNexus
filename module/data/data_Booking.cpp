@@ -6,41 +6,29 @@
 
 namespace data::Booking {
     void dropDB() {
-        QFile dbFile(path);
-        if (dbFile.exists()) {
-            if (dbFile.remove()) {
-                log(LogLevel::INFO) << "数据库文件删除成功" << path;
-            } else {
-                log(LogLevel::ERR) << "数据库文件删除失败";
-            }
+        service::DatabaseManager db(service::Path::booking());
+        if (db.isConnected()) {
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_info");
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_equipment");
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_time");
+            db.executeNonQuery("DROP TABLE IF EXISTS booking_approval");
+            log(LogLevel::INFO) << "数据库表删除成功 (booking_info, booking_equipment, booking_time, booking_approval)";
         } else {
-            log(LogLevel::INFO) << "数据库文件不存在";
+            log(LogLevel::ERR) << "数据库连接失败，无法删除表";
         }
     }
 
     void buildDB() {
-        QFile dbFile(path);
-        if (!dbFile.exists()) {
-            if (dbFile.open(QIODevice::WriteOnly)) {
-                dbFile.close();
-                log(service::LogLevel::INFO) << "数据库文件创建成功" << path;
-            } else {
-                log(service::LogLevel::ERR) << "数据库文件创建失败";
-            }
-
-            createBookingApprovalTable();
-            createBookingEquipmentTable();
-            createBookingInfoTable();
-            createBookingTimeTable();
-        } else {
-            log(service::LogLevel::INFO) << "数据库文件已存在";
-        }
+        createBookingApprovalTable();
+        createBookingEquipmentTable();
+        createBookingInfoTable();
+        createBookingTimeTable();
     }
 
 
     // 表1：申请基本信息表
     void createBookingInfoTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_info")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_info (
@@ -59,7 +47,7 @@ namespace data::Booking {
 
     // 表2：目标设备表
     void createBookingEquipmentTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_equipment")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_equipment (
@@ -80,7 +68,7 @@ namespace data::Booking {
 
     // 表3：时间表
     void createBookingTimeTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_time")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_time (
@@ -101,7 +89,7 @@ namespace data::Booking {
 
     // 表4：审批状态表
     void createBookingApprovalTable() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.tableExists("booking_approval")) {
             QString createTableQuery = R"(
                 CREATE TABLE booking_approval (
@@ -124,7 +112,7 @@ namespace data::Booking {
         const QDateTime &requestStartTime, const QDateTime &requestEndTime, const QString &approvalStatus,
         int approverId) {
         // 实例化你的数据库管理器
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "创建预订记录失败：无法连接到数据库。" << db.getLastError();
             return false;
@@ -188,10 +176,64 @@ namespace data::Booking {
         }
     }
 
+    bool updateBookingOnstatus(service::DatabaseManager &db,int id, const QString &status,int approvalId) {
+        QString queryString = R"(
+        UPDATE booking_approval
+        SET approval_status = ? , approval_time = ? , approver_id = ? WHERE booking_id = ?)";
+        QVariantList parmas;
+        parmas << status << QDateTime::currentDateTime() << approvalId << id;
+        bool success = db.executePreparedNonQuery(queryString, parmas);
+        if (!success) {
+            log(LogLevel::ERR) << "修改失败" << db.getLastError();
+        }
+        return success;
+    }
+
+    bool processApprovalTransaction(int bookingId, int equipmentId, int borrowerId, int approverId) {
+        service::DatabaseManager db(service::Path::booking());
+        if (!db.beginTransaction()) {
+            log(LogLevel::ERR) << "审批事务开启失败: " << db.getLastError();
+            return false;
+        }
+        if (!data::Equipment::updateEquipmentOnLoan(equipmentId, borrowerId)) {
+            log(LogLevel::ERR) << "更新设备借出人失败，回滚事务。";
+            db.rollbackTransaction();
+            return false;
+        }
+        if (!data::Equipment::updateEquipmentOnStatus(equipmentId, "借出")) {
+            log(LogLevel::ERR) << "更新设备状态失败，回滚事务。";
+            db.rollbackTransaction();
+            return false;
+        }
+        if (!updateBookingOnstatus(db,bookingId,"同意",approverId)) {
+            log(LogLevel::ERR) << "更新当前申请状态失败，回滚事务。";
+            db.rollbackTransaction();
+            return false;
+        }
+        QString findOthersQuery = R"(
+            SELECT booking_id FROM booking_approval
+            WHERE approval_status = '待审批' AND booking_id IN (
+                SELECT booking_id FROM booking_equipment WHERE equipment_id = ?
+            ) AND booking_id != ?
+        )";
+        QVariantList findParams = {equipmentId, bookingId};
+        auto otherBookings = db.executePreparedQueryAndFetchAll(findOthersQuery, findParams);
+        for (const auto& row : otherBookings) {
+            int otherBookingId = row["booking_id"].toInt();
+            // 拒绝其他申请，审批人ID可以设为0或当前审批人ID，表示系统自动拒绝
+            if (!updateBookingOnstatus(db,otherBookingId, "拒绝", 0)) {
+                log(LogLevel::ERR) << "自动拒绝其他申请失败 (ID: " << otherBookingId << ")，回滚事务。";
+                db.rollbackTransaction();
+                return false;
+            }
+        }
+        return db.commitTransaction();
+
+    }
 
 
     QList<fullBookingRecord> loadBookingFullRecords() {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
         QList<fullBookingRecord> records;
         QString queryStr = R"(
             SELECT bi.id,
@@ -215,6 +257,7 @@ namespace data::Booking {
         for (const auto &row: results) {
             fullBookingRecord record;
             record.id = row["id"].toInt();
+            record.equipmentId = row["equipment_id"].toInt();
             record.userId = row["user_id"].toInt();
             record.createDate = row["create_date"].toDateTime();
             record.requestStartDate = row["request_start_time"].toDateTime();
@@ -245,7 +288,7 @@ namespace data::Booking {
                                  int equipmentClassId, int equipmentId,
                                  const QDateTime &requestStartTime, const QDateTime &requestEndTime,
                                  const QString &approvalStatus, int approverId) {
-        service::DatabaseManager db(path);
+        service::DatabaseManager db(service::Path::booking());
 
         QString infoQuery = "INSERT INTO booking_info (user_id, create_date) VALUES (?, ?)";
         auto bookingId = db.executePreparedInsertAndGetId(infoQuery,
