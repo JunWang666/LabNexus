@@ -45,6 +45,9 @@ int main(int argc, char *argv[]) {
 
     service::initDB();
 
+
+    view::login::loginPage b;
+
     // QFile styleFile(":/styles/fluent.qss");
     // if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
     //     QString styleSheet = QLatin1String(styleFile.readAll());
@@ -54,9 +57,12 @@ int main(int argc, char *argv[]) {
     //     log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     // }
 
-    view::EquipmentClass::EquipmentClassManageHomepage b;
     b.show();
+
+
+
     splash.close();
+
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
