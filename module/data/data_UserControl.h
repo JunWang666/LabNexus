@@ -268,6 +268,7 @@ namespace data::UserControl {
         void changeUserName(int userId, const QString &newName);
 
         QMap<int,QString> loadUsersMap();
+        QMap<int,QString> loadGroupsMap();
     }
 }
 
