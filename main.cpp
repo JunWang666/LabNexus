@@ -17,6 +17,7 @@
 #include "view/loginPage/registerpage.h"
 #include "view/messageCenter/messagewindow.h"
 #include "view/equipmentManage/equipment_home.h"
+#include "view/SplashScreen/splashscreen.h"
 
 void setup_tasks() {
     // 后台定时每1分钟扫描库存告警
@@ -27,14 +28,17 @@ void setup_tasks() {
 
 
 int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
+
+    view::SplashScreen::SplashScreen splash;
+    splash.show();
+
     service::logger::instance().setLogFile(
         QString("log/app_%1.log").arg(QDateTime::currentDateTime().toString("yyyyMMdd_HHmmss")).toStdString());
     service::logger::instance().setDataLogFile("log/data.log");
     service::logger::instance().setLevel(LogLevel::WARN);
     service::logger::instance().enableStackTrace(false);
     service::log() << "程序启动";
-
-    QApplication a(argc, argv);
 
     service::initDB();
 
@@ -49,7 +53,7 @@ int main(int argc, char *argv[]) {
 
     view::EquipmentClass::EquipmentClassManageHomepage b;
 
-    b.show();
+    //b.show();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
