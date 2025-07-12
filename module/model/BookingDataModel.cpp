@@ -5,6 +5,8 @@
 #include <Qt>
 #include "BookingDataModel.h"
 
+#include "EquipmentDataModel.h"
+
 namespace dataModel {
 
 
@@ -76,15 +78,18 @@ namespace dataModel {
         if (newStatus == "同意") {
             success = data::Booking::processApprovalTransaction(rec.id,rec.equipmentId,rec.userId,approvalId);
             rec.approvalStatus = newStatus;
+            emit approvalStatusChanged();
             emit dataChanged(index, index);
         }
         else {
-            success = data::Booking::updateBookingOnstatus(rec.id,rec.approvalStatus,approvalId);
+            service::DatabaseManager db(data::Booking::path);
+            success = data::Booking::updateBookingOnstatus(db,rec.id,rec.approvalStatus,approvalId);
             if (success) {
                 rec.approvalStatus = newStatus;
                 rec.approverID = approvalId;
                 rec.approverName = approverName;
                 rec.approvalDate = QDateTime::currentDateTime();
+                emit approvalStatusChanged();
                 emit dataChanged(index, index.siblingAtColumn(Col_ApproverName));
             }
         }
@@ -109,12 +114,16 @@ namespace dataModel {
         beginResetModel();
         m_records = data::Booking::loadBookingFullRecords();
         QMap<int,QString> usersMap = data::UserControl::UserInfo::loadUsersMap();
+        QMap<int,QString> groupsMap = data::UserControl::UserInfo::loadGroupsMap();
         for (auto & rec : m_records) {
             if (usersMap.contains(rec.userId)) {
                 rec.userName = usersMap.value(rec.userId);
             }
             if (usersMap.contains(rec.approverID) && rec.approverID > 0) {
                 rec.approverName = usersMap.value(rec.approverID);
+            }
+            if (groupsMap.contains(rec.userId)) {
+                rec.userGroup = groupsMap.value(rec.userId);
             }
         }
         endResetModel();

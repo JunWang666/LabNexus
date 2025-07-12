@@ -476,5 +476,21 @@ namespace data::UserControl {
             }
             return usersMap;
         }
+
+        QMap<int, QString> loadGroupsMap() {
+            QMap<int,QString> groupsMap;
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                SELECT g.name , u.id_number
+                FROM groups g
+                JOIN user_groups ug ON g.id = ug.group_id
+                JOIN users u ON ug.user_id = u.id
+            )";
+            auto results = db.executeQueryAndFetchAll(query);
+            for (const auto &row : results) {
+                groupsMap[row["id_number"].toInt()] = row["name"].toString();
+            }
+            return groupsMap;
+        }
     }
 }
