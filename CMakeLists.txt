@@ -143,6 +143,9 @@ set(SHARED_SOURCES
         view/SplashScreen/nativesplash.cpp
         view/SplashScreen/nativesplash.h
         view/SplashScreen/nativesplash.ui
+        view/RegisterCenter/registernewuser.cpp
+        view/RegisterCenter/registernewuser.h
+        view/RegisterCenter/registernewuser.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 
@@ -154,6 +157,7 @@ set(QRC_FILES
         view/SplashScreen/SplashScreen.qrc
         assets/Logo/LogoResource.qrc
         assets/LandScapes/LandScape.qrc
+        assets/Icon/SegoeFluentIcons.qrc
 )
 
 # 6. 配置共享代码的OBJECT库
