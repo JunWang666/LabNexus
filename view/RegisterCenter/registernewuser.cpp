@@ -19,7 +19,7 @@ namespace view::RegisterCenter {
         for (auto it = groupMap.begin(); it != groupMap.end(); ++it) {
             QString groupName = it.key();
             int groupId = it.value();
-            ui->UserGroup->addItem(groupName, groupId);  // 添加项并附带数据
+            ui->UserGroup->addItem(groupName, groupId); // 添加项并附带数据
         }
     }
 
@@ -52,15 +52,16 @@ namespace view::RegisterCenter {
     }
 
     void RegisterNewUser::checkVaild() {
-        auto idNumbers = ui->NewUser->toPlainText().split(QRegularExpression("[\\s，,\\n]+"), Qt::SplitBehaviorFlags::SkipEmptyParts);
+        auto idNumbers = ui->NewUser->toPlainText().split(QRegularExpression("[\\s，,\\n]+"),
+                                                          Qt::SplitBehaviorFlags::SkipEmptyParts);
         bool allValid = true;
         int selectedGroupId = ui->UserGroup->currentData().toInt();
-        auto canCreate = data::UserControl::Login::batchGetUserCanCreate(idNumbers,selectedGroupId);
+        auto canCreate = data::UserControl::Login::batchGetUserCanCreate(idNumbers, selectedGroupId);
 
         int failedCount = 0;
         QString Message;
         for (auto it = canCreate.begin(); it != canCreate.end(); ++it) {
-            Message+= it.key() + it.value() +"\n";
+            Message += it.key() + it.value() + "\n";
             if (it.value() == "已存在且在组中") {
                 failedCount++;
             }

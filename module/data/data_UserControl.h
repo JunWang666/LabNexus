@@ -125,14 +125,15 @@ namespace data::UserControl {
          */
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword);
 
-        QMap<QString,QString> batchCreateNewUser(const QList<QString> &idNumber, const int groupId, const QString &username = "",
-                               const QString &password = "");
+        QMap<QString, QString> batchCreateNewUser(const QList<QString> &idNumber, const int groupId,
+                                                  const QString &username = "",
+                                                  const QString &password = "");
 
-        QMap<QString,QString> batchGetUserCanCreate(const QList<QString> &idNumber, const int groupId);
+        QMap<QString, QString> batchGetUserCanCreate(const QList<QString> &idNumber, const int groupId);
 
         QString generateRandomPassword(int length = 12);
 
-        QString hashPassword(const QString& password);
+        QString hashPassword(const QString &password);
     }
 
     namespace permission {

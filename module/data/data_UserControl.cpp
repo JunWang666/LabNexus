@@ -64,7 +64,8 @@ namespace data::UserControl {
             }
         }
 
-        std::expected<int, UserControlError> isUserPasswordValid(const QString &idNumber, const QString &password) {
+        std::expected<int, UserControlError> isUserPasswordValid(const QString &idNumber, const QString &password_) {
+            QString password = hashPassword(password_);
             service::DatabaseManager db(service::Path::user());
             log(service::LogLevel::INFO) << "开始验证用户密码: " << idNumber;
             QString query = R"(
@@ -104,7 +105,8 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
-                                                           const QString &password) {
+                                                           const QString &password_) {
+            QString password = hashPassword(password_);
             service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("users")) {
                 log(service::LogLevel::ERR) << "用户表不存在";
@@ -138,8 +140,9 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
-                                                           const QString &password,
+                                                           const QString &password_,
                                                            const QString &group) {
+            QString password = hashPassword(password_);
             if (group.isEmpty()) {
                 log(service::LogLevel::DATA) << "未指定组，用户创建成功但未添加到任何组";
                 return createNewUser(idNumber, username, password);
@@ -160,7 +163,8 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
-                                                           const QString &password, int groupId) {
+                                                           const QString &password_, int groupId) {
+            QString password = hashPassword(password_);
             auto newUserResult = createNewUser(idNumber, username, password);
             if (!newUserResult) {
                 return std::unexpected(newUserResult.error());
@@ -217,7 +221,8 @@ namespace data::UserControl {
             return std::unexpected(UserControlError::DatabaseError);
         }
 
-        std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword) {
+        std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &password_) {
+            QString newPassword = hashPassword(password_);
             service::DatabaseManager db(service::Path::user());
             QString updateQuery = R"(
                 UPDATE users
@@ -285,7 +290,7 @@ namespace data::UserControl {
 
                     // 插入到 users 表
                     QString insertUserQuery = R"(
-                        INSERT INTO users (id_number, username, password, created_at, 状态值)
+                        INSERT INTO users (id_number, username, password, created_at, status)
                         VALUES (?, ?, ?, CURRENT_TIMESTAMP, 'AllRight')
                     )";
                     QList<QVariant> insertUserParams = {
@@ -633,10 +638,10 @@ namespace data::UserControl {
             auto results = db.executePreparedQueryAndFetchAll(query, {});
 
             QMap<QString, int> groupMap;
-            for (const auto &row : results) {
+            for (const auto &row: results) {
                 int id = row["id"].toInt();
                 QString name = row["name"].toString();
-                groupMap.insert(name, id);  // 组名作为 key，id 作为 value
+                groupMap.insert(name, id); // 组名作为 key，id 作为 value
             }
 
             return groupMap;
