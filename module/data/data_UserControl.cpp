@@ -54,7 +54,7 @@ namespace data::UserControl {
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            status Text NOT NULL DEFAULT 'AllRight'
+            status Text NOT NULL DEFAULT 'Unchecked'
         )
     )";
                 db.executeNonQuery(createTableQuery);
@@ -563,7 +563,7 @@ namespace data::UserControl {
         int getUncheckedUserCount() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                   SELECT COUNT(*) as count FROM users WHERE status == 'Unchecked'
+                   SELECT COUNT(*) as count FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE '-%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
 
@@ -577,7 +577,7 @@ namespace data::UserControl {
         int getAllUserCount() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                   SELECT COUNT(*) as count FROM users WHERE status != 'Deleted'
+                   SELECT COUNT(*) as count FROM users WHERE status != 'Deleted' AND id_number NOT LIKE '-%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
 

@@ -25,8 +25,11 @@ namespace service {
             log(LogLevel::ERR) << "创建组 System 失败, 错误码:" << static_cast<int>(r.error());
         }
         data::mail::registerSystemUser();
-        data::UserControl::Login::createNewUser("0","Admin","Admin",
+        auto id = data::UserControl::Login::createNewUser("0","Admin","Admin",
                                                 data::UserControl::permission::searchGroupIdByName("Admin").first());
+        if (id.has_value()) {
+            data::UserControl::check::allowUserRegister(id.value());
+        }
         data::Booking::buildDB();
         data::Equipment::buildDB();
         data::mail::findSystemUser();
