@@ -20,7 +20,8 @@
 #include "view/messageCenter/messagewindow.h"
 #include "view/equipmentManage/equipment_home.h"
 #include "view/RegisterCenter/checknewuser.h"
-#include "view/SplashScreen/splashscreen.h"
+#include "view/SplashScreen/nativesplash.h"
+//#include "view/SplashScreen/splashscreen.h"
 
 void setup_tasks() {
     // 后台定时每1分钟扫描库存告警
@@ -32,6 +33,8 @@ void setup_tasks() {
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+
+    qInstallMessageHandler(service::customMessageHandler); //拦截部分错误，真的修不好了喵眼不见心不烦
 
     //view::SplashScreen::SplashScreen splash;
     //splash.show();
@@ -45,6 +48,8 @@ int main(int argc, char *argv[]) {
     service::log() << "程序启动";
 
     service::initDB();
+
+
 
     // QFile styleFile(":/styles/fluent.qss");
     // if (styleFile.open(QFile::ReadOnly | QFile::Text)) {

@@ -137,6 +137,12 @@ set(SHARED_SOURCES
         view/RegisterCenter/checkuserblock.cpp
         view/RegisterCenter/checkuserblock.h
         view/RegisterCenter/checkuserblock.ui
+        view/equipmentManage/equipment_home.cpp
+        view/equipmentManage/equipment_home.h
+        view/equipmentManage/equipment_home.ui
+        view/SplashScreen/nativesplash.cpp
+        view/SplashScreen/nativesplash.h
+        view/SplashScreen/nativesplash.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 
@@ -146,6 +152,8 @@ set(QRC_FILES
         assets/style/style.qrc
         assets/style/style_res.qrc
         view/SplashScreen/SplashScreen.qrc
+        assets/Logo/LogoResource.qrc
+        assets/LandScapes/LandScape.qrc
 )
 
 # 6. 配置共享代码的OBJECT库

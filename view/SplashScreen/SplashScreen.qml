@@ -115,11 +115,16 @@ Rectangle {
                     font.bold: true
                     font.family: "Segoe UI, Arial, sans-serif"
                     color: "#1673ff"
+                    // opacity: (logoRow.fading
+                    //     ? (logoRow.fadeIndex > letterIdx ? 0
+                    //         : logoRow.fadeIndex === letterIdx ? fadeAnim.currentValue : 1)
+                    //     : (logoRow.animIndex >= letterIdx ? 1 : 0))
+                    // scale: (logoRow.animIndex === letterIdx && !logoRow.fading) ? scaleAnim.currentValue : 1
+                    scale: (logoRow.animIndex === letterIdx && !logoRow.fading) ? (scaleAnim.currentValue || 1.0) : 1.0
                     opacity: (logoRow.fading
                         ? (logoRow.fadeIndex > letterIdx ? 0
-                            : logoRow.fadeIndex === letterIdx ? fadeAnim.currentValue : 1)
-                        : (logoRow.animIndex >= letterIdx ? 1 : 0))
-                    scale: (logoRow.animIndex === letterIdx && !logoRow.fading) ? scaleAnim.currentValue : 1
+                            : logoRow.fadeIndex === letterIdx ? (fadeAnim.currentValue || 1.0) : 1.0)
+                        : (logoRow.animIndex >= letterIdx ? 1.0 : 0))
                     anchors.centerIn: parent
 
                     NumberAnimation on scale {
@@ -129,7 +134,7 @@ Rectangle {
                         duration: 120
                         easing.type: Easing.OutBack
                         running: logoRow.animIndex === letterIdx && !logoRow.fading
-                        onStopped: scale = 1.0
+                        // onStopped: scale = 1.0
                     }
 
                     NumberAnimation on opacity {

@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by gouzuang on 25-7-7.
 //
 
@@ -12,7 +12,11 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
+#include "view/EquipmentClass/equipmentclassblock.h"
+#include "view/EquipmentClass/equipmentclassmanagehomepage.h"
+#include "view/equipmentManage/equipment_home.h"
 #include "view/messageCenter/messagewindow.h"
+#include "view/RegisterCenter/checknewuser.h"
 
 namespace view::homepage {
     administratorHomepage::administratorHomepage(const QString &name, const QString &ID,
@@ -20,6 +24,8 @@ namespace view::homepage {
                                                                     A_name(name), A_ID(ID) {
         ui->setupUi(this);
         setupUI();
+        ui->frame_3->hide();
+        ui->frame_4->hide();
         orderCheck = nullptr;
         this->setWindowFlag(Qt::FramelessWindowHint);
         this->setAttribute(Qt::WA_TranslucentBackground);
@@ -46,15 +52,12 @@ namespace view::homepage {
 
     void administratorHomepage::on_equipmentManageButton_clicked() {
         service::log() << "管理员 " << A_name << " 点击了器材管理按钮";
-
+        view::equipment::equipment_home *c=new view::equipment::equipment_home();
+        service::MutiWindow::manager().addWindow(c);
+        c->show();
         // TODO: 打开设备管理页面
         // auto *equipmentPage = new view::equipment::equipment_home();
         // equipmentPage->show();
-
-        QMessageBox::information(this, "器材管理",
-                                 QString(
-                                     "器材管理功能开发中...\n用户: %1\nID: %2\n\n在这里您可以：\n• 添加、编辑、删除设备信息\n• 管理设备分类和库存\n• 查看设备使用状态\n• 设置设备维护计划")
-                                 .arg(A_name).arg(A_ID));
     }
 
     void administratorHomepage::on_approvalButton_clicked() {
@@ -105,18 +108,15 @@ namespace view::homepage {
     void administratorHomepage::on_logoutButton_clicked() {
         service::log() << "管理员 " << A_name << " 退出登录";
 
-        int ret = QMessageBox::question(this, "退出登录",
-                                        QString("确定要退出登录吗？\n管理员: %1").arg(A_name),
-                                        QMessageBox::Yes | QMessageBox::No);
 
-        if (ret == QMessageBox::Yes) {
+
             // 返回登录页面
             auto *loginPage = new view::login::loginPage();
             loginPage->setAttribute(Qt::WA_DeleteOnClose);
             loginPage->show();
 
             this->close(); // 关闭当前管理员主页
-        }
+
     }
 
     void administratorHomepage::on_messageButton_clicked() {
@@ -136,6 +136,19 @@ namespace view::homepage {
         ui->frame_3->hide();
         ui->frame_4->show();
     }
+
+    void administratorHomepage::on_EquipmentClassButton_clicked() {
+        view::EquipmentClass::EquipmentClassManageHomepage* equipmentClassPage = new view::EquipmentClass::EquipmentClassManageHomepage();
+        service::MutiWindow::manager().addWindow(equipmentClassPage);
+        equipmentClassPage->show();
+    }
+
+    void administratorHomepage::on_RegisterControlButton_clicked() {
+        view::RegisterCenter::CheckNewUser* checkNewUserPage = new view::RegisterCenter::CheckNewUser();
+        service::MutiWindow::manager().addWindow(checkNewUserPage);
+        checkNewUserPage->show();
+    }
+
     void administratorHomepage::mousePressEvent(QMouseEvent *event)
     {
         if (event->button() == Qt::LeftButton)
