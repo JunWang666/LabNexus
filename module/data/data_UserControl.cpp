@@ -121,7 +121,7 @@ namespace data::UserControl {
 
             QString insertQuery = R"(
                 INSERT INTO users(id_number, username, password, status)
-                VALUES(?, ?, ?, 'AllRight')
+                VALUES(?, ?, ?, 'Unchecked')
             )";
             if (!db.executePreparedNonQuery(insertQuery, {idNumber, username, password})) {
                 log(service::LogLevel::ERR) << "新用户创建失败: " << idNumber;

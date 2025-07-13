@@ -28,7 +28,7 @@ void CheckNewUser::loadDataFromDatabase(int page) {
     // --- 分页逻辑初始化 ---
     m_currentPage = 1;
     // 从数据层获取总页数
-    m_totalPages = data::UserControl::check::getAllUserCount() / m_itemsPerPage + 1;
+    m_totalPages = (data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
     updatePaginationControls();
 
     // 从数据库获取设备分类数据
@@ -99,7 +99,7 @@ void CheckNewUser::updatePaginationControls() {
     }
 
     void CheckNewUser::on_refreshButton_clicked() {
-        m_totalPages = data::UserControl::check::getAllUserCount() / m_itemsPerPage + 1;
+        (m_totalPages = data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
         loadDataFromDatabase();
     }
 }

@@ -57,13 +57,35 @@ namespace view::RegisterCenter {
         auto status = data::UserControl::check::getUserStatus(userId);
         ui->StatusFrame->layout()->addWidget(&label_status);
         if (status == "Unchecked") {
-            label_status.setText("未审核");
-        } else if (status == "Accepted") {
-            label_status.setText("已通过");
+            label_status.setText(
+                "<img src=\":/SegoeFluentIcons/242518a4-f3f3-49d5-acae-97b284b3d5ed.png\" "
+                "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
+                "<span style=\"color: #f7a800; font-weight: bold;\">未审核</span>" // 警告黄
+            );
         } else if (status == "AllRight") {
-            label_status.setText("一切正常");
+            label_status.setText(
+                "<img src=\":/SegoeFluentIcons/af5b765c-4d2f-4146-a198-654d41b87d8f.png\" "
+                "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
+                "<span style=\"color: #28a745; font-weight: bold;\">一切正常</span>" // 成功绿
+            );
+        } else if (status == "Banned") {
+            label_status.setText(
+                "<img src=\":/SegoeFluentIcons/5e89ce73-9ce9-4f59-b157-ec1399f3548f.png\" "
+                "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
+                "<span style=\"color: #6c757d; font-weight: bold;\">被拉黑</span>" // 中性灰
+            );
+        } else if (status == "Rejected") {
+            label_status.setText(
+                "<img src=\":/SegoeFluentIcons/71f93e9a-7bd5-409b-918e-51a58ac863f7.png\" "
+                "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
+                "<span style=\"color: #dc3545; font-weight: bold;\">已拒绝</span>" // 危险红
+            );
         } else {
-            label_status.setText("未知状态");
+            label_status.setText(
+                "<img src=\":/SegoeFluentIcons/7adc4afd-5150-418b-b6e1-2a02b0d1f129.png\" " // 使用你提供的未知图标
+                "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
+                "<span style=\"color: #6c757d; font-weight: bold;\">未知状态</span>" // 保持中性灰
+            );
         }
         label_status.setVisible(true);
     }
@@ -119,9 +141,17 @@ namespace view::RegisterCenter {
         if (data::UserControl::check::allowUserRegister(userId)) {
             acceptButton.setVisible(false);
             rejectButton.setVisible(false);
-            addStatusString("审批成功");
+            addStatusString(
+                "<img src=\":/SegoeFluentIcons/af5b765c-4d2f-4146-a198-654d41b87d8f.png\" " // 图片路径
+                "width=\"16\" height=\"16\" style=\"vertical-align: middle; margin-right: 5px;\">" // 图片大小和对齐
+                "<span style=\"color: #28a745; font-weight: bold; font-size: 11pt;\">审批成功</span>"
+            );
         } else {
-            acceptButton.setText("通过失败");
+            addStatusString(
+                "<img src=\":/SegoeFluentIcons/154ec457-cfd6-453c-bfe9-bd505c0b177d.png\" " // 图片路径
+                "width=\"16\" height=\"16\" style=\"vertical-align: middle; margin-right: 5px;\">" // 图片大小和对齐
+                "<span style=\"color: #dc3545; font-weight: bold; font-size: 11pt;\">审批失败</span>"
+            );
         }
     }
 } // view::RegisterCenter
