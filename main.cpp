@@ -19,7 +19,8 @@
 #include "view/loginPage/registerpage.h"
 #include "view/messageCenter/messagewindow.h"
 #include "view/equipmentManage/equipment_home.h"
-#include "view/SplashScreen/splashscreen.h"
+#include "view/SplashScreen/nativesplash.h"
+//#include "view/SplashScreen/splashscreen.h"
 
 void setup_tasks() {
     // 后台定时每1分钟扫描库存告警
@@ -34,7 +35,7 @@ int main(int argc, char *argv[]) {
 
     qInstallMessageHandler(service::customMessageHandler); //拦截部分错误，真的修不好了喵眼不见心不烦
 
-    view::SplashScreen::SplashScreen splash;
+    view::SplashScreen::nativeSplash splash;
     splash.show();
 
 
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
     // }
     b.show();
 
-    splash.close();
+    //splash.close();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
