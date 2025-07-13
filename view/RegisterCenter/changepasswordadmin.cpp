@@ -12,6 +12,7 @@ ChangePasswordAdmin::ChangePasswordAdmin(QWidget *parent) :
     QWidget(parent), ui(new Ui::ChangePasswordAdmin) {
     ui->setupUi(this);
     ui->message->setVisible(false);
+    service::style::setMica(this);
 }
 
 ChangePasswordAdmin::~ChangePasswordAdmin() {
