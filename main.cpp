@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     //     log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     // }
 
-    view::RegisterCenter::CheckNewUser b;
+    view::login::loginPage b;
     b.show();
     //splash.close();
 

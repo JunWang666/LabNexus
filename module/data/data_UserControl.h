@@ -29,7 +29,7 @@ namespace data::UserControl {
         int userId;
         int id_number;
         QString username;
-        QList<QMap<int,QString>> groups;
+        QList<QMap<int, QString> > groups;
         QString status;
         QDateTime created_at;
     };
@@ -289,6 +289,7 @@ namespace data::UserControl {
         bool allowUserRegister(int userId);
         bool banUser(int userId);
         bool unbanUser(int userId);
+
         QString getUserStatus(int userId);
     }
 }

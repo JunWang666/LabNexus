@@ -17,25 +17,29 @@ class CheckUserBlock : public QWidget {
 Q_OBJECT
 
 public:
-    explicit CheckUserBlock(QWidget *parent = nullptr) = delete;
-    explicit CheckUserBlock(int userId,QWidget *parent = nullptr);
-    ~CheckUserBlock() override;
+explicit CheckUserBlock(QWidget *parent = nullptr) = delete;
+
+explicit CheckUserBlock(int userId, QWidget *parent = nullptr);
+
+~CheckUserBlock() override;
 
     void addCheckButton();
-    void addStatusString(QString status);
-    void addStatusString();
-    void setButtonStyle();
+
+void addStatusString(QString status);
+
+void addStatusString();
+
+void setButtonStyle();
 
 public slots:
-    void AcceptCheck();
-
+void AcceptCheck();
 
 private:
-    Ui::CheckUserBlock *ui;
+Ui::CheckUserBlock *ui;
     int userId;
     QPushButton acceptButton,
-            rejectButton;
-    QLabel label_status;
+        rejectButton;
+QLabel label_status;
 };
 } // view::RegisterCenter
 

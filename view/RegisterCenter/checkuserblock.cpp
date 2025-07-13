@@ -11,7 +11,7 @@ namespace view::RegisterCenter {
     CheckUserBlock::CheckUserBlock(int userId, QWidget *parent): QWidget(parent), ui(new Ui::CheckUserBlock),
                                                                  userId(userId), acceptButton("接受", this),
                                                                  rejectButton("拒绝", this),
-    label_status("状态: ", this) {
+                                                                 label_status("状态: ", this) {
         ui->setupUi(this);
         acceptButton.setVisible(false);
         rejectButton.setVisible(false);
@@ -29,7 +29,7 @@ namespace view::RegisterCenter {
 
         if (data::UserControl::check::getUserStatus(userId) == "Unchecked") {
             addCheckButton();
-        }else {
+        } else {
             addStatusString();
         }
 
@@ -54,7 +54,7 @@ namespace view::RegisterCenter {
     }
 
     void CheckUserBlock::addStatusString() {
-    auto status = data::UserControl::check::getUserStatus(userId);
+        auto status = data::UserControl::check::getUserStatus(userId);
         ui->StatusFrame->layout()->addWidget(&label_status);
         if (status == "Unchecked") {
             label_status.setText("未审核");
@@ -66,7 +66,7 @@ namespace view::RegisterCenter {
             label_status.setText("未知状态");
         }
         label_status.setVisible(true);
-}
+    }
 
     void CheckUserBlock::setButtonStyle() {
         QString styleSheet1 = R"(
@@ -113,7 +113,6 @@ namespace view::RegisterCenter {
             }
         )";
         rejectButton.setStyleSheet(styleSheet2);
-
     }
 
     void CheckUserBlock::AcceptCheck() {
