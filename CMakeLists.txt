@@ -134,10 +134,6 @@ set(SHARED_SOURCES
         view/EquipmentClass/equipmentclassblock.cpp
         view/EquipmentClass/equipmentclassblock.h
         view/EquipmentClass/equipmentclassblock.ui
-        view/SplashScreen/SplashScreen.qml
-        view/SplashScreen/splashscreen.cpp
-        view/SplashScreen/splashscreen.h
-        view/SplashScreen/splashscreen.ui
         view/RegisterCenter/checkuserblock.cpp
         view/RegisterCenter/checkuserblock.h
         view/RegisterCenter/checkuserblock.ui

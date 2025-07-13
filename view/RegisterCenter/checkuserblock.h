@@ -5,6 +5,7 @@
 #ifndef CHECKUSERBLOCK_H
 #define CHECKUSERBLOCK_H
 
+#include <QLabel>
 #include <QWidget>
 
 namespace view::RegisterCenter {
@@ -16,16 +17,25 @@ class CheckUserBlock : public QWidget {
 Q_OBJECT
 
 public:
-    explicit CheckUserBlock(QWidget *parent = nullptr);
+    explicit CheckUserBlock(QWidget *parent = nullptr) = delete;
+    explicit CheckUserBlock(int userId,QWidget *parent = nullptr);
     ~CheckUserBlock() override;
 
+    void addCheckButton();
+    void addStatusString(QString status);
+    void addStatusString();
+    void setButtonStyle();
+
+public slots:
+    void AcceptCheck();
 
 
 private:
     Ui::CheckUserBlock *ui;
-    int m_currentPage;
-    int m_totalPages;
-    const int m_itemsPerPage = 10;
+    int userId;
+    QPushButton acceptButton,
+            rejectButton;
+    QLabel label_status;
 };
 } // view::RegisterCenter
 

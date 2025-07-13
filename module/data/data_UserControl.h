@@ -25,6 +25,15 @@ namespace data::UserControl {
         MutiResultFound
     };
 
+    struct UserData {
+        int userId;
+        int id_number;
+        QString username;
+        QList<QMap<int,QString>> groups;
+        QString status;
+        QDateTime created_at;
+    };
+
     inline int currentUserId = -1;
 
     // 内建用户组ID字典
@@ -280,6 +289,7 @@ namespace data::UserControl {
         bool allowUserRegister(int userId);
         bool banUser(int userId);
         bool unbanUser(int userId);
+        QString getUserStatus(int userId);
     }
 }
 
