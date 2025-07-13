@@ -22,11 +22,13 @@
 #include "view/RegisterCenter/checknewuser.h"
 #include "view/SplashScreen/nativesplash.h"
 //#include "view/SplashScreen/splashscreen.h"
+#include "module/scanner/WorkAlert.h"
 
 void setup_tasks() {
     // 后台定时每1分钟扫描库存告警
     service::taskManager::getTimer().scheduleTask(60000, []() {
         bot::InventoryAlert::sendAlert();
+        bot::WorkAlert::sendAdminCheckNewUserAlert();
     });
 }
 

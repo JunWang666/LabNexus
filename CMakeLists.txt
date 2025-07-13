@@ -143,6 +143,8 @@ set(SHARED_SOURCES
         view/SplashScreen/nativesplash.cpp
         view/SplashScreen/nativesplash.h
         view/SplashScreen/nativesplash.ui
+        module/scanner/WorkAlert.cpp
+        module/scanner/WorkAlert.h
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 

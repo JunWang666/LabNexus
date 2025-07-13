@@ -9,38 +9,44 @@
 #include <QWidget>
 
 namespace view::RegisterCenter {
-QT_BEGIN_NAMESPACE
-namespace Ui { class CheckUserBlock; }
-QT_END_NAMESPACE
+    QT_BEGIN_NAMESPACE
 
-class CheckUserBlock : public QWidget {
-Q_OBJECT
+    namespace Ui {
+        class CheckUserBlock;
+    }
 
-public:
-explicit CheckUserBlock(QWidget *parent = nullptr) = delete;
+    QT_END_NAMESPACE
 
-explicit CheckUserBlock(int userId, QWidget *parent = nullptr);
+    class CheckUserBlock : public QWidget {
+        Q_OBJECT
 
-~CheckUserBlock() override;
+    public:
+        explicit CheckUserBlock(QWidget *parent = nullptr) = delete;
 
-    void addCheckButton();
+        explicit CheckUserBlock(int userId, QWidget *parent = nullptr);
 
-void addStatusString(QString status);
+        ~CheckUserBlock() override;
 
-void addStatusString();
+        void addCheckButton();
 
-void setButtonStyle();
+        void addStatusString(QString status);
 
-public slots:
-void AcceptCheck();
+        void addStatusString();
 
-private:
-Ui::CheckUserBlock *ui;
-    int userId;
-    QPushButton acceptButton,
-        rejectButton;
-QLabel label_status;
-};
+        void setButtonStyle();
+
+        void RejectCheck();
+
+    public slots:
+        void AcceptCheck();
+
+    private:
+        Ui::CheckUserBlock *ui;
+        int userId;
+        QPushButton acceptButton,
+                rejectButton;
+        QLabel label_status;
+    };
 } // view::RegisterCenter
 
 #endif //CHECKUSERBLOCK_H

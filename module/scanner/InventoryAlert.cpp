@@ -8,6 +8,8 @@
 
 namespace bot::InventoryAlert {
     void sendAlert() {
+        if (!data::UserControl::permission::isUserInGroup(data::UserControl::currentUserId,"Admin")) return;
+
             service::DatabaseManager db(service::Path::equipment());
 
         QString query = R"(
