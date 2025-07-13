@@ -129,18 +129,17 @@ namespace view::EquipmentClass {
 
     void EquipmentClassDetail::on_UpdateButton_clicked() {
         if (m_isEditMode) {
-            // --- 编辑模式逻辑 (保持原样) ---
             data::Equipment::EquipmentClass::EquipmentClassRecord recordToUpdate = m_originalRecord;
             recordToUpdate.name = ui->EquName->text();
             recordToUpdate.description = ui->EquDescription->toPlainText();
             recordToUpdate.alarm_amount = ui->lineEdit->text().toInt();
 
             if (!data::Equipment::EquipmentClass::updateEquipmentClass(recordToUpdate)) {
-                QMessageBox::critical(this, "错误", "更新设备信息失败，请重试。");
+                show_message("更新设备信息失败，请重试。");
                 return;
             }
             if (!data::Equipment::EquipmentClass::recalculateClassCounts(m_originalRecord.id)) {
-                QMessageBox::warning(this, "警告", "设备信息已更新，但刷新数量统计时失败。");
+                show_message("设备信息已更新，但刷新数量统计时失败。");
             }
             data::Equipment::EquipmentClass::EquipmentClassRecord refreshedRecord =
                 data::Equipment::EquipmentClass::getEquipmentClassById(m_originalRecord.id);
@@ -153,6 +152,7 @@ namespace view::EquipmentClass {
                 ui->TotalNum->setText(QString::number(m_originalRecord.total_amount));
 
                 ui->UsableNum->setText(QString::number(m_originalRecord.usable_amount));
+                m_originalRecord = refreshedRecord;
                 show_message("信息更新与数量统计均已完成。");
             } else {
                 show_message("数据已尝试更新，但在刷新界面时无法重新获取数据。请手动确认更改已完成。");
@@ -168,10 +168,18 @@ namespace view::EquipmentClass {
             int newId = data::Equipment::EquipmentClass::addEquipmentClass(newRecord);
 
             if (newId != -1) {
-                QMessageBox::information(this, "成功", QString("新的设备类别“%1”已成功创建！").arg(newRecord.name));
-                close(); // 创建成功后直接关闭窗口
+                show_message(QString("新的设备类别“%1”已成功创建！").arg(newRecord.name));
+                m_classId = newId;
+                m_isEditMode = true;
+                m_originalRecord = newRecord;
+                ui->UpdateButton->setText("更新");
+                ui->UpdateButton->setEnabled(false);
+                disconnect(ui->EquName, &QLineEdit::textChanged, this, &EquipmentClassDetail::check_can_create);
+                connect(ui->EquName, &QLineEdit::textChanged, this, &EquipmentClassDetail::check_for_modifications);
+                connect(ui->EquDescription, &QTextEdit::textChanged, this, &EquipmentClassDetail::check_for_modifications);
+                connect(ui->lineEdit, &QLineEdit::textChanged, this, &EquipmentClassDetail::check_for_modifications);
             } else {
-                QMessageBox::critical(this, "错误", "创建新类别失败，请检查名称是否重复或联系管理员。");
+                show_message("创建新类别失败，请检查名称是否重复或联系管理员。");
             }
         }
     }

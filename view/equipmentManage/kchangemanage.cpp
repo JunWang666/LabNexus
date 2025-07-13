@@ -64,6 +64,7 @@ void kchangemanage::on_deleteButton_clicked() {
 
     // 获取设备ID（从源模型获取）
     int equipmentId = modelRent->index(row, dataModel::EquipmentDataModel::Col_ID).data().toInt();
+    int equipmentId_record = modelRent->index(row, dataModel::EquipmentDataModel::Col_Name).data().toInt();
 
     // 确认对话框
     QMessageBox::StandardButton reply = QMessageBox::question(
@@ -83,13 +84,13 @@ void kchangemanage::on_deleteButton_clicked() {
         QMessageBox::information(this, "成功", "设备状态已更新为删除");
         modelRent->fetchData(); // 刷新模型数据
 
-        QString a = QString("%1_%2").arg("delete@").arg(query);
+        QString a = QString("%1_%2_%3").arg("delete@").arg(equipmentId_record).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
 
         QFile file("kdelete_log.txt");
         if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
             file.write(QString(a)
-                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
                            .toUtf8());
+            file.write("\n");
             file.close();
         }
 
@@ -114,6 +115,7 @@ void kchangemanage::on_changeButton_clicked() {
 
     // 获取当前设备名称
     QString currentName = modelRent->index(row, dataModel::EquipmentDataModel::Col_Name).data().toString();
+
 
     // 弹出输入对话框获取新名称
     bool ok;
@@ -141,10 +143,11 @@ void kchangemanage::on_changeButton_clicked() {
         QMessageBox::information(this, "成功", "设备名称已更新");
         modelRent->fetchData(); // 刷新模型数据
 
+        QString a = QString("%1_%2_%3_%4").arg(currentName).arg(" change to ").arg(escapedName).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
+
         QFile file("kchange_log.txt");
         if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-            file.write(QString(query)
-                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
+            file.write(QString(a)
                            .toUtf8());
             file.write("\n");
             file.close();
@@ -170,8 +173,9 @@ void kchangemanage::on_statusButton_clicked()
     QModelIndex sourceIndex = rentFilterProxyMdel->mapToSource(proxyIndex);
     int row = sourceIndex.row();
 
-    // 获取当前设备名称
+    // 获取当前设备状态
     QString currentName = modelRent->index(row, dataModel::EquipmentDataModel::Col_Status).data().toString();
+    QString currentName_to_re = modelRent->index(row, dataModel::EquipmentDataModel::Col_Name).data().toString();
 
     // 弹出输入对话框获取新名称
     bool ok;
@@ -192,19 +196,20 @@ void kchangemanage::on_statusButton_clicked()
     // 更新数据库
     service::DatabaseManager db(data::Equipment::path);
     QString escapedName = newName.replace("'", "''");
-    QString query = QString("UPDATE equipment_instance SET name = '%1' WHERE id = %2")
+    QString query = QString("UPDATE equipment_instance SET status = '%1' WHERE id = %2")
                         .arg(escapedName).arg(equipmentId);
+
+    QString query_for_re = QString("%1_%2_%3_%4_%5")
+                        .arg("change@").arg(currentName_to_re).arg(equipmentId).arg("to").arg(escapedName);
 
     if (db.executeNonQuery(query)) {
         QMessageBox::information(this, "成功", "设备状态已更新");
         modelRent->fetchData(); // 刷新模型数据
 
-        QString a = QString("%1_%2").arg("change@").arg(query);
-
         QFile file("kchange_log.txt");
         if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-            file.write(QString(a)
-                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss\n"))
+            file.write(QString(query_for_re)
+                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
                            .toUtf8());
             file.write("\n");
             file.close();

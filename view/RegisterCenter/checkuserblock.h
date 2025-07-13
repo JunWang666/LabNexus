@@ -29,13 +29,10 @@ namespace view::RegisterCenter {
 
         void addCheckButton();
 
-        void addStatusString(QString status);
 
         void addStatusString();
 
         void setButtonStyle();
-
-        void RejectCheck();
 
     public slots:
         void AcceptCheck();
@@ -46,6 +43,8 @@ namespace view::RegisterCenter {
         QPushButton acceptButton,
                 rejectButton;
         QLabel label_status;
+
+        void addStatusString(QString status);
     };
 } // view::RegisterCenter
 

@@ -124,6 +124,16 @@ namespace data::UserControl {
          * @return 如果密码更新成功，则返回true；如果发生数据库错误，则返回一个包含UserControlError::DatabaseError的std::unexpected对象。
          */
         std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword);
+
+        QMap<QString, QString> batchCreateNewUser(const QList<QString> &idNumber, const int groupId,
+                                                  const QString &username = "",
+                                                  const QString &password = "");
+
+        QMap<QString, QString> batchGetUserCanCreate(const QList<QString> &idNumber, const int groupId);
+
+        QString generateRandomPassword(int length = 12);
+
+        QString hashPassword(const QString &password);
     }
 
     namespace permission {
@@ -248,6 +258,8 @@ namespace data::UserControl {
          * @return QList<int> 所有组ID列表。
          */
         QList<int> getAllGroupId();
+
+        QMap<QString,int> getAllGroup();
     }
 
     namespace UserInfo {
@@ -276,18 +288,28 @@ namespace data::UserControl {
          */
         void changeUserName(int userId, const QString &newName);
 
-        QMap<int,QString> loadUsersMap();
-        QMap<int,QString> loadGroupsMap();
+        QMap<int, QString> loadUsersMap();
+
+        QMap<int, QString> loadGroupsMap();
     }
+
     namespace check {
         QList<int> getAllUserId(int page = 1, int itemsPerPage = 10);
+
         QList<int> getUncheckedUserId(int page = 1, int itemsPerPage = 10);
+
         QList<int> getAllUserId();
+
         QList<int> getUncheckedUserId();
+
         int getUncheckedUserCount();
+
         int getAllUserCount();
+
         bool allowUserRegister(int userId);
+
         bool banUser(int userId);
+
         bool unbanUser(int userId);
         bool rejectUserRegister(int userId);
 

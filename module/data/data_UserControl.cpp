@@ -4,6 +4,9 @@
 #include<pch.h>
 #include "module/data/data_UserControl.h"
 
+#include <qcryptographichash.h>
+#include <qrandom.h>
+
 #include "data_mail.h"
 
 namespace data::UserControl {
@@ -54,14 +57,15 @@ namespace data::UserControl {
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            status Text NOT NULL DEFAULT 'AllRight'
+            status Text NOT NULL DEFAULT 'Unchecked'
         )
     )";
                 db.executeNonQuery(createTableQuery);
             }
         }
 
-        std::expected<int, UserControlError> isUserPasswordValid(const QString &idNumber, const QString &password) {
+        std::expected<int, UserControlError> isUserPasswordValid(const QString &idNumber, const QString &password_) {
+            QString password = hashPassword(password_);
             service::DatabaseManager db(service::Path::user());
             log(service::LogLevel::INFO) << "开始验证用户密码: " << idNumber;
             QString query = R"(
@@ -101,7 +105,8 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
-                                                           const QString &password) {
+                                                           const QString &password_) {
+            QString password = hashPassword(password_);
             service::DatabaseManager db(service::Path::user());
             if (!db.tableExists("users")) {
                 log(service::LogLevel::ERR) << "用户表不存在";
@@ -116,7 +121,7 @@ namespace data::UserControl {
 
             QString insertQuery = R"(
                 INSERT INTO users(id_number, username, password, status)
-                VALUES(?, ?, ?, 'AllRight')
+                VALUES(?, ?, ?, 'Unchecked')
             )";
             if (!db.executePreparedNonQuery(insertQuery, {idNumber, username, password})) {
                 log(service::LogLevel::ERR) << "新用户创建失败: " << idNumber;
@@ -130,7 +135,7 @@ namespace data::UserControl {
             }
 
             data::mail::send_mail(data::mail::systemReservedAccounts["LabNexus团队"],
-                                  newUserId.value(), "欢迎使用LabNexus", "您的账号已创建成功，请妥善保管您的账号信息。","");
+                                  newUserId.value(), "欢迎使用LabNexus", "您的账号已创建成功，请妥善保管您的账号信息。", "");
             return newUserId.value();
         }
 
@@ -214,7 +219,8 @@ namespace data::UserControl {
             return std::unexpected(UserControlError::DatabaseError);
         }
 
-        std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &newPassword) {
+        std::expected<bool, UserControlError> updateUserPassword(int userId, const QString &password_) {
+            QString newPassword = hashPassword(password_);
             service::DatabaseManager db(service::Path::user());
             QString updateQuery = R"(
                 UPDATE users
@@ -226,6 +232,196 @@ namespace data::UserControl {
             }
             log(service::LogLevel::DATA) << "用户" << userId << "密码更新成功: " << userId;
             return true;
+        }
+
+        QMap<QString, QString> batchCreateNewUser(const QList<QString> &idNumber, const int groupId,
+                                                  const QString &usernameBase,
+                                                  const QString &passwordInput) {
+            QMap<QString, QString> result;
+            service::DatabaseManager db(service::Path::user());
+
+            // 2. 查询 users 表，找出哪些 idNumber（学工号）已存在及其对应的 id
+            QString idNumberListPlaceholder;
+            QList<QVariant> idNumberQueryParams;
+            for (int i = 0; i < idNumber.size(); ++i) {
+                idNumberListPlaceholder += "?";
+                idNumberQueryParams.append(idNumber.at(i));
+                if (i < idNumber.size() - 1) {
+                    idNumberListPlaceholder += ",";
+                }
+            }
+
+            QString userQuery = QString(R"(
+                SELECT id_number, id, username FROM users WHERE id_number IN (%1)
+            )").arg(idNumberListPlaceholder);
+
+            auto userResults = db.executePreparedQueryAndFetchAll(userQuery, idNumberQueryParams);
+
+            QSet<QString> existingIdNumbers; // 用于快速查找已存在的学工号
+            QMap<QString, int> existingUserIds; // 存储已存在学工号和它们的主键 id
+            QMap<QString, QString> existingUsernames; // 存储已存在学工号和它们的 username
+
+            for (const auto &row: userResults) {
+                QString currentIdNumber = row["id_number"].toString();
+                int userId = row["id"].toInt();
+                QString existingUsername = row["username"].toString();
+
+                existingIdNumbers.insert(currentIdNumber);
+                existingUserIds.insert(currentIdNumber, userId);
+                existingUsernames.insert(currentIdNumber, existingUsername);
+            }
+
+            // 3. 遍历输入的 idNumber，处理新用户和现有用户
+            for (const QString &currentIdNumber: idNumber) {
+                if (!existingIdNumbers.contains(currentIdNumber)) {
+                    // **新用户**
+                    QString newPassword = passwordInput.isEmpty() ? generateRandomPassword() : passwordInput;
+                    QString hashedPassword = hashPassword(newPassword);
+
+                    // 拼接用户名
+                    QString finalUsername = usernameBase;
+                    if (currentIdNumber.length() >= 4) {
+                        finalUsername += currentIdNumber.right(4);
+                    } else {
+                        finalUsername += currentIdNumber; // 位数不够就直接拼接
+                    }
+
+                    // 插入到 users 表
+                    QString insertUserQuery = R"(
+                        INSERT INTO users (id_number, username, password, created_at, status)
+                        VALUES (?, ?, ?, CURRENT_TIMESTAMP, 'AllRight')
+                    )";
+                    QList<QVariant> insertUserParams = {
+                        currentIdNumber, finalUsername, hashedPassword
+                    };
+
+                    // 执行插入并尝试获取新生成的用户ID
+                    auto insertResult = db.executePreparedInsertAndGetId(insertUserQuery, insertUserParams);
+                    if (insertResult != -1) {
+                        QString insertUserGroupQuery = R"(
+                            INSERT INTO user_groups (user_id, group_id, status)
+                            VALUES (?, ?, 'AllRight')
+                        )";
+                        db.executePreparedQuery(insertUserGroupQuery, {insertResult, groupId});
+
+                        result.insert(currentIdNumber, newPassword); // 返回新用户的生成密码
+                    } else {
+                        result.insert(currentIdNumber, "注册失败"); // 标记注册失败
+                    }
+                } else {
+                    // **已存在的用户**
+                    int userId = existingUserIds.value(currentIdNumber);
+
+                    // 检查用户是否已在目标组中
+                    QString checkGroupQuery = R"(
+                        SELECT COUNT(*) FROM user_groups ug
+                        WHERE ug.user_id = ? AND ug.group_id = ?
+                    )";
+                    QList<QVariant> checkGroupParams = {userId, groupId};
+                    auto groupCheckResults = db.executePreparedQueryAndFetchAll(checkGroupQuery, checkGroupParams);
+
+                    int count = 0;
+                    if (!groupCheckResults.isEmpty()) {
+                        count = groupCheckResults.first().value("COUNT(*)", 0).toInt();
+                    }
+
+                    if (count == 0) {
+                        // 用户已存在但不在目标组中，需要增加用户组关系
+                        QString insertUserGroupQuery = R"(
+                            INSERT INTO user_groups (user_id, group_id, status)
+                            VALUES (?, ?, 'AllRight')
+                        )";
+                        db.executePreparedQuery(insertUserGroupQuery, {userId, groupId});
+                        result.insert(currentIdNumber, ""); // 已有用户，密码留空
+                    } else {
+                        // 用户已存在且已在目标组中，无需操作
+                        result.insert(currentIdNumber, ""); // 已有用户，密码留空
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
+        QMap<QString, QString> batchGetUserCanCreate(const QList<QString> &idNumber, const int groupId) {
+            QMap<QString, QString> result;
+            service::DatabaseManager db(service::Path::user());
+
+            // 1. 查询 users 表，找出哪些 idNumber（学工号）已存在及其对应的 id
+            QString idNumberListPlaceholder;
+            QList<QVariant> idNumberQueryParams;
+            for (int i = 0; i < idNumber.size(); ++i) {
+                idNumberListPlaceholder += "?";
+                idNumberQueryParams.append(idNumber.at(i));
+                if (i < idNumber.size() - 1) {
+                    idNumberListPlaceholder += ",";
+                }
+            }
+
+            QString userQuery = QString(R"(
+                SELECT id_number, id FROM users WHERE id_number IN (%1)
+            )").arg(idNumberListPlaceholder);
+
+            auto userResults = db.executePreparedQueryAndFetchAll(userQuery, idNumberQueryParams);
+
+            QSet<QString> existingIdNumbers; // 用于快速查找已存在的学工号
+            QMap<QString, int> existingUserIds; // 存储已存在学工号和它们的主键 id
+
+            for (const auto &row: userResults) {
+                QString currentIdNumber = row["id_number"].toString();
+                int userId = row["id"].toInt();
+                existingIdNumbers.insert(currentIdNumber);
+                existingUserIds.insert(currentIdNumber, userId);
+            }
+
+            // 2. 遍历输入的 idNumber，判断用户状态并转换为字符串描述
+            for (const QString &currentIdNumber: idNumber) {
+                if (!existingIdNumbers.contains(currentIdNumber)) {
+                    // 用户不存在，可以创建新用户
+                    result.insert(currentIdNumber, "可以创建");
+                } else {
+                    // 用户已存在，进一步检查是否在指定组中
+                    int userId = existingUserIds.value(currentIdNumber);
+
+                    // 查询 user_groups 和 groups 表，检查用户是否在目标组中
+                    QString checkGroupQuery = R"(
+                        SELECT COUNT(*) FROM user_groups ug
+                        WHERE ug.user_id = ? AND ug.group_id = ?
+                    )";
+                    QList<QVariant> checkGroupParams = {userId, groupId};
+                    auto groupCheckResults = db.executePreparedQueryAndFetchAll(checkGroupQuery, checkGroupParams);
+
+                    int count = 0;
+                    if (!groupCheckResults.isEmpty()) {
+                        count = groupCheckResults.first().value("COUNT(*)", 0).toInt();
+                    }
+
+                    if (count > 0) {
+                        // 用户已存在且已在目标组中，无需操作
+                        result.insert(currentIdNumber, "已存在且在组中");
+                    } else {
+                        // 用户已存在但不在目标组中，视为需要增加用户组关系
+                        result.insert(currentIdNumber, "已存在但不在组中，需要增加组关系");
+                    }
+                }
+            }
+            return result;
+        }
+
+        QString generateRandomPassword(int length) {
+            const QString possibleCharacters =
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            QString randomString;
+            for (int i = 0; i < length; ++i) {
+                randomString.append(
+                    possibleCharacters.at(QRandomGenerator::global()->bounded(possibleCharacters.length())));
+            }
+            return randomString;
+        }
+
+        QString hashPassword(const QString &password) {
+            return QString(QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256).toHex());
         }
     }
 
@@ -431,6 +627,23 @@ namespace data::UserControl {
             }
             return groupIds;
         }
+
+        QMap<QString, int> getAllGroup() {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                SELECT id, name FROM groups WHERE status != 'Deleted'
+            )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {});
+
+            QMap<QString, int> groupMap;
+            for (const auto &row: results) {
+                int id = row["id"].toInt();
+                QString name = row["name"].toString();
+                groupMap.insert(name, id); // 组名作为 key，id 作为 value
+            }
+
+            return groupMap;
+        }
     }
 
     namespace UserInfo {
@@ -472,18 +685,18 @@ namespace data::UserControl {
         }
 
         QMap<int, QString> loadUsersMap() {
-            QMap<int ,QString> usersMap;
+            QMap<int, QString> usersMap;
             service::DatabaseManager db(service::Path::user());
             QString query = R"(SELECT id_number,username FROM users WHERE status != 'Deleted')";
             auto results = db.executeQueryAndFetchAll(query);
-            for (const auto &row : results) {
+            for (const auto &row: results) {
                 usersMap[row["id_number"].toInt()] = row["username"].toString();
             }
             return usersMap;
         }
 
         QMap<int, QString> loadGroupsMap() {
-            QMap<int,QString> groupsMap;
+            QMap<int, QString> groupsMap;
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
                 SELECT g.name , u.id_number
@@ -493,12 +706,13 @@ namespace data::UserControl {
                 WHERE g.status != 'Deleted' AND ug.status != 'Deleted' AND u.status != 'Deleted'
             )";
             auto results = db.executeQueryAndFetchAll(query);
-            for (const auto &row : results) {
+            for (const auto &row: results) {
                 groupsMap[row["id_number"].toInt()] = row["name"].toString();
             }
             return groupsMap;
         }
     }
+
     namespace check {
         QList<int> getAllUserId(int page, int pageSize) {
             service::DatabaseManager db(service::Path::user());
@@ -563,7 +777,7 @@ namespace data::UserControl {
         int getUncheckedUserCount() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                   SELECT COUNT(*) as count FROM users WHERE status == 'Unchecked'
+                   SELECT COUNT(*) as count FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE '-%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
 
@@ -577,7 +791,7 @@ namespace data::UserControl {
         int getAllUserCount() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                   SELECT COUNT(*) as count FROM users WHERE status != 'Deleted'
+                   SELECT COUNT(*) as count FROM users WHERE status != 'Deleted' AND id_number NOT LIKE '-%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
 
