@@ -94,7 +94,7 @@ namespace view::homepage {
                                  .arg(A_name).arg(A_ID));
     }
 
-    void administratorHomepage::on_editProfileButton_clicked() {
+    void administratorHomepage::on_editProfileButton_2_clicked() {
         service::log() << "管理员 " << A_name << " 点击了修改个人信息按钮";
 
         // TODO: 打开修改密码/个人信息页面
