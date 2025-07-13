@@ -38,6 +38,7 @@ void ManagerCheck::setUpModel() {
     //初始化模型
     model = new dataModel::BookingDataModel(this);
     model->setCurrentUserId(id.toInt(),name);
+    connect(model,&dataModel::BookingDataModel::approvalStatusChanged,this,&view::Order::ManagerCheck::loadData);
     fliterModel = new fliterModel::FilterProxyMdel(this);
     fliterModel->setSourceModel(model);
     //设置模型

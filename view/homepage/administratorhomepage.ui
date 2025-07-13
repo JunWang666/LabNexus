@@ -247,101 +247,101 @@
       <string>审批</string>
      </property>
     </widget>
-       <widget class="QPushButton" name="EquipmentClassButton">
-           <property name="geometry">
-               <rect>
-                   <x>60</x>
-                   <y>120</y>
-                   <width>141</width>
-                   <height>31</height>
-               </rect>
-           </property>
-           <property name="styleSheet">
-               <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-           </property>
-           <property name="text">
-               <string>仪器类管理</string>
-           </property>
-       </widget>
-       <widget class="QPushButton" name="RegisterControlButton">
-           <property name="geometry">
-               <rect>
-                   <x>340</x>
-                   <y>120</y>
-                   <width>131</width>
-                   <height>31</height>
-               </rect>
-           </property>
-           <property name="styleSheet">
-               <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-           </property>
-           <property name="text">
-               <string>注册审批</string>
-           </property>
-       </widget>
-       <widget class="QFrame" name="frame_4">
-           <property name="geometry">
-               <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>561</width>
-                   <height>221</height>
-               </rect>
-           </property>
-           <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-           </property>
-           <widget class="QPushButton" name="editProfileButton_2">
-               <property name="geometry">
-                   <rect>
-                       <x>330</x>
-                       <y>50</y>
-                       <width>141</width>
-                       <height>31</height>
-                   </rect>
-               </property>
-               <property name="styleSheet">
-                   <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-               </property>
-               <property name="text">
-                   <string>修改个人信息</string>
-               </property>
-           </widget>
-           <widget class="QPushButton" name="logoutButton">
-               <property name="geometry">
-                   <rect>
-                       <x>60</x>
-                       <y>140</y>
-                       <width>141</width>
-                       <height>31</height>
-                   </rect>
-               </property>
-               <property name="styleSheet">
-                   <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-               </property>
-               <property name="text">
-                   <string>退出登录</string>
-               </property>
-           </widget>
-           <widget class="QPushButton" name="userManageButton">
-               <property name="geometry">
-                   <rect>
-                       <x>60</x>
-                       <y>50</y>
-                       <width>141</width>
-                       <height>31</height>
-                   </rect>
-               </property>
-               <property name="styleSheet">
-                   <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
-               </property>
-               <property name="text">
-                   <string>用户管理</string>
-               </property>
-           </widget>
+    <widget class="QPushButton" name="EquipmentClassButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>120</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>仪器类管理</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="RegisterControlButton">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>120</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>注册审批</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_4">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>40</y>
+      <width>561</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Shape::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Shadow::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="editProfileButton_2">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>修改个人信息</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="logoutButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>140</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>退出登录</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="userManageButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 16pt &quot;Microsoft YaHei UI&quot;;</string>
+     </property>
+     <property name="text">
+      <string>用户管理</string>
+     </property>
     </widget>
    </widget>
   </widget>
