@@ -31,7 +31,7 @@ namespace view::homepage {
         void on_approvalButton_clicked(); // 审批
         void on_userManageButton_clicked(); // 用户管理
         void on_systemManageButton_clicked(); // 系统管理
-        void on_editProfileButton_clicked(); // 修改个人信息
+        void on_editProfileButton_2_clicked(); // 修改个人信息
         void on_logoutButton_clicked(); // 退出登录
         void on_messageButton_clicked(); // 消息
         void on_Button_clicked();
