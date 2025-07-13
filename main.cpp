@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
 
     qInstallMessageHandler(service::customMessageHandler); //拦截部分错误，真的修不好了喵眼不见心不烦
 
-    //view::SplashScreen::SplashScreen splash;
-    //splash.show();
+    view::SplashScreen::nativeSplash splash;
+    splash.show();
 
 
     service::logger::instance().setLogFile(
@@ -64,10 +64,11 @@ int main(int argc, char *argv[]) {
 
     view::login::loginPage b;
     b.show();
-    //splash.close();
 
     setup_tasks();
     service::taskManager::getTimer().startAll();
+
+    splash.closeSplash();
 
     return QApplication::exec();
 }

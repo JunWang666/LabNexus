@@ -18,9 +18,11 @@ Q_OBJECT
 public:
     explicit nativeSplash(QWidget *parent = nullptr);
     ~nativeSplash() override;
+    void closeSplash();
 
 private:
     Ui::nativeSplash *ui;
+    void play_animation();
 };
 } // view::SplashScreen
 
