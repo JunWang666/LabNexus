@@ -503,7 +503,7 @@ namespace data::UserControl {
         QList<int> getAllUserId(int page, int pageSize) {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE 'System'
+                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE 'System%'
                     ORDER BY created_at DESC
                     LIMIT ? OFFSET ?
               )";
@@ -521,7 +521,7 @@ namespace data::UserControl {
         QList<int> getUncheckedUserId(int page, int pageSize) {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE 'System'
+                  SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE 'System%'
                     ORDER BY created_at DESC
                     LIMIT ? OFFSET ?
               )";
@@ -537,7 +537,7 @@ namespace data::UserControl {
         QList<int> getAllUserId() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE 'System'
+                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE 'System%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
             QList<int> userIds;
@@ -550,7 +550,7 @@ namespace data::UserControl {
         QList<int> getUncheckedUserId() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                   SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE 'System'
+                   SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE 'System%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
             QList<int> userIds;

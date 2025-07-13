@@ -4,6 +4,7 @@
 
 #ifndef WORKALERT_H
 #define WORKALERT_H
+
 namespace bot::WorkAlert {
     void sendAdminCheckNewUserAlert();
 }

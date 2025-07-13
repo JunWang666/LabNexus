@@ -12,9 +12,9 @@ namespace bot::WorkAlert {
         auto count = data::UserControl::check::getUncheckedUserCount();
         if (count == 0) return;
         data::mail::send_mail(data::UserControl::currentUserId,
-                     data::mail::systemReservedAccounts["工作提醒"],
-                     "还有" + QString::number(count) + "个新用户待审核",
-                     "请前往注册中心查看新用户信息并进行审核。",
-                     "{}");
+                              data::mail::systemReservedAccounts["工作提醒"],
+                              "还有" + QString::number(count) + "个新用户待审核",
+                              "请前往注册中心查看新用户信息并进行审核。",
+                              "{}");
     }
 }
