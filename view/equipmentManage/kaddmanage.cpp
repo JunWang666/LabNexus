@@ -6,10 +6,9 @@
 kaddmanage::kaddmanage(QWidget *parent)
     : QDialog(parent), ui(new view::equipment::Ui::kaddmanage) {
     ui->setupUi(this);
-    loadClassrooms();        // 加载“所在教室”下拉框数据（新增）
+    loadClassrooms();        // 加载“仪器类”下拉框数据（新增）
     initStatusOptions();     // 初始化状态下拉框（原逻辑）
 
-    connect(ui->addButton, &QPushButton::clicked, this, &kaddmanage::on_addButton_clicked);
 }
 
 kaddmanage::~kaddmanage() {
@@ -18,19 +17,18 @@ kaddmanage::~kaddmanage() {
 
 void kaddmanage::loadClassrooms() {
     service::DatabaseManager db(data::Equipment::path);
-    QString query = "SELECT id, name FROM classroom"; // 假设教室信息存储在 classroom 表
+    QString query = "SELECT id, name FROM equipment_class"; // 仪器类信息存储在 classroom 表
     auto results = db.executeQueryAndFetchAll(query); // 从数据库查询教室数据
 
     ui->comboBox->clear(); // 清空下拉框原有内容
-    ui->comboBox->addItem("请选择所在仪器类", -1); // 默认提示项（值为-1表示未选择）
+
 
     if (results.isEmpty()) {
-        // 数据库无教室数据时，添加示例仪器类（硬编码）
-        ui->comboBox->addItem("试管"); // 示例1：名称+ID（ID设为负数避免冲突）
-        ui->comboBox->addItem("显微镜", -202);   // 示例2
-        ui->comboBox->addItem("离心机", -303);  // 示例3
+
+        ui->comboBox->addItem("无可用仪器类",-1);
     } else {
-        // 数据库有数据时，正常加载数据库中的教室
+        // 数据库有数据时，正常加载数据库中的仪器类
+        ui->comboBox->addItem("请选择所在仪器类", -1);
         for (const auto &row : results) {
             int classroomId = row["id"].toInt();
             QString classroomName = row["name"].toString();
@@ -48,12 +46,12 @@ void kaddmanage::initStatusOptions() {
 
 void kaddmanage::on_addButton_clicked() {
     // 从 UI 控件获取输入（注意转义单引号防 SQL 注入）
-    QString instrumentName = ui->equipmentNameEdit->text().trimmed().replace("'", "''"); // 设备名称（如“显微镜”）
+    QString instrumentName = ui->equipmentNameEdit->text().trimmed()/*.replace("'", "''")*/; // 设备名称（如“显微镜”）
     QString batchNumber = ui->batchNumberEdit->text();       // 批次号（如“2024001”）
     QString quantityStr = ui->quantityEdit->text().trimmed();                             // 添加个数（如“3”）
-    QString statuss = ui->comboBox_2->currentText().replace("'", "''");                    // 设备状态（如“可用”）
+    QString statuss = ui->comboBox_2->currentText()/*.replace("'", "''")*/;                    // 设备状态（如“可用”）
     int classId = ui->comboBox->currentData().toInt();                                    // 设备类别ID（从下拉框获取）
-    QString className = ui->comboBox->currentText().replace("'", "''");                   // 设备类别名称（用于提示）
+    QString className = ui->comboBox->currentText()/*.replace("'", "''")*/;                   // 设备类别名称（用于提示）
 
     // 输入校验
     if (instrumentName.isEmpty()) {
@@ -79,6 +77,7 @@ void kaddmanage::on_addButton_clicked() {
     QDateTime currentDate = QDateTime::currentDateTime();
     QString dateStr = currentDate.toString("yyyy-MM-dd hh:mm:ss");
     QString baseNumber = QString("%1_%2_%3").arg(instrumentName).arg(dateStr).arg(batchNumber);
+    QString rebaseNumber = QString("%1_%2_%3").arg(instrumentName).arg(batchNumber);
 
     // 数据库操作
     service::DatabaseManager db(data::Equipment::path);
@@ -94,11 +93,11 @@ void kaddmanage::on_addButton_clicked() {
                                            : baseNumber;
 
         // 步骤1：检查设备编号是否已存在（避免冲突）
-        QString checkQuery = QString(R"(
-            SELECT COUNT(*) AS count FROM equipment_instance
-            WHERE equipment_number = '%1'
-        )").arg(finalEquipmentNumber);
-        auto checkResult = db.executeQueryAndFetchAll(checkQuery);
+        // QString checkQuery = QString(R"(
+        //     SELECT COUNT(*) AS count FROM equipment_instance
+        //     WHERE equipment_number = '%1'
+        // )").arg(finalEquipmentNumber);
+        // auto checkResult = db.executeQueryAndFetchAll(checkQuery);
 
 
         // 步骤2：插入新记录（使用数据库自增id，不手动指定）
@@ -135,5 +134,14 @@ void kaddmanage::on_addButton_clicked() {
     if (successCount > 0) {
         emit dataAdded(); // 通知主界面刷新
     }
+
+    QFile file("kadd_log.txt");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+        file.write(QString(rebaseNumber)
+                       .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
+                       .toUtf8());
+        file.close();
+    }
+
     this->close();
 }

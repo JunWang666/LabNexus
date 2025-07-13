@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Nana7mi_ on 25-7-8.
 //
 
@@ -19,17 +19,20 @@ public:
     void setUserIdColumn(int column);
     void setStatusColumn(int column);
     void setGroupColunm(int column);
+    void setNameColunm(int column);
 
 public slots:
     // 用于设置过滤值的槽
     void setUserIdFilter(int userId);
     void setStatusFilter(const QString &status);
     void setGroupFilter(const QString &group);
+    void setnameFilter(const QString &name);
     void clearFilters();
     // 单独清除某个过滤条件
     void clearUserIdFilter();
     void clearStatusFilter();
     void clearGroupFilter();
+    void clearnameFilter();
     // 重写核心的过滤函数
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
@@ -40,10 +43,15 @@ private:
     QString m_filterStatus;
     // 空字符串表示身份过滤器未激活
     QString m_filterGroup;
+
+    //同上
+    QString m_filtername;
+
     // 用于存储列号的成员变量
     int m_userIdColumn = -1;
     int m_statusColumn = -1;
     int m_groupColumn = -1;
+    int m_nameColumn = -1;
 };
 } // fliterModel
 

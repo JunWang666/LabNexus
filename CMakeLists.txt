@@ -138,6 +138,9 @@ set(SHARED_SOURCES
         view/SplashScreen/splashscreen.cpp
         view/SplashScreen/splashscreen.h
         view/SplashScreen/splashscreen.ui
+        view/equipmentManage/equipment_home.cpp
+        view/equipmentManage/equipment_home.h
+        view/equipmentManage/equipment_home.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 
