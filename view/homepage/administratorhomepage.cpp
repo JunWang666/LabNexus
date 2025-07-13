@@ -11,8 +11,12 @@
 #include "service/logger/logger.h"
 #include <QMessageBox>
 #include <QMouseEvent>
+
+#include "view/EquipmentClass/equipmentclassblock.h"
+#include "view/EquipmentClass/equipmentclassmanagehomepage.h"
 #include "view/equipmentManage/equipment_home.h"
 #include "view/messageCenter/messagewindow.h"
+#include "view/RegisterCenter/checknewuser.h"
 
 namespace view::homepage {
     administratorHomepage::administratorHomepage(const QString &name, const QString &ID,
@@ -132,6 +136,19 @@ namespace view::homepage {
         ui->frame_3->hide();
         ui->frame_4->show();
     }
+
+    void administratorHomepage::on_EquipmentClassButton_clicked() {
+        view::EquipmentClass::EquipmentClassManageHomepage* equipmentClassPage = new view::EquipmentClass::EquipmentClassManageHomepage();
+        service::MutiWindow::manager().addWindow(equipmentClassPage);
+        equipmentClassPage->show();
+    }
+
+    void administratorHomepage::on_RegisterControlButton_clicked() {
+        view::RegisterCenter::CheckNewUser* checkNewUserPage = new view::RegisterCenter::CheckNewUser();
+        service::MutiWindow::manager().addWindow(checkNewUserPage);
+        checkNewUserPage->show();
+    }
+
     void administratorHomepage::mousePressEvent(QMouseEvent *event)
     {
         if (event->button() == Qt::LeftButton)

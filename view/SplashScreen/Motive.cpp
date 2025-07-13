@@ -1,12 +1,12 @@
 // view/SplashScreen/splashscreen.cpp
-#include "splashscreen.h"
-#include "ui_splashscreen.h"
+#include "Motive.h"
+#include "ui_Motive.h"
 #include <QUrl>
 #include <QTimer>
 
 namespace view {
     namespace SplashScreen {
-        SplashScreen::SplashScreen(QWidget *parent) :
+        Motive::Motive(QWidget *parent) :
             QWidget(parent),
             ui(new Ui::SplashScreen)
         {
@@ -40,12 +40,12 @@ namespace view {
 
         }
 
-        SplashScreen::~SplashScreen()
+        Motive::~Motive()
         {
             delete ui;
         }
 
-        void SplashScreen::closeSplashScreen()
+        void Motive::closeSplashScreen()
         {
             // 停止定时器，避免重复触发
             closingTimer->stop();

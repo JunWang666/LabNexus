@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>view::SplashScreen::nativeSplash</class>
+    <widget class="QWidget" name="view::SplashScreen::nativeSplash">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>662</width>
+                <height>449</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>nativeSplash</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+                <widget class="QFrame" name="frame">
+                    <property name="minimumSize">
+                        <size>
+                            <width>600</width>
+                            <height>400</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>600</width>
+                            <height>400</height>
+                        </size>
+                    </property>
+                    <property name="styleSheet">
+                        <string notr="true">QFrame {
+                            background-color: transparent;
+                            border: none;
+                            }
+                        </string>
+                    </property>
+                    <property name="frameShape">
+                        <enum>QFrame::Shape::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>QFrame::Shadow::Raised</enum>
+                    </property>
+                    <widget class="QLabel" name="label">
+                        <property name="geometry">
+                            <rect>
+                                <x>10</x>
+                                <y>-50</y>
+                                <width>221</width>
+                                <height>221</height>
+                            </rect>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                <horstretch>1</horstretch>
+                                <verstretch>1</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string/>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap resource="../../assets/Logo/LogoResource.qrc">:/Logo1.png</pixmap>
+                        </property>
+                        <property name="scaledContents">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" name="label_2">
+                        <property name="geometry">
+                            <rect>
+                                <x>230</x>
+                                <y>0</y>
+                                <width>501</width>
+                                <height>401</height>
+                            </rect>
+                        </property>
+                        <property name="styleSheet">
+                            <string notr="true">QLabel {
+                                border-radius: 20px;
+                                background-clip: content-box;
+                                }
+                            </string>
+                        </property>
+                        <property name="text">
+                            <string/>
+                        </property>
+                        <property name="pixmap">
+                            <pixmap resource="../../assets/LandScapes/LandScape.qrc">:/landscape/BB1msMpB.jpg</pixmap>
+                        </property>
+                    </widget>
+                </widget>
+            </item>
+        </layout>
+    </widget>
+    <resources>
+        <include location="../../assets/Logo/LogoResource.qrc"/>
+        <include location="../../assets/LandScapes/LandScape.qrc"/>
+    </resources>
+    <connections/>
+</ui>
