@@ -32,6 +32,8 @@ void setup_tasks() {
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
+    qInstallMessageHandler(service::customMessageHandler); //拦截部分错误，真的修不好了喵眼不见心不烦
+
     view::SplashScreen::SplashScreen splash;
     splash.show();
 

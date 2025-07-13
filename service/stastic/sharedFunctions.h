@@ -6,5 +6,6 @@
 #define SHAREDFUNCTIONS_H
 namespace service {
     void initDB();
+    void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 }
 #endif //SHAREDFUNCTIONS_H
