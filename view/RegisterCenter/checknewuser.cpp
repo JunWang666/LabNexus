@@ -6,6 +6,7 @@
 
 #include "checknewuser.h"
 
+#include "changepasswordadmin.h"
 #include "checkuserblock.h"
 #include "registernewuser.h"
 #include "ui_CheckNewUser.h"
@@ -101,5 +102,11 @@ void CheckNewUser::updatePaginationControls() {
     void CheckNewUser::on_refreshButton_clicked() {
         (m_totalPages = data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
         loadDataFromDatabase();
+    }
+
+    void CheckNewUser::on_ChangePasswordButton_clicked() {
+        view::RegisterCenter::ChangePasswordAdmin *ChangePasswordAdmin = new view::RegisterCenter::ChangePasswordAdmin();
+        service::MutiWindow::manager().addWindow(ChangePasswordAdmin);
+        ChangePasswordAdmin->show();
     }
 }

@@ -671,6 +671,18 @@ namespace data::UserControl {
             return results.first()["username"].toString();
         }
 
+        std::expected<int, UserInfoError> getIdByIdNumber(QString IdNumber) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = "SELECT id FROM users WHERE id_number = ? AND status != 'Deleted'";
+            auto results = db.executePreparedQueryAndFetchAll(query, {IdNumber});
+
+            if (results.isEmpty()) {
+                return std::unexpected(UserInfoError::UserNotFound);
+            }
+
+            return results.first()["id"].toInt();
+        }
+
         void changeUserName(int userId, const QString &newName) {
             service::DatabaseManager db(service::Path::user());
             QString updateQuery = R"(
