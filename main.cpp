@@ -19,6 +19,7 @@
 #include "view/loginPage/registerpage.h"
 #include "view/messageCenter/messagewindow.h"
 #include "view/equipmentManage/equipment_home.h"
+#include "view/RegisterCenter/checknewuser.h"
 #include "view/SplashScreen/nativesplash.h"
 //#include "view/SplashScreen/splashscreen.h"
 
@@ -35,8 +36,8 @@ int main(int argc, char *argv[]) {
 
     qInstallMessageHandler(service::customMessageHandler); //拦截部分错误，真的修不好了喵眼不见心不烦
 
-    view::SplashScreen::nativeSplash splash;
-    splash.show();
+    //view::SplashScreen::SplashScreen splash;
+    //splash.show();
 
 
     service::logger::instance().setLogFile(
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]) {
     service::initDB();
 
 
-    view::login::loginPage b;
+
     // QFile styleFile(":/styles/fluent.qss");
     // if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
     //     QString styleSheet = QLatin1String(styleFile.readAll());
@@ -58,8 +59,9 @@ int main(int argc, char *argv[]) {
     // } else {
     //     log(LogLevel::ERR) << "无法加载样式表文件: " << styleFile.fileName();
     // }
-    b.show();
 
+    view::login::loginPage b;
+    b.show();
     //splash.close();
 
     setup_tasks();

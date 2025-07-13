@@ -25,6 +25,15 @@ namespace data::UserControl {
         MutiResultFound
     };
 
+    struct UserData {
+        int userId;
+        int id_number;
+        QString username;
+        QList<QMap<int, QString> > groups;
+        QString status;
+        QDateTime created_at;
+    };
+
     inline int currentUserId = -1;
 
     // 内建用户组ID字典
@@ -269,6 +278,19 @@ namespace data::UserControl {
 
         QMap<int,QString> loadUsersMap();
         QMap<int,QString> loadGroupsMap();
+    }
+    namespace check {
+        QList<int> getAllUserId(int page = 1, int itemsPerPage = 10);
+        QList<int> getUncheckedUserId(int page = 1, int itemsPerPage = 10);
+        QList<int> getAllUserId();
+        QList<int> getUncheckedUserId();
+        int getUncheckedUserCount();
+        int getAllUserCount();
+        bool allowUserRegister(int userId);
+        bool banUser(int userId);
+        bool unbanUser(int userId);
+
+        QString getUserStatus(int userId);
     }
 }
 

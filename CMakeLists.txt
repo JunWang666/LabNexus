@@ -134,6 +134,9 @@ set(SHARED_SOURCES
         view/EquipmentClass/equipmentclassblock.cpp
         view/EquipmentClass/equipmentclassblock.h
         view/EquipmentClass/equipmentclassblock.ui
+        view/RegisterCenter/checkuserblock.cpp
+        view/RegisterCenter/checkuserblock.h
+        view/RegisterCenter/checkuserblock.ui
         view/equipmentManage/equipment_home.cpp
         view/equipmentManage/equipment_home.h
         view/equipmentManage/equipment_home.ui
