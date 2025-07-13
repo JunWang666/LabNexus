@@ -24,8 +24,18 @@ namespace view::RegisterCenter {
 
         ~RegisterNewUser() override;
 
+    public slots:
+        void on_UpdateButton_clicked();
+
+        void checkVaild();
+
+        void on_NewUser_textChanged();
+        void on_UserGroup_currentTextChanged(const QString &arg1);
+
+
     private:
         Ui::RegisterNewUser *ui;
+        void show_message(QString message, int timeout = 10000);
     };
 } // view::RegisterCenter
 

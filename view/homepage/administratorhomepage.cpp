@@ -75,13 +75,9 @@ namespace view::homepage {
     }
 
     void administratorHomepage::on_userManageButton_clicked() {
-        service::log() << "管理员 " << A_name << " 点击了用户管理按钮";
-
-        // TODO: 打开用户管理页面
-        QMessageBox::information(this, "用户管理",
-                                 QString(
-                                     "用户管理功能开发中...\n用户: %1\nID: %2\n\n在这里您可以：\n• 创建、编辑、删除用户账户\n• 管理用户权限和角色\n• 重置用户密码\n• 查看用户活动日志")
-                                 .arg(A_name).arg(A_ID));
+        view::RegisterCenter::CheckNewUser* checkNewUserPage = new view::RegisterCenter::CheckNewUser();
+        service::MutiWindow::manager().addWindow(checkNewUserPage);
+        checkNewUserPage->show();
     }
 
     void administratorHomepage::on_systemManageButton_clicked() {
