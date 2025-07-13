@@ -139,7 +139,21 @@ namespace view::RegisterCenter {
     }
 
     void CheckUserBlock::RejectCheck() {
-        data::UserControl::check::rejectUserRegister(userId);
+        if (data::UserControl::check::rejectUserRegister(userId)) {
+            acceptButton.setVisible(false);
+            rejectButton.setVisible(false);
+            addStatusString(
+                "<img src=\":/SegoeFluentIcons/2eb3b83e-ac4c-41cd-871e-0bcac2cfc354.png\" " // 图片路径
+                "width=\"16\" height=\"16\" style=\"vertical-align: middle; margin-right: 5px;\">" // 图片大小和对齐
+                "<span style=\"color: #dc3545; font-weight: bold; font-size: 11pt;\">已拒绝</span>" // 危险红
+            );
+        } else {
+            addStatusString(
+                "<img src=\":/SegoeFluentIcons/154ec457-cfd6-453c-bfe9-bd505c0b177d.png\" " // 图片路径
+                "width=\"16\" height=\"16\" style=\"vertical-align: middle; margin-right: 5px;\">" // 图片大小和对齐
+                "<span style=\"color: #dc3545; font-weight: bold; font-size: 11pt;\">拒绝失败</span>" // 修改为拒绝失败
+            );
+        }
     }
 
     void CheckUserBlock::AcceptCheck() {
