@@ -76,7 +76,8 @@ void kaddmanage::on_addButton_clicked() {
     // 生成设备编号（规则：名称+日期+批次+序号，如“显微镜_20240708_2024001_1”）
     QDateTime currentDate = QDateTime::currentDateTime();
     QString dateStr = currentDate.toString("yyyy-MM-dd hh:mm:ss");
-    QString baseNumber = QString("%1_%2_%3").arg(instrumentName).arg(dateStr).arg(batchNumber);
+    QString dateStr2 = currentDate.toString("yyyy-MM-dd");
+    QString baseNumber = QString("%1_%2_%3").arg(instrumentName).arg(dateStr2).arg(batchNumber);
     QString rebaseNumber = QString("%1_%2_%3").arg(instrumentName).arg(batchNumber);
 
     // 数据库操作
@@ -93,11 +94,24 @@ void kaddmanage::on_addButton_clicked() {
                                            : baseNumber;
 
         // 步骤1：检查设备编号是否已存在（避免冲突）
-        // QString checkQuery = QString(R"(
-        //     SELECT COUNT(*) AS count FROM equipment_instance
-        //     WHERE equipment_number = '%1'
-        // )").arg(finalEquipmentNumber);
-        // auto checkResult = db.executeQueryAndFetchAll(checkQuery);
+        QString checkQuery = QString(R"(
+            SELECT COUNT(*) AS count
+            FROM equipment_instance
+            WHERE status != 'deleted' AND name = '%1'
+        )").arg(finalEquipmentNumber);
+        auto checkResult = db.executeQueryAndFetchAll(checkQuery);
+
+        bool exists = !checkResult.isEmpty() &&
+                      checkResult.first().value("count").toInt() > 0;
+
+        if (exists) {
+            skipCount++;
+            errorDetails += QString("第%1条记录已存在，跳过：%2\n")
+                                .arg(i + 1)
+                                .arg(finalEquipmentNumber);
+            continue;   // 直接跳过本次循环
+        }
+
 
 
         // 步骤2：插入新记录（使用数据库自增id，不手动指定）
@@ -107,7 +121,7 @@ void kaddmanage::on_addButton_clicked() {
             ) VALUES (
                 '%1', '%2', '%3' , %4
             )
-        )").arg(instrumentName).arg(statuss).arg(dateStr).arg(classId);              // 设备状态（下拉框选择）
+        )").arg(finalEquipmentNumber).arg(statuss).arg(dateStr).arg(classId);              // 设备状态（下拉框选择）
 
 
         if (db.executeNonQuery(insertQuery)) {
@@ -135,11 +149,14 @@ void kaddmanage::on_addButton_clicked() {
         emit dataAdded(); // 通知主界面刷新
     }
 
+    QString a = QString("%1_%2").arg("add@").arg(rebaseNumber);
+
     QFile file("kadd_log.txt");
     if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        file.write(QString(rebaseNumber)
+        file.write(QString(a)
                        .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
                        .toUtf8());
+        file.write("\n");
         file.close();
     }
 

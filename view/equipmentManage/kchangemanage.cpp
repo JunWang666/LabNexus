@@ -83,9 +83,11 @@ void kchangemanage::on_deleteButton_clicked() {
         QMessageBox::information(this, "成功", "设备状态已更新为删除");
         modelRent->fetchData(); // 刷新模型数据
 
+        QString a = QString("%1_%2").arg("delete@").arg(query);
+
         QFile file("kdelete_log.txt");
         if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-            file.write(QString(query)
+            file.write(QString(a)
                            .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
                            .toUtf8());
             file.close();
@@ -144,6 +146,7 @@ void kchangemanage::on_changeButton_clicked() {
             file.write(QString(query)
                            .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
                            .toUtf8());
+            file.write("\n");
             file.close();
         }
 
@@ -196,11 +199,14 @@ void kchangemanage::on_statusButton_clicked()
         QMessageBox::information(this, "成功", "设备状态已更新");
         modelRent->fetchData(); // 刷新模型数据
 
+        QString a = QString("%1_%2").arg("change@").arg(query);
+
         QFile file("kchange_log.txt");
         if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-            file.write(QString(query)
-                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"))
+            file.write(QString(a)
+                           .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss\n"))
                            .toUtf8());
+            file.write("\n");
             file.close();
         }
 
