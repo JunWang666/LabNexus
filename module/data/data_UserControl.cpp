@@ -717,7 +717,7 @@ namespace data::UserControl {
         QList<int> getAllUserId(int page, int pageSize) {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE '-%'
+                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE 'System%'
                     ORDER BY created_at DESC
                     LIMIT ? OFFSET ?
               )";
@@ -735,7 +735,7 @@ namespace data::UserControl {
         QList<int> getUncheckedUserId(int page, int pageSize) {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE '-%'
+                  SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE 'System%'
                     ORDER BY created_at DESC
                     LIMIT ? OFFSET ?
               )";
@@ -751,7 +751,7 @@ namespace data::UserControl {
         QList<int> getAllUserId() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE '-%'
+                  SELECT id FROM users WHERE status != 'Deleted' AND id_number NOT LIKE 'System%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
             QList<int> userIds;
@@ -764,7 +764,7 @@ namespace data::UserControl {
         QList<int> getUncheckedUserId() {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
-                   SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE '-%'
+                   SELECT id FROM users WHERE status == 'Unchecked' AND id_number NOT LIKE 'System%'
               )";
             auto results = db.executePreparedQueryAndFetchAll(query, {});
             QList<int> userIds;
@@ -828,6 +828,17 @@ namespace data::UserControl {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(
                 UPDATE users SET status = 'AllRight' WHERE id = ? AND status = 'Banned'
+            )";
+            if (!db.executePreparedNonQuery(query, {userId})) {
+                return false;
+            }
+            return true;
+        }
+
+        bool rejectUserRegister(int userId) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                UPDATE users SET status = 'Rejected' WHERE id = ? AND status = 'Unchecked'
             )";
             if (!db.executePreparedNonQuery(query, {userId})) {
                 return false;

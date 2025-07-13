@@ -34,6 +34,7 @@ namespace view::RegisterCenter {
         }
 
         connect(&acceptButton, &QPushButton::clicked, this, &CheckUserBlock::AcceptCheck);
+        connect(&rejectButton, &QPushButton::clicked, this, &CheckUserBlock::RejectCheck);
     }
 
     CheckUserBlock::~CheckUserBlock() {
@@ -135,6 +136,10 @@ namespace view::RegisterCenter {
             }
         )";
         rejectButton.setStyleSheet(styleSheet2);
+    }
+
+    void CheckUserBlock::RejectCheck() {
+        data::UserControl::check::rejectUserRegister(userId);
     }
 
     void CheckUserBlock::AcceptCheck() {

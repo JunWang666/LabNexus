@@ -24,12 +24,13 @@ namespace data::mail {
     }
 
     void registerSystemUser() {
-        data::UserControl::Login::createNewUser("-1", "库存预警", "huidbauiuicbabiabduiab", "System");
-        data::UserControl::Login::createNewUser("-2", "LabNexus团队", "bcfuiasbiasuibcviuab", "System");
+        data::UserControl::Login::createNewUser("System_3", "库存预警", "huidbauiuicbabiabduiab", "System");
+        data::UserControl::Login::createNewUser("System_2", "LabNexus团队", "bcfuiasbiasuibcviuab", "System");
+        data::UserControl::Login::createNewUser("System_1", "工作提醒", "bcfuiasbiasuibcviuab", "System");
     }
 
     void findSystemUser() {
-        std::vector<QString> searchIds = {"-1","-2"};
+        std::vector<QString> searchIds = {"System_1", "System_2", "System_3",};
         for (QString id : searchIds) {
             auto userNameResult = data::UserControl::UserInfo::getUserNameByIdNumber(id);
             auto id2 = data::UserControl::Login::foundUserIdByIdNumber(id);
