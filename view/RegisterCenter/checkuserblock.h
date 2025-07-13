@@ -34,6 +34,8 @@ namespace view::RegisterCenter {
 
         void setButtonStyle();
 
+        void RejectCheck();
+
     public slots:
         void AcceptCheck();
 

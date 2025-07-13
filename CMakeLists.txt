@@ -148,6 +148,9 @@ set(SHARED_SOURCES
         view/RegisterCenter/registernewuser.cpp
         view/RegisterCenter/registernewuser.h
         view/RegisterCenter/registernewuser.ui
+        view/RegisterCenter/changepasswordadmin.cpp
+        view/RegisterCenter/changepasswordadmin.h
+        view/RegisterCenter/changepasswordadmin.ui
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 

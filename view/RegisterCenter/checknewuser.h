@@ -28,6 +28,7 @@ private slots:
     void on_nextButton_clicked();
     void on_addButton_clicked();
     void on_refreshButton_clicked();
+    void on_ChangePasswordButton_clicked();
 private:
     Ui::CheckNewUser *ui;
     int m_currentPage;
