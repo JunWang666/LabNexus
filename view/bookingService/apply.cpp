@@ -97,6 +97,7 @@ void Apply::on_btnRush_clicked() {
             }
             QString content = tr("%1向%2申请%3设备").arg(senderName).arg(receiverName).arg("");
             data::mail::send_mail(data::UserControl::currentUserId,receiverId.toInt(),subject,content,"");
+            QMessageBox::information(this,"提醒","发送成功",QMessageBox::Ok);
         }
         else {
             QMessageBox::warning(this,"警告","请选择一个申请",QMessageBox::Ok);

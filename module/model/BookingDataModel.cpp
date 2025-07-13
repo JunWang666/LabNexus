@@ -6,6 +6,7 @@
 #include "BookingDataModel.h"
 
 #include "EquipmentDataModel.h"
+#include "module/data/data_mail.h"
 
 namespace dataModel {
 
@@ -78,6 +79,8 @@ namespace dataModel {
         if (newStatus == "同意") {
             success = data::Booking::processApprovalTransaction(rec.id,rec.equipmentId,rec.userId,approvalId);
             rec.approvalStatus = newStatus;
+            QString content = tr("%1%2了你的申请").arg(rec.approverName).arg(newStatus);
+            data::mail::send_mail(approvalId,rec.id,"回复",content,"");
             emit approvalStatusChanged();
             emit dataChanged(index, index);
         }
@@ -91,6 +94,10 @@ namespace dataModel {
                 rec.approvalDate = QDateTime::currentDateTime();
                 emit approvalStatusChanged();
                 emit dataChanged(index, index.siblingAtColumn(Col_ApproverName));
+                if (newStatus == "拒绝") {
+                    QString content = tr("%1%2了你的申请").arg(rec.approverName).arg(newStatus);
+                    data::mail::send_mail(approvalId,rec.id,"回复",content,"");
+                }
             }
         }
         return success;
