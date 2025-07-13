@@ -7,6 +7,7 @@
 #include "checknewuser.h"
 
 #include "checkuserblock.h"
+#include "registernewuser.h"
 #include "ui_CheckNewUser.h"
 
 namespace view::RegisterCenter {
@@ -92,6 +93,9 @@ void CheckNewUser::updatePaginationControls() {
     }
 
     void CheckNewUser::on_addButton_clicked() {
+        view::RegisterCenter::RegisterNewUser *registerNewUser = new view::RegisterCenter::RegisterNewUser();
+        service::MutiWindow::manager().addWindow(registerNewUser);
+        registerNewUser->show();
     }
 
     void CheckNewUser::on_refreshButton_clicked() {
