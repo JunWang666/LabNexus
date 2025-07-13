@@ -140,9 +140,8 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
-                                                           const QString &password_,
+                                                           const QString &password,
                                                            const QString &group) {
-            QString password = hashPassword(password_);
             if (group.isEmpty()) {
                 log(service::LogLevel::DATA) << "未指定组，用户创建成功但未添加到任何组";
                 return createNewUser(idNumber, username, password);
@@ -163,8 +162,7 @@ namespace data::UserControl {
         }
 
         std::expected<int, UserControlError> createNewUser(const QString &idNumber, const QString &username,
-                                                           const QString &password_, int groupId) {
-            QString password = hashPassword(password_);
+                                                           const QString &password, int groupId) {
             auto newUserResult = createNewUser(idNumber, username, password);
             if (!newUserResult) {
                 return std::unexpected(newUserResult.error());
