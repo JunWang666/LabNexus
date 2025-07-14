@@ -24,8 +24,18 @@ namespace view::RegisterCenter {
         } else {
             ui->label_name->setText("未设置名称的用户");
         }
-        ui->label_id->setText(QString::number(userId));
-        ui->label_group->setText(data::UserControl::permission::getUserInWhichGroup(userId));
+        auto id = data::UserControl::UserInfo::getIdNumberById(userId);
+        if (id.has_value()) {
+            ui->label_id->setNum(id.value());
+        } else {
+            ui->label_id->setText("未设置学工号的用户");
+        }
+        auto group = data::UserControl::permission::getUserInWhichGroup(userId);
+        if (group.isEmpty()) {
+            ui->label_group->setText("未分配组");
+        } else {
+            ui->label_group->setText(group);
+        }
 
         if (data::UserControl::check::getUserStatus(userId) == "Unchecked") {
             addCheckButton();

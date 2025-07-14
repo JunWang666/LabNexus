@@ -279,6 +279,8 @@ namespace data::UserControl {
 
         std::expected<int, UserInfoError> getIdByIdNumber(QString IdNumber);
 
+        std::expected<int, UserInfoError> getIdNumberById(int Id);
+
         /**
          * @brief 更改指定用户的用户名。
          *
