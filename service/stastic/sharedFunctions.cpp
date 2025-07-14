@@ -44,7 +44,6 @@ namespace service {
 
         LogLevel logLevel;
 
-        // 根据Qt消息类型映射到你的LogLevel
         switch (type) {
             case QtDebugMsg:
                 logLevel = LogLevel::DEBUG;
@@ -56,10 +55,10 @@ namespace service {
                 logLevel = LogLevel::WARN;
                 break;
             case QtCriticalMsg:
-                logLevel = LogLevel::ERR; // QtCriticalMsg 对应你的ERR
+                logLevel = LogLevel::ERR;
                 break;
             case QtFatalMsg:
-                logLevel = LogLevel::ERR; // QtFatalMsg 也对应你的ERR，致命错误通常会导致程序终止
+                logLevel = LogLevel::ERR;
                 break;
             default:
                 logLevel = LogLevel::DEBUG;

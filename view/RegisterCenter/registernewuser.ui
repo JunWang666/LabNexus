@@ -80,7 +80,6 @@
                 }
 
                 /* --- QComboBox 样式 (UserGroup) --- */
-                /* 你提供的 QComboBox 样式已经很完整且符合 Win11 风格，我这里稍微调整并整合 */
                 QComboBox {
                 background-color: white;
                 color: black;
@@ -130,7 +129,6 @@
                 }
 
                 /* --- QPushButton 样式 (UpdateButton) --- */
-                /* 你提供的 UpdateButton 样式非常棒，直接整合进来 */
                 QPushButton#UpdateButton {
                 background-color: #0078D4;
                 color: white;

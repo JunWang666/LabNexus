@@ -39,7 +39,6 @@
                             /* 设置背景颜色 */
              background-color: transparent;
 
-                            /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
                             border-radius: 8px;
 
                             /* 设置一个细微的边框，使其看起来更清晰 */
@@ -118,7 +117,6 @@
                       /* 设置背景颜色 */
                       background-color: transparent;
 
-                      /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
                       border-radius: 8px;
                       }
 
@@ -158,7 +156,6 @@
           /* 设置背景颜色 */
           background-color: transparent;
 
-          /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
           border-radius: 8px;
           }
 
@@ -185,7 +182,6 @@
                                           /* 设置背景颜色 */
                                           background-color: transparent;
 
-                                          /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
                                           border-radius: 8px;
                                           }
 

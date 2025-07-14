@@ -111,7 +111,6 @@ namespace data::Booking {
     bool createBookingARecord(int userId, const QDateTime &createDate, int equipmentClassId, int equipmentId,
         const QDateTime &requestStartTime, const QDateTime &requestEndTime, const QString &approvalStatus,
         int approverId) {
-        // 实例化你的数据库管理器
         service::DatabaseManager db(service::Path::booking());
         if (!db.isConnected()) {
             log(service::LogLevel::ERR) << "创建预订记录失败：无法连接到数据库。" << db.getLastError();
@@ -125,12 +124,10 @@ namespace data::Booking {
         }
 
         // 2. 插入 booking_info 表并获取新ID
-        //    使用你提供的 executePreparedInsertAndGetId 便捷函数
         QString infoQuery = "INSERT INTO booking_info (user_id, create_date) VALUES (?, ?)";
         QVariantList infoParams = {userId, createDate};
         int newBookingId = db.executePreparedInsertAndGetId(infoQuery, infoParams);
 
-        // 3. 检查ID是否有效。根据你的实现，失败时返回-1
         if (newBookingId == -1) {
             log(service::LogLevel::ERR) << "插入 booking_info 并获取ID失败: " << db.getLastError();
             db.rollbackTransaction(); // 出错，回滚事务

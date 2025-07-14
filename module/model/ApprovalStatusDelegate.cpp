@@ -37,7 +37,6 @@ namespace delegateModel {
         QString value = comboBox->currentText();
 
         // 调用模型的 setData 函数更新数据。
-        // 您在 BookingDataModel.cpp 中实现的 setData 逻辑将在此被触发，从而同步到数据库。
         model->setData(index, value, Qt::EditRole);
     }
 

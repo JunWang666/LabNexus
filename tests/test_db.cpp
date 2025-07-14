@@ -2,7 +2,7 @@
 
 #include <QtTest>
 #include <QFile>
-#include "service/database/databaseManager.h" // 仅包含你需要测试的头文件
+#include "service/database/databaseManager.h"
 
 class TestDatabaseManager : public QObject {
     Q_OBJECT
@@ -137,10 +137,6 @@ private slots:
 #include <QCoreApplication>
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
-    // 在测试环境中，通常不需要设置插件路径，因为Qt Test会处理好
-    // 但如果你的环境特殊，保留这些行是无害的
-    QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath());
-    QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath() + "/plugins");
     
     TestDatabaseManager tc;
     return QTest::qExec(&tc, argc, argv);

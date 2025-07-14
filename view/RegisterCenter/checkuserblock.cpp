@@ -115,7 +115,7 @@ namespace view::RegisterCenter {
                 );
             } else {
                 label_status.setText(
-                    "<img src=\":/SegoeFluentIcons/7adc4afd-5150-418b-b6e1-2a02b0d1f129.png\" " // 使用你提供的未知图标
+                    "<img src=\":/SegoeFluentIcons/7adc4afd-5150-418b-b6e1-2a02b0d1f129.png\" "
                     "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
                     "<span style=\"color: #6c757d; font-weight: bold;\">未知状态</span>" // 保持中性灰
                 );
