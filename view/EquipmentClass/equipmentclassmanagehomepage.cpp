@@ -95,6 +95,44 @@ void EquipmentClassManageHomepage::on_refreshButton_clicked() {
     loadEquipmentClasses();
 }
 
+void EquipmentClassManageHomepage::on_lineEdit_returnPressed() {
+    auto keyword = ui->lineEdit->text().trimmed();
+    auto records = data::Equipment::EquipmentClass::searchEquClassList(keyword);
+
+    ui->scrollAreaWidgetContents->setUpdatesEnabled(false);
+
+    auto *layout = qobject_cast<QVBoxLayout *>(ui->scrollAreaWidgetContents->layout());
+    if (!layout) {
+        layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
+        layout->setSpacing(5);
+        layout->setAlignment(Qt::AlignTop);
+        layout = qobject_cast<QVBoxLayout *>(ui->scrollAreaWidgetContents->layout());
+        if (!layout) {
+            log(LogLevel::ERR) << "错误：布局创建后仍然为空！";
+            return; // 提前退出以避免崩溃
+        }
+    }
+
+    // 清除现有的消息块
+    QLayoutItem *child;
+    while ((child = layout->takeAt(0)) != nullptr) {
+        delete child->widget();
+        delete child;
+    }
+
+    // 为每个设备分类记录创建信息块
+    for (const auto &record: records) {
+        auto *block = new EquipmentClassBlock(record); // 创建信息块实例
+        layout->addWidget(block);
+    }
+
+    m_totalPages = 1;
+    m_currentPage = 1;
+    updatePaginationControls();
+    // 加载完数据后更新分页控件
+    ui->scrollAreaWidgetContents->setUpdatesEnabled(true);
+}
+
 void EquipmentClassManageHomepage::updatePaginationControls() {
     if (m_totalPages == 0) {
         ui->pageLabel->setText("0 / 0");

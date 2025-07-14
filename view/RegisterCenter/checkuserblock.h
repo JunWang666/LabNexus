@@ -48,7 +48,7 @@ namespace view::RegisterCenter {
         int userId;
         QPushButton acceptButton,
                 rejectButton,
-        banButton,deleteButton;
+                banButton, deleteButton;
         QLabel label_status;
 
         void addStatusString(QString status);

@@ -48,7 +48,6 @@ namespace view::RegisterCenter {
         connect(&rejectButton, &QPushButton::clicked, this, &CheckUserBlock::RejectCheck);
         connect(&banButton, &QPushButton::clicked, this, &CheckUserBlock::BanUserSwitch);
         connect(&deleteButton, &QPushButton::clicked, this, &CheckUserBlock::DeleteUser);
-
     }
 
     CheckUserBlock::~CheckUserBlock() {
@@ -58,14 +57,14 @@ namespace view::RegisterCenter {
     void CheckUserBlock::addCheckButton() {
         if (ui->ButtonFrame) {
             if (!ui->ButtonFrame->layout()) {
-                QHBoxLayout* buttonLayout = new QHBoxLayout(ui->ButtonFrame);
+                QHBoxLayout *buttonLayout = new QHBoxLayout(ui->ButtonFrame);
                 buttonLayout->addStretch(1);
                 buttonLayout->setContentsMargins(0, 0, 0, 0);
             }
         }
         if (ui->StatusFrame) {
             if (!ui->StatusFrame->layout()) {
-                QHBoxLayout* StatusLayout = new QHBoxLayout(ui->StatusFrame);
+                QHBoxLayout *StatusLayout = new QHBoxLayout(ui->StatusFrame);
                 StatusLayout->addStretch(1);
                 StatusLayout->setContentsMargins(0, 0, 0, 0);
             }
@@ -76,10 +75,10 @@ namespace view::RegisterCenter {
             auto status = data::UserControl::check::getUserStatus(userId);
             ui->StatusFrame->layout()->addWidget(&label_status);
             label_status.setText(
-                    "<img src=\":/SegoeFluentIcons/242518a4-f3f3-49d5-acae-97b284b3d5ed.png\" "
-                    "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
-                    "<span style=\"color: #f7a800; font-weight: bold;\">未审核</span>" // 警告黄
-                );
+                "<img src=\":/SegoeFluentIcons/242518a4-f3f3-49d5-acae-97b284b3d5ed.png\" "
+                "width=\"32\" height=\"32\" style=\"vertical-align: middle; margin-right: 5px;\">"
+                "<span style=\"color: #f7a800; font-weight: bold;\">未审核</span>" // 警告黄
+            );
             label_status.setVisible(true);
             acceptButton.setVisible(true);
             rejectButton.setVisible(true);
@@ -220,7 +219,7 @@ namespace view::RegisterCenter {
                     "<span style=\"color: #dc3545; font-weight: bold; font-size: 11pt;\">取消拉黑失败</span>"
                 );
             }
-        }else {
+        } else {
             if (data::UserControl::check::banUser(userId)) {
                 banButton.setVisible(false);
                 addStatusString(

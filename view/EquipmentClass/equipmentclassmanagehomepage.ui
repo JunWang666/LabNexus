@@ -245,7 +245,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
      <property name="frameShadow">
       <enum>QFrame::Shadow::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="addButton">
         <property name="styleSheet">
@@ -302,6 +302,40 @@ QPushButton {
         </property>
        </widget>
       </item>
+            <item>
+                <widget class="QLineEdit" name="lineEdit">
+                    <property name="styleSheet">
+                        <string notr="true">QLineEdit {
+                            /* 基础样式：几乎透明的背景，细微的浅色边框 */
+                            background-color: rgba(255, 255, 255, 10); /* 几乎全透明的白色背景，数值越低越透明 */
+                            color: black; /* 文字颜色保持黑色，确保可见性 */
+                            border: 1px solid rgba(192, 192, 192, 50); /* 极淡的边框，几乎不可见但有存在感 */
+                            border-radius: 4px; /* 圆角与之前风格统一 */
+                            padding: 5px 8px; /* 内边距 */
+                            font-size: 10pt;
+                            min-height: 24px; /* 高度 */
+                            }
+
+                            QLineEdit:hover {
+                            /* 鼠标悬停时：边框稍微明显一点 */
+                            border: 1px solid rgba(160, 160, 160, 100); /* 边框略微显现 */
+                            }
+
+                            QLineEdit:focus {
+                            /* 聚焦时：背景变为白色，边框高亮为蓝色 */
+                            background-color: white; /* 聚焦时背景变为不透明白色 */
+                            border: 1px solid #0078D4; /* 边框高亮为熟悉的蓝色 */
+                            outline: none; /* 移除默认的焦点虚线框 */
+                            }
+
+                            /* 占位符文本样式 */
+                            QLineEdit::placeholder {
+                            color: rgba(0, 0, 0, 120); /* 占位符文本略带透明度的黑色，确保可见 */
+                            }
+                        </string>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -353,7 +387,7 @@ QPushButton {
         <x>0</x>
         <y>0</y>
         <width>539</width>
-        <height>445</height>
+           <height>442</height>
        </rect>
       </property>
      </widget>

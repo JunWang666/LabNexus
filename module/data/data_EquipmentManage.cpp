@@ -351,6 +351,42 @@ namespace data::Equipment {
 
             return newId;
         }
+
+        QList<EquipmentClassRecord> searchEquClassList(QString keyword) {
+            service::DatabaseManager db(service::Path::equipment());
+            QString queryString = R"(
+                SELECT
+                    id,
+                    name,
+                    description,
+                    created_at,
+                    total_amount,
+                    usable_amount,
+                    alarm_amount
+                FROM
+                    equipment_class
+                WHERE status != 'deleted' AND (name LIKE ? OR description LIKE ?)
+                )";
+
+            auto results = db.executePreparedQueryAndFetchAll(queryString, {
+                "%" + keyword + "%","%" + keyword + "%"
+            });
+
+            QList<EquipmentClassRecord> records;
+            for (const auto &row: results) {
+                EquipmentClassRecord rec;
+                rec.id = row["id"].toInt();
+                rec.name = row["name"].toString();
+                rec.description = row["description"].toString();
+                rec.created_at = row["created_at"].toDateTime();
+                rec.total_amount = row["total_amount"].toInt();
+                rec.usable_amount = row["usable_amount"].toInt();
+                rec.alarm_amount = row["alarm_amount"].toInt();
+                records.append(rec);
+            }
+            return records;
+        }
+
         // 新增：删除设备类别（软删除，设置status为deleted）
         bool deleteEquipmentClass(int classId) {
             service::DatabaseManager db(service::Path::equipment());
