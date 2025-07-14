@@ -38,11 +38,6 @@ private slots:
             QVERIFY2(dbManager.isConnected(), "数据库管理器在构造后应该处于连接状态");
             QVERIFY2(QFile::exists(testDbPath), "数据库文件应该被创建");
         } // dbManager 在这里被销毁，析构函数被调用
-
-        // Assert (after destruction)
-        // 验证连接是否已被清理。一个简单的验证方法是再次尝试使用相同的连接名（内部实现），
-        // 如果清理成功，则不会有问题。或者，我们可以假设析构函数工作正常。
-        // 对于这个测试，我们主要信任 isConnected 的准确性。
     }
     
     void testNonQueryExecution() {

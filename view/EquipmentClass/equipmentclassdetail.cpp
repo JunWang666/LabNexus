@@ -32,6 +32,8 @@ namespace view::EquipmentClass {
         ui->UsableNum->setText("0");
         ui->listWidget->clear();
 
+        data::Equipment::EquipmentClass::recalculateClassCounts(m_classId);
+
 
         // 连接信号，当用户输入名称时，检查是否可以创建
         connect(ui->EquName, &QLineEdit::textChanged, this, &EquipmentClassDetail::check_can_create);

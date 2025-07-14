@@ -90,7 +90,8 @@ void EquipmentClassManageHomepage::on_addButton_clicked() {
 }
 
 void EquipmentClassManageHomepage::on_refreshButton_clicked() {
-    m_totalPages = data::UserControl::check::getAllUserCount() / m_itemsPerPage + 1;
+    m_totalPages = (data::Equipment::EquipmentClass::getEquClassCount() / m_itemsPerPage) + 1;
+    m_currentPage = 1;
     loadEquipmentClasses();
 }
 

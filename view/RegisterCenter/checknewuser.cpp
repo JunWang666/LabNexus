@@ -17,8 +17,13 @@ CheckNewUser::CheckNewUser(QWidget *parent) :
     m_currentPage(1),m_itemsPerPage(10),m_totalPages(){
     ui->setupUi(this);
     service::style::setMica(this);
-
+    // --- 分页逻辑初始化 ---
+    m_currentPage = 1;
+    // 从数据层获取总页数
+    m_totalPages = (data::UserControl::check::getAllUserCount() - 1) / m_itemsPerPage + 1;
+    updatePaginationControls();
     loadDataFromDatabase(m_currentPage);
+    updatePaginationControls();
 }
 
 CheckNewUser::~CheckNewUser() {
@@ -26,11 +31,7 @@ CheckNewUser::~CheckNewUser() {
 }
 
 void CheckNewUser::loadDataFromDatabase(int page) {
-    // --- 分页逻辑初始化 ---
-    m_currentPage = 1;
-    // 从数据层获取总页数
-    m_totalPages = (data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
-    updatePaginationControls();
+
 
     // 从数据库获取设备分类数据
     auto records = data::UserControl::check::getAllUserId(page, m_itemsPerPage);
@@ -83,6 +84,7 @@ void CheckNewUser::updatePaginationControls() {
         if (m_currentPage > 1) {
             m_currentPage--;
             loadDataFromDatabase(m_currentPage);
+            updatePaginationControls();
         }
     }
 
@@ -90,6 +92,7 @@ void CheckNewUser::updatePaginationControls() {
         if (m_currentPage < m_totalPages) {
             m_currentPage++;
             loadDataFromDatabase(m_currentPage);
+            updatePaginationControls();
         }
     }
 
@@ -100,7 +103,8 @@ void CheckNewUser::updatePaginationControls() {
     }
 
     void CheckNewUser::on_refreshButton_clicked() {
-        (m_totalPages = data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
+        m_totalPages = (data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
+        m_currentPage = 1;
         loadDataFromDatabase();
     }
 

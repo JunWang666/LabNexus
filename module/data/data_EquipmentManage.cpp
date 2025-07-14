@@ -130,11 +130,9 @@ namespace data::Equipment {
         QString queryString = "SELECT id, class_id FROM equipment_instance WHERE name = ?";
         QVariantList params = {devName};
 
-        // 使用你已有的 executePreparedQueryAndFetchAll 函数
         auto queryResult = db.executePreparedQueryAndFetchAll(queryString, params);
 
         if (!queryResult.isEmpty()) {
-            // 假设设备名称是唯一的，我们只取第一个结果
             QVariantMap row = queryResult.first();
             result.id = row["id"].toInt();
             result.class_id = row["equipment_class_id"].toInt();

@@ -23,8 +23,6 @@ namespace view::messageCenter {
         m_currentUserId = data::UserControl::currentUserId;
         m_currentPage = 1;
 
-        // 假设存在一个函数 getMailCount 来获取总邮件数
-        // 如果没有，你需要自己在 data::mail 中实现它
         m_totalMails = data::mail::getMailCount(m_currentUserId);
 
         loadMailsFromDatabase(m_currentUserId, m_currentPage);

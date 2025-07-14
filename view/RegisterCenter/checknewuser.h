@@ -23,7 +23,7 @@ public:
 private:
     void updatePaginationControls();
 
-private slots:
+public slots:
     void on_prevButton_clicked();
     void on_nextButton_clicked();
     void on_addButton_clicked();
