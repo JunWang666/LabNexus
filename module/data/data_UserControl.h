@@ -315,6 +315,9 @@ namespace data::UserControl {
         bool banUser(int userId);
 
         bool unbanUser(int userId);
+
+        bool deleteUser(int userId);
+
         bool rejectUserRegister(int userId);
 
         QString getUserStatus(int userId);

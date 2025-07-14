@@ -859,6 +859,17 @@ namespace data::UserControl {
             return true;
         }
 
+        bool deleteUser(int userId) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                UPDATE users SET status = 'Deleted' WHERE id = ? AND status = 'AllRight'
+            )";
+            if (!db.executePreparedNonQuery(query, {userId})) {
+                return false;
+            }
+            return true;
+        }
+
         bool rejectUserRegister(int userId) {
             service::DatabaseManager db(service::Path::user());
             QString query = R"(

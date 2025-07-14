@@ -36,6 +36,10 @@ namespace view::RegisterCenter {
 
         void RejectCheck();
 
+        void BanUserSwitch();
+
+        void DeleteUser();
+
     public slots:
         void AcceptCheck();
 
@@ -43,7 +47,8 @@ namespace view::RegisterCenter {
         Ui::CheckUserBlock *ui;
         int userId;
         QPushButton acceptButton,
-                rejectButton;
+                rejectButton,
+        banButton,deleteButton;
         QLabel label_status;
 
         void addStatusString(QString status);
