@@ -18,6 +18,9 @@
 #include <QString>
 #include <QMouseEvent>
 
+#include "module/scanner/DbCaculator.h"
+#include "module/scanner/WorkAlert.h"
+
 
 namespace view::login {
     loginPage::loginPage(QWidget *parent) : QWidget(parent), ui(new Ui::loginPage) {
@@ -72,7 +75,11 @@ namespace view::login {
 
         int userId = confirm_user(ID, password);
         data::UserControl::currentUserId = userId;
+
         bot::InventoryAlert::sendAlert();
+        bot::WorkAlert::sendAdminCheckNewUserAlert();
+        bot::DbCaculator::reCaculate();
+
         auto userGroup = data::UserControl::permission::getUserInWhichGroupIdList(userId);
         if (userId > 0 && !userGroup.isEmpty()) {
             if (userGroup.contains(1)) {
