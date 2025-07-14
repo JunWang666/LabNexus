@@ -279,6 +279,8 @@ namespace data::UserControl {
 
         std::expected<int, UserInfoError> getIdByIdNumber(QString IdNumber);
 
+        std::expected<int, UserInfoError> getIdNumberById(int Id);
+
         /**
          * @brief 更改指定用户的用户名。
          *
@@ -313,9 +315,14 @@ namespace data::UserControl {
         bool banUser(int userId);
 
         bool unbanUser(int userId);
+
+        bool deleteUser(int userId);
+
         bool rejectUserRegister(int userId);
 
         QString getUserStatus(int userId);
+
+        QList<int> searchUserIdByNameOrIdNumber(QString keyword);
     }
 }
 

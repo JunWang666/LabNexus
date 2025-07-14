@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>498</width>
-    <height>295</height>
+       <height>294</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,19 +25,19 @@
      <property name="minimumSize">
       <size>
        <width>100</width>
-       <height>100</height>
+          <height>120</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>100</height>
+          <height>120</height>
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">QPushButton#frame {
+         <string notr="true">#frame {
                             /* 设置背景颜色 */
-                            background-color: #F3F2F1;
+             background-color: transparent;
 
                             /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
                             border-radius: 8px;
@@ -100,15 +100,61 @@
        </layout>
       </item>
       <item>
-       <widget class="QFrame" name="StatusFrame">
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QFrame {
+          <widget class="QFrame" name="frame_2">
+              <property name="minimumSize">
+                  <size>
+                      <width>0</width>
+                      <height>100</height>
+                  </size>
+              </property>
+              <property name="maximumSize">
+                  <size>
+                      <width>160</width>
+                      <height>16777215</height>
+                  </size>
+              </property>
+              <property name="styleSheet">
+                  <string notr="true">QFrame {
+                      /* 设置背景颜色 */
+                      background-color: transparent;
+
+                      /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
+                      border-radius: 8px;
+                      }
+
+                  </string>
+              </property>
+              <property name="frameShape">
+                  <enum>QFrame::Shape::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+                  <enum>QFrame::Shadow::Raised</enum>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <property name="leftMargin">
+                      <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                      <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                      <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                      <number>0</number>
+                  </property>
+                  <item>
+                      <layout class="QVBoxLayout" name="verticalLayout_2">
+                          <item>
+                              <widget class="QFrame" name="StatusFrame">
+                                  <property name="maximumSize">
+                                      <size>
+                                          <width>150</width>
+                                          <height>16777215</height>
+                                      </size>
+                                  </property>
+                                  <property name="styleSheet">
+                                      <string notr="true">QFrame {
           /* 设置背景颜色 */
           background-color: transparent;
 
@@ -117,14 +163,45 @@
           }
 
          </string>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::Shape::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Shadow::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3"/>
+                                  </property>
+                                  <property name="frameShape">
+                                      <enum>QFrame::Shape::StyledPanel</enum>
+                                  </property>
+                                  <property name="frameShadow">
+                                      <enum>QFrame::Shadow::Raised</enum>
+                                  </property>
+                              </widget>
+                          </item>
+                          <item>
+                              <widget class="QFrame" name="ButtonFrame">
+                                  <property name="maximumSize">
+                                      <size>
+                                          <width>150</width>
+                                          <height>16777215</height>
+                                      </size>
+                                  </property>
+                                  <property name="styleSheet">
+                                      <string notr="true">QFrame {
+                                          /* 设置背景颜色 */
+                                          background-color: transparent;
+
+                                          /* 关键：设置圆角半径，这里设为 8px，你可以根据需要调整 */
+                                          border-radius: 8px;
+                                          }
+
+                                      </string>
+                                  </property>
+                                  <property name="frameShape">
+                                      <enum>QFrame::Shape::StyledPanel</enum>
+                                  </property>
+                                  <property name="frameShadow">
+                                      <enum>QFrame::Shadow::Raised</enum>
+                                  </property>
+                              </widget>
+                          </item>
+                      </layout>
+                  </item>
+              </layout>
        </widget>
       </item>
      </layout>

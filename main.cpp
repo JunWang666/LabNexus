@@ -22,6 +22,7 @@
 #include "view/RegisterCenter/checknewuser.h"
 #include "view/SplashScreen/nativesplash.h"
 //#include "view/SplashScreen/splashscreen.h"
+#include "module/scanner/DbCaculator.h"
 #include "module/scanner/WorkAlert.h"
 
 void setup_tasks() {
@@ -29,6 +30,7 @@ void setup_tasks() {
     service::taskManager::getTimer().scheduleTask(60000, []() {
         bot::InventoryAlert::sendAlert();
         bot::WorkAlert::sendAdminCheckNewUserAlert();
+        bot::DbCaculator::reCaculate();
     });
 }
 

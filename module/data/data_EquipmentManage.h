@@ -105,6 +105,9 @@ namespace data::Equipment {
          * @return 如果创建成功，返回新记录的ID；如果失败，返回 -1。
          */
         int addEquipmentClass(const EquipmentClassRecord &record);
+
+        QList<EquipmentClassRecord> searchEquClassList(QString keyword);
+
     }
 
     namespace EquipmentInstnace {

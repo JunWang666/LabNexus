@@ -17,8 +17,13 @@ CheckNewUser::CheckNewUser(QWidget *parent) :
     m_currentPage(1),m_itemsPerPage(10),m_totalPages(){
     ui->setupUi(this);
     service::style::setMica(this);
-
+    // --- 分页逻辑初始化 ---
+    m_currentPage = 1;
+    // 从数据层获取总页数
+    m_totalPages = (data::UserControl::check::getAllUserCount() - 1) / m_itemsPerPage + 1;
+    updatePaginationControls();
     loadDataFromDatabase(m_currentPage);
+    updatePaginationControls();
 }
 
 CheckNewUser::~CheckNewUser() {
@@ -26,12 +31,6 @@ CheckNewUser::~CheckNewUser() {
 }
 
 void CheckNewUser::loadDataFromDatabase(int page) {
-    // --- 分页逻辑初始化 ---
-    m_currentPage = 1;
-    // 从数据层获取总页数
-    m_totalPages = (data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
-    updatePaginationControls();
-
     // 从数据库获取设备分类数据
     auto records = data::UserControl::check::getAllUserId(page, m_itemsPerPage);
 
@@ -83,6 +82,7 @@ void CheckNewUser::updatePaginationControls() {
         if (m_currentPage > 1) {
             m_currentPage--;
             loadDataFromDatabase(m_currentPage);
+            updatePaginationControls();
         }
     }
 
@@ -90,6 +90,7 @@ void CheckNewUser::updatePaginationControls() {
         if (m_currentPage < m_totalPages) {
             m_currentPage++;
             loadDataFromDatabase(m_currentPage);
+            updatePaginationControls();
         }
     }
 
@@ -100,7 +101,9 @@ void CheckNewUser::updatePaginationControls() {
     }
 
     void CheckNewUser::on_refreshButton_clicked() {
-        (m_totalPages = data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
+        m_totalPages = (data::UserControl::check::getAllUserCount() - 1) / m_itemsPerPage + 1;
+        m_currentPage = 1;
+        ui->lineEdit->setText("");
         loadDataFromDatabase();
     }
 
@@ -108,5 +111,43 @@ void CheckNewUser::updatePaginationControls() {
         view::RegisterCenter::ChangePasswordAdmin *ChangePasswordAdmin = new view::RegisterCenter::ChangePasswordAdmin();
         service::MutiWindow::manager().addWindow(ChangePasswordAdmin);
         ChangePasswordAdmin->show();
+    }
+
+    void CheckNewUser::on_lineEdit_returnPressed() {
+        auto keyword = ui->lineEdit->text().trimmed();
+        auto records = data::UserControl::check::searchUserIdByNameOrIdNumber(keyword);
+
+        ui->scrollAreaWidgetContents->setUpdatesEnabled(false);
+
+        auto *layout = qobject_cast<QVBoxLayout *>(ui->scrollAreaWidgetContents->layout());
+        if (!layout) {
+            layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
+            layout->setSpacing(5);
+            layout->setAlignment(Qt::AlignTop);
+            layout = qobject_cast<QVBoxLayout *>(ui->scrollAreaWidgetContents->layout());
+            if (!layout) {
+                log(LogLevel::ERR) << "错误：布局创建后仍然为空！";
+                return; // 提前退出以避免崩溃
+            }
+        }
+
+        // 清除现有的消息块
+        QLayoutItem *child;
+        while ((child = layout->takeAt(0)) != nullptr) {
+            delete child->widget();
+            delete child;
+        }
+
+        // 为每个设备分类记录创建信息块
+        for (const auto &record: records) {
+            auto *block = new CheckUserBlock(record); // 创建信息块实例
+            layout->addWidget(block);
+        }
+
+        m_totalPages = 1;
+        m_currentPage = 1;
+        updatePaginationControls();
+        // 加载完数据后更新分页控件
+        ui->scrollAreaWidgetContents->setUpdatesEnabled(true);
     }
 }

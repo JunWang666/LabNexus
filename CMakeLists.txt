@@ -151,6 +151,8 @@ set(SHARED_SOURCES
         view/RegisterCenter/changepasswordadmin.cpp
         view/RegisterCenter/changepasswordadmin.h
         view/RegisterCenter/changepasswordadmin.ui
+        module/scanner/DbCaculator.cpp
+        module/scanner/DbCaculator.h
 )
 list(REMOVE_DUPLICATES SHARED_SOURCES)
 

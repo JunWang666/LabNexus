@@ -32,8 +32,7 @@ namespace view {
             // 居中显示
             QScreen *screen = QGuiApplication::primaryScreen();
             QRect screenGeometry = screen->geometry();
-            // 假设你的SplashScreen在.ui文件中已经设置了固定大小，
-            // 或者你可以在这里根据QML内容动态调整quickWidget的大小，进而影响this->width()
+
             int x = (screenGeometry.width() - this->width()) / 2;
             int y = (screenGeometry.height() - this->height()) / 2;
             this->move(x, y);

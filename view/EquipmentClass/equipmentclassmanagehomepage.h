@@ -32,6 +32,8 @@ namespace view::EquipmentClass {
         void on_addButton_clicked();
         void on_refreshButton_clicked();
 
+        void on_lineEdit_returnPressed();
+
     private:
         Ui::EquipmentClassManageHomepage *ui;
 
