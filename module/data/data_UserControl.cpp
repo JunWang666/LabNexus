@@ -881,5 +881,23 @@ namespace data::UserControl {
             }
             return results.first()["status"].toString();
         }
+
+        QList<int> searchUserIdByNameOrIdNumber(QString keyword) {
+            service::DatabaseManager db(service::Path::user());
+            QString query = R"(
+                SELECT id FROM users
+                WHERE status != 'Deleted'
+                AND (username LIKE ? OR id_number LIKE ?)
+            )";
+            auto results = db.executePreparedQueryAndFetchAll(query, {
+                {"%" + keyword + "%","%" + keyword + "%"}
+            });
+
+            QList<int> userIds;
+            for (const auto &row: results) {
+                userIds.append(row["id"].toInt());
+            }
+            return userIds;
+        }
     }
 }

@@ -8,35 +8,46 @@
 #include <QWidget>
 
 namespace view::RegisterCenter {
-QT_BEGIN_NAMESPACE
-namespace Ui { class CheckNewUser; }
-QT_END_NAMESPACE
+    QT_BEGIN_NAMESPACE
 
-class CheckNewUser : public QWidget {
-Q_OBJECT
+    namespace Ui {
+        class CheckNewUser;
+    }
 
-public:
-    explicit CheckNewUser(QWidget *parent = nullptr);
-    ~CheckNewUser() override;
-    void loadDataFromDatabase(int page=1);
+    QT_END_NAMESPACE
 
-private:
-    void updatePaginationControls();
+    class CheckNewUser : public QWidget {
+        Q_OBJECT
 
-public slots:
-void on_prevButton_clicked();
+    public:
+        explicit CheckNewUser(QWidget *parent = nullptr);
 
-void on_nextButton_clicked();
+        ~CheckNewUser() override;
 
-void on_addButton_clicked();
-    void on_refreshButton_clicked();
-    void on_ChangePasswordButton_clicked();
-private:
-    Ui::CheckNewUser *ui;
-    int m_currentPage;
-    int m_totalPages;
-    const int m_itemsPerPage = 10;
-};
+        void loadDataFromDatabase(int page = 1);
+
+    private:
+        void updatePaginationControls();
+
+    public slots:
+        void on_prevButton_clicked();
+
+        void on_nextButton_clicked();
+
+        void on_addButton_clicked();
+
+        void on_refreshButton_clicked();
+
+        void on_ChangePasswordButton_clicked();
+
+        void on_lineEdit_returnPressed();
+
+    private:
+        Ui::CheckNewUser *ui;
+        int m_currentPage;
+        int m_totalPages;
+        const int m_itemsPerPage = 10;
+    };
 } // view::RegisterCenter
 
 #endif //CHECKNEWUSER_H

@@ -8,6 +8,9 @@
 
 namespace bot::DbCaculator {
     void reCaculate() {
-        data::Equipment::EquipmentClass::recalculateClassCounts();
-    }
+        auto equipmentClasses = data::Equipment::EquipmentClass::getEquClassList();
+        for (const auto &classItem : equipmentClasses) {
+            int classId = classItem.id;
+            data::Equipment::EquipmentClass::recalculateClassCounts(classId);
+        }}
 }

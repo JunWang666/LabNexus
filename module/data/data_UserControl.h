@@ -318,6 +318,8 @@ namespace data::UserControl {
         bool rejectUserRegister(int userId);
 
         QString getUserStatus(int userId);
+
+        QList<int> searchUserIdByNameOrIdNumber(QString keyword);
     }
 }
 
