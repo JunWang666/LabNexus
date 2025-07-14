@@ -369,8 +369,8 @@ namespace data::Equipment {
                 )";
 
             auto results = db.executePreparedQueryAndFetchAll(queryString, {
-                "%" + keyword + "%","%" + keyword + "%"
-            });
+                                                                  "%" + keyword + "%", "%" + keyword + "%"
+                                                              });
 
             QList<EquipmentClassRecord> records;
             for (const auto &row: results) {
