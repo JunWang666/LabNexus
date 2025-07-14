@@ -31,8 +31,6 @@ CheckNewUser::~CheckNewUser() {
 }
 
 void CheckNewUser::loadDataFromDatabase(int page) {
-
-
     // 从数据库获取设备分类数据
     auto records = data::UserControl::check::getAllUserId(page, m_itemsPerPage);
 
@@ -103,7 +101,7 @@ void CheckNewUser::updatePaginationControls() {
     }
 
     void CheckNewUser::on_refreshButton_clicked() {
-        m_totalPages = (data::UserControl::check::getAllUserCount()-1) / m_itemsPerPage + 1;
+        m_totalPages = (data::UserControl::check::getAllUserCount() - 1) / m_itemsPerPage + 1;
         m_currentPage = 1;
         loadDataFromDatabase();
     }
